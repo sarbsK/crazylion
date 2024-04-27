@@ -1,7 +1,8 @@
 [About this project](about)
+
 {% include_relative README.md %}
 
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -28,6 +29,7 @@
         <img src="images/img-7.jpg" alt="">
         <img src="images/img-8.jpg" alt="">
         <img src="images/img-9.jpg" alt="">
+        <img src="images/DP248124.jpg" alt="">
     </div>
 
 </div>
