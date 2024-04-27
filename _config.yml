@@ -3,7 +3,7 @@ lang: en-US # e.g. uk, pl, en-US
 bg_color: dark # can be dark, light or auto
 # theme-color is the main accent color and can be red, pink, fuchsia, purple, violet, indigo, blue, azure, cyan, jade, green,
 # lime, yellow, amber, pumpkin, orange, sand, grey, zinc, slate. See samples on https://picocss.com/docs/version-picker
-theme_color: azure
+theme_color: slate
 title: Sarbs
 description: Quick. The fastest and easiest way to make a GitHub Pages website for your project.
 keywords: github pages, github readme, github pages theme, jekyll theme, landing page
