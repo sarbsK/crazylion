@@ -1,1 +1,1 @@
-[About this project](readme)
+[About this project](about)
