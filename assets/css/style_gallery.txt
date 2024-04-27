@@ -7,7 +7,7 @@
 }
 
 .container{
-  max-width: 20%;
+  max-width: 85%;
   margin:20px auto;
 }
 
@@ -29,5 +29,5 @@
 .container .image-container img{
   margin-bottom: 10px;
   border-radius: 5px;
-  width: 100%;
+  width: 30%;
 }
