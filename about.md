@@ -1,3 +1,3 @@
 me a
 
-img
+img/DP248124.jpg
