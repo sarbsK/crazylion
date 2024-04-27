@@ -1,3 +1,3 @@
 me a
 
-img/DP248124.jpg
+<img src="img/DP248124.jpg"/>
