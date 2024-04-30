@@ -2244,7 +2244,7 @@ input, select, textarea {
 /* Intro */
 
 	#intro {
-		background: url("images/overlay.png"), url("https://www.youtube.com/embed/bTtOd8RK4Jk?si=Q9AfebOz5WeMcWbV");
+		background: url("images/overlay.png"), url("https://youtu.be/bTtOd8RK4Jk");
 		background-size: 256px 256px, cover;
 		background-attachment: fixed, fixed;
 		background-position: top left, bottom center;
