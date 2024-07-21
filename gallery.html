@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/panzoom/9.0.0/panzoom.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,24 +55,25 @@
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
             background-color: rgba(0,0,0,0.8);
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .modal-content {
             position: relative;
-            width: 80%;
-            margin: auto;
-            padding-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            /* Center the images */
-            justify-items: center;
+            width: 90%;
+            height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
         .modal-content img {
             max-width: 100%;
-            height: auto;
-            cursor: move; /* Optional: makes the cursor look draggable */
+            max-height: 100%;
+            cursor: zoom-in;
         }
         .close {
             position: absolute;
@@ -109,35 +109,23 @@
         <span class="close" onclick="closeModal()">&times;</span>
         <div class="modal-content" id="modalContent">
             <!-- Full-size images displayed in modal -->
-            <img src="images/fulls/01.jpg" alt="Full Image 1" class="zoomable">
-            <img src="images/fulls/02.jpg" alt="Full Image 2" class="zoomable">
-            <img src="images/fulls/03.jpg" alt="Full Image 3" class="zoomable">
+            <img src="images/fulls/01.jpg" alt="Full Image 1">
+            <img src="images/fulls/02.jpg" alt="Full Image 2">
+            <img src="images/fulls/03.jpg" alt="Full Image 3">
             <!-- Add more images as needed -->
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/panzoom/9.0.0/panzoom.min.js"></script>
     <script>
         function openModal() {
-            document.getElementById("imageModal").style.display = "block";
-
-            // Initialize Panzoom for each zoomable image
-            const zoomableImages = document.querySelectorAll('.zoomable');
-            zoomableImages.forEach(image => {
-                panzoom(image, {
-                    minZoom: 1,
-                    maxZoom: 5,
-                    zoomSpeed: 0.065,
-                    cursorStyle: 'zoom-in'
-                });
-            });
+            document.getElementById("imageModal").style.display = "flex";
         }
 
         function closeModal() {
             document.getElementById("imageModal").style.display = "none";
         }
 
-        // Close the modal if user clicks outside of it
+        // Close the modal if user clicks outside of the image
         window.onclick = function(event) {
             if (event.target == document.getElementById("imageModal")) {
                 closeModal();
