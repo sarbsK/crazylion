@@ -95,10 +95,8 @@
     </div>
     <div class="container">
         <div class="gallery">
-            <img src="images/thumbs/01.jpg" alt="Description of image 1" onclick="openModal('images/fulls/01.jpg')">
-            <img src="images/thumbs/01.jpg" alt="Description of image 2" onclick="openModal('images/fulls/02.jpg')">
-            <img src="images/thumbs/01.jpg" alt="Description of image 3" onclick="openModal('images/fulls/03.jpg')">
-            <!-- Add more images as needed -->
+            <!-- Single thumbnail that opens multiple images -->
+            <img src="images/thumbs/01.jpg" alt="Thumbnail" onclick="openModal()">
         </div>
     </div>
 
@@ -106,26 +104,18 @@
     <div id="imageModal" class="modal">
         <span class="close" onclick="closeModal()">&times;</span>
         <div class="modal-content" id="modalContent">
-            <!-- Full-size images will be injected here by JavaScript -->
+            <!-- Full-size images displayed in modal -->
+            <img src="images/fulls/01.jpg" alt="Full Image 1">
+            <img src="images/fulls/02.jpg" alt="Full Image 2">
+            <img src="images/fulls/03.jpg" alt="Full Image 3">
+            <img src="images/fulls/04.jpg" alt="Full Image 4">
+            <!-- Add more images as needed -->
         </div>
     </div>
 
     <script>
-        function openModal(imageSrc) {
-            const modal = document.getElementById("imageModal");
-            const modalContent = document.getElementById("modalContent");
-            
-            // Clear existing images
-            modalContent.innerHTML = '';
-
-            // Create new image element
-            const img = document.createElement("img");
-            img.src = imageSrc;
-            img.alt = "Full-size image";
-            modalContent.appendChild(img);
-
-            // Show modal
-            modal.style.display = "block";
+        function openModal() {
+            document.getElementById("imageModal").style.display = "block";
         }
 
         function closeModal() {
