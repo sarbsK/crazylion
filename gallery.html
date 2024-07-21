@@ -23,11 +23,7 @@
             height: auto;
             border: 5px solid #ddd;
             border-radius: 10px;
-            transition: transform 0.3s;
             cursor: pointer;
-        }
-        .gallery img:hover {
-            transform: scale(1.05);
         }
         .container {
             max-width: 1200px;
@@ -72,19 +68,21 @@
         .modal-content img {
             max-width: 100%;
             max-height: 100%;
-            cursor: zoom-in;
+            display: none; /* Hide all images by default */
+        }
+        .modal-content img.active {
+            display: block; /* Show the active image */
         }
         .close {
             position: absolute;
-            top: 10px;
-            right: 25px;
+            top: 20px;
+            right: 20px;
             color: white;
             font-size: 40px;
             font-weight: bold;
             cursor: pointer;
         }
-        .close:hover,
-        .close:focus {
+        .close:hover {
             color: #bbb;
         }
         /* Navigation buttons */
@@ -121,11 +119,8 @@
     </div>
     <div class="container">
         <div class="gallery">
-            <!-- Thumbnail images that open the modal -->
-            <img src="images/thumbs/01.jpg" alt="Thumbnail 1" onclick="openModal(0)">
-            <img src="images/thumbs/02.jpg" alt="Thumbnail 2" onclick="openModal(1)">
-            <img src="images/thumbs/03.jpg" alt="Thumbnail 3" onclick="openModal(2)">
-            <!-- Add more thumbnails as needed -->
+            <!-- Thumbnail image that opens multiple full-size images -->
+            <img src="images/thumbs/01.jpg" alt="Thumbnail" onclick="openModal()">
         </div>
     </div>
 
@@ -133,11 +128,11 @@
     <div id="imageModal" class="modal">
         <span class="close" onclick="closeModal()">&times;</span>
         <div class="modal-content" id="modalContent">
-            <!-- Full-size images displayed in modal -->
-            <img src="images/fulls/04.jpg" alt="Full Image 1">
-            <img src="images/fulls/01.jpg" alt="Full Image 2" style="display:none;">
-            <img src="images/fulls/02.jpg" alt="Full Image 3" style="display:none;">
-            <!-- Add more full-size images as needed -->
+            <!-- Multiple full-size images -->
+            <img src="images/fulls/06.jpg" alt="Full Image 1" class="active">
+            <img src="images/fulls/05.jpg" alt="Full Image 2">
+            <img src="images/fulls/04.jpg" alt="Full Image 3">
+            <!-- Add more images as needed -->
         </div>
         <button class="nav-button prev" onclick="prevImage()">&#10094;</button>
         <button class="nav-button next" onclick="nextImage()">&#10095;</button>
@@ -147,8 +142,7 @@
         let currentImageIndex = 0;
         const images = document.querySelectorAll('#modalContent img');
 
-        function openModal(startIndex) {
-            currentImageIndex = startIndex;
+        function openModal() {
             document.getElementById("imageModal").style.display = "flex";
             showImage(currentImageIndex);
         }
@@ -158,10 +152,8 @@
         }
 
         function showImage(index) {
-            // Hide all images
-            images.forEach(img => img.style.display = 'none');
-            // Show the current image
-            images[index].style.display = 'block';
+            images.forEach(img => img.classList.remove('active'));
+            images[index].classList.add('active');
         }
 
         function prevImage() {
