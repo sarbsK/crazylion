@@ -58,12 +58,15 @@
         }
         .modal-content {
             position: relative;
-            width: 80%;
-            height: 80%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 70%;
+            max-width: 800px;
+            height: 70%;
+            max-height: 600px;
+            background: white;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .modal-content img {
             max-width: 100%;
@@ -75,10 +78,10 @@
         }
         .close {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 40px;
+            top: 10px;
+            right: 10px;
+            color: black;
+            font-size: 30px;
             font-weight: bold;
             cursor: pointer;
         }
@@ -124,18 +127,18 @@
         </div>
     </div>
 
-    <!-- Full-Screen Modal -->
+    <!-- Modal -->
     <div id="imageModal" class="modal">
-        <span class="close" onclick="closeModal()">&times;</span>
         <div class="modal-content" id="modalContent">
             <!-- Multiple full-size images -->
-            <img src="images/fulls/06.jpg" alt="Full Image 1" class="active">
-            <img src="images/fulls/05.jpg" alt="Full Image 2">
-            <img src="images/fulls/04.jpg" alt="Full Image 3">
+            <img src="images/fulls/01.jpg" alt="Full Image 1" class="active">
+            <img src="images/fulls/01.jpg" alt="Full Image 2">
+            <img src="images/fulls/01.jpg" alt="Full Image 3">
             <!-- Add more images as needed -->
+            <span class="close" onclick="closeModal()">&times;</span>
+            <button class="nav-button prev" onclick="prevImage()">&#10094;</button>
+            <button class="nav-button next" onclick="nextImage()">&#10095;</button>
         </div>
-        <button class="nav-button prev" onclick="prevImage()">&#10094;</button>
-        <button class="nav-button next" onclick="nextImage()">&#10095;</button>
     </div>
 
     <script>
@@ -166,7 +169,7 @@
             showImage(currentImageIndex);
         }
 
-        // Close the modal if user clicks outside of the image
+        // Close the modal if user clicks outside of the modal content
         window.onclick = function(event) {
             if (event.target === document.getElementById("imageModal")) {
                 closeModal();
