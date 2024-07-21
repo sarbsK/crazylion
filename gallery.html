@@ -73,7 +73,23 @@
             display: none; /* Hide all images initially */
             margin: 0 auto;
         }
-        .close, .prev, .next {
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001; /* Ensure button is above modal content */
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+        }
+        .prev,
+        .next {
             position: absolute;
             top: 50%;
             color: white;
@@ -83,24 +99,15 @@
             user-select: none;
             z-index: 1001; /* Ensure buttons are above modal content */
         }
-        .close {
-            right: 20px;
-            top: 20px;
-        }
         .prev {
             left: 20px;
         }
         .next {
             right: 20px;
         }
-        .close:hover,
-        .close:focus,
         .prev:hover,
-        .prev:focus,
-        .next:hover,
-        .next:focus {
+        .next:hover {
             color: #bbb;
-            text-decoration: none;
         }
     </style>
 </head>
