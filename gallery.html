@@ -19,13 +19,12 @@
         }
         .gallery img {
             margin: 10px;
-            max-width: 300px; /* Thumbnail size */
+            max-width: 300px;
             height: auto;
             border: 5px solid #ddd;
             border-radius: 10px;
             transition: transform 0.3s;
             cursor: pointer;
-            z-index: 1; /* Ensure thumbnails are below modal controls */
         }
         .gallery img:hover {
             transform: scale(1.05);
@@ -47,11 +46,10 @@
         .header a:hover {
             text-decoration: underline;
         }
-        /* Modal styles */
         .modal {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
-            z-index: 1000; /* Ensure modal is above other content */
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
@@ -69,9 +67,14 @@
         .modal-content img {
             width: auto;
             max-width: 100%;
-            max-height: 100%;
+            height: auto;
             display: none; /* Hide all images initially */
-            margin: 0 auto;
+        }
+        .modal-content video {
+            width: auto;
+            max-width: 100%;
+            height: auto;
+            display: block;
         }
         .close {
             position: absolute;
@@ -81,12 +84,10 @@
             font-size: 40px;
             font-weight: bold;
             cursor: pointer;
-            z-index: 1001; /* Ensure button is above modal content */
         }
         .close:hover,
         .close:focus {
             color: #bbb;
-            text-decoration: none;
         }
         .prev,
         .next {
@@ -97,7 +98,6 @@
             font-weight: bold;
             cursor: pointer;
             user-select: none;
-            z-index: 1001; /* Ensure buttons are above modal content */
         }
         .prev {
             left: 20px;
@@ -135,12 +135,11 @@
         <span class="prev" onclick="changeImage(-1)">&#10094;</span>
         <span class="next" onclick="changeImage(1)">&#10095;</span>
         <div class="modal-content" id="modalContent">
-            <!-- Images will be inserted dynamically -->
+            <!-- Full-size images will be dynamically inserted here -->
         </div>
     </div>
 
     <script>
-        // Images for each thumbnail
         const imageSets = [
             ["images/fulls/01.jpg", "images/fulls/02.jpg", "images/fulls/03.jpg"],
             ["images/fulls/04.jpg", "images/fulls/05.jpg", "images/fulls/06.jpg"],
@@ -184,7 +183,6 @@
             showImage(currentIndex);
         }
 
-        // Close the modal if user clicks outside of the modal content
         window.onclick = function(event) {
             if (event.target === document.getElementById("imageModal")) {
                 closeModal();
