@@ -1418,6 +1418,23 @@ input, select, textarea {
 
 /* Gallery */
 
+	.thumbnail {
+	    display: flex;
+	    flex-wrap: wrap;
+	    width: 100%;
+	    height: auto;
+	    position: relative;
+	}
+
+	.thumbnail img {
+	    width: 50%; /* Adjust size as needed */
+	    height: auto;
+	    object-fit: cover;
+	}
+
+	.thumbnail img:first-child {
+	    border-right: 2px solid #fff; /* Optional: for separation between images */
+	}
 	.gallery {
 		display: -moz-flex;
 		display: -webkit-flex;
