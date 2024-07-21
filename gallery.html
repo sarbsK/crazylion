@@ -55,7 +55,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
+            overflow: hidden;
             background-color: rgba(0,0,0,0.8);
             display: flex;
             justify-content: center;
@@ -73,18 +73,32 @@
             display: block;
             margin: 0 auto;
         }
-        .close {
+        .close, .prev, .next {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 50%;
             color: white;
             font-size: 40px;
             font-weight: bold;
             cursor: pointer;
-            z-index: 1001; /* Ensure close button is above modal content */
+            user-select: none;
+            z-index: 1001; /* Ensure buttons are above modal content */
+        }
+        .close {
+            right: 20px;
+            top: 20px;
+        }
+        .prev {
+            left: 20px;
+        }
+        .next {
+            right: 20px;
         }
         .close:hover,
-        .close:focus {
+        .close:focus,
+        .prev:hover,
+        .prev:focus,
+        .next:hover,
+        .next:focus {
             color: #bbb;
             text-decoration: none;
         }
@@ -97,14 +111,16 @@
     </div>
     <div class="container">
         <div class="gallery">
-            <!-- Single thumbnail that opens multiple full-size images -->
-            <img src="images/thumbs/01.jpg" alt="Thumbnail" onclick="openModal()">
+            <!-- Single thumbnail that opens the modal -->
+            <img src="images/thumbs/01.jpg" alt="Thumbnail" onclick="openModal(0)">
         </div>
     </div>
 
     <!-- Modal -->
     <div id="imageModal" class="modal">
         <span class="close" onclick="closeModal()">&times;</span>
+        <span class="prev" onclick="changeImage(-1)">&#10094;</span>
+        <span class="next" onclick="changeImage(1)">&#10095;</span>
         <div class="modal-content" id="modalContent">
             <!-- Full-size images displayed in modal -->
             <img src="images/fulls/06.jpg" alt="Full Image 1">
@@ -113,23 +129,38 @@
             <img src="images/fulls/04.jpg" alt="Full Image 4">
             <img src="images/fulls/02.jpg" alt="Full Image 5">
             <img src="images/fulls/01.jpg" alt="Full Image 6">
-            <img src="images/fulls/06.jpg" alt="Full Image 7">
             <!-- Add more images as needed -->
         </div>
     </div>
 
     <script>
-        function openModal() {
+        let currentIndex = 0;
+        const images = document.querySelectorAll('#modalContent img');
+
+        function openModal(index) {
+            currentIndex = index;
             document.getElementById("imageModal").style.display = "flex";
+            showImage(currentIndex);
         }
 
         function closeModal() {
             document.getElementById("imageModal").style.display = "none";
         }
 
+        function showImage(index) {
+            images.forEach((img, i) => {
+                img.style.display = i === index ? 'block' : 'none';
+            });
+        }
+
+        function changeImage(step) {
+            currentIndex = (currentIndex + step + images.length) % images.length;
+            showImage(currentIndex);
+        }
+
         // Close the modal if user clicks outside of the modal content
         window.onclick = function(event) {
-            if (event.target == document.getElementById("imageModal")) {
+            if (event.target === document.getElementById("imageModal")) {
                 closeModal();
             }
         }
