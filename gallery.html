@@ -1,10 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/panzoom/9.0.0/panzoom.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/panzoom/9.0.0/panzoom.min.css">
     <style>
-        /* Your existing styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -66,11 +67,13 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 10px;
+            /* Center the images */
+            justify-items: center;
         }
         .modal-content img {
-            width: 100%;
+            max-width: 100%;
             height: auto;
-            object-fit: cover;
+            cursor: move; /* Optional: makes the cursor look draggable */
         }
         .close {
             position: absolute;
@@ -79,6 +82,7 @@
             color: white;
             font-size: 40px;
             font-weight: bold;
+            cursor: pointer;
         }
         .close:hover,
         .close:focus {
@@ -116,13 +120,15 @@
     <script>
         function openModal() {
             document.getElementById("imageModal").style.display = "block";
+
             // Initialize Panzoom for each zoomable image
             const zoomableImages = document.querySelectorAll('.zoomable');
             zoomableImages.forEach(image => {
                 panzoom(image, {
                     minZoom: 1,
                     maxZoom: 5,
-                    zoomSpeed: 0.065
+                    zoomSpeed: 0.065,
+                    cursorStyle: 'zoom-in'
                 });
             });
         }
@@ -139,3 +145,4 @@
         }
     </script>
 </body>
+</html>
