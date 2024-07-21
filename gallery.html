@@ -23,11 +23,7 @@
             height: auto;
             border: 5px solid #ddd;
             border-radius: 10px;
-            transition: transform 0.3s;
             cursor: pointer;
-        }
-        .gallery img:hover {
-            transform: scale(1.05);
         }
         .container {
             max-width: 1200px;
@@ -55,7 +51,6 @@
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
             background-color: rgba(0,0,0,0.8);
             display: flex;
             justify-content: center;
@@ -65,16 +60,12 @@
             position: relative;
             max-width: 80%;
             max-height: 80%;
-            overflow: hidden;
+            overflow: auto;
         }
         .modal-content img {
             width: 100%;
             height: auto;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .modal-content img.zoomed {
-            transform: scale(1.5); /* Zoom effect */
+            display: block;
         }
         .close {
             position: absolute;
@@ -110,15 +101,14 @@
         <span class="close" onclick="closeModal()">&times;</span>
         <div class="modal-content" id="modalContent">
             <!-- Full-size images displayed in modal -->
-            <img src="images/fulls/06.jpg" alt="Full Image 1" onclick="toggleZoom(this)">
-            <img src="images/fulls/03.jpg" alt="Full Image 2" onclick="toggleZoom(this)">
-            <img src="images/fulls/05.jpg" alt="Full Image 3" onclick="toggleZoom(this)">
-            <img src="images/fulls/04.jpg" alt="Full Image 4" onclick="toggleZoom(this)">
-            <img src="images/fulls/02.jpg" alt="Full Image 5" onclick="toggleZoom(this)">
-            <img src="images/fulls/01.jpg" alt="Full Image 6" onclick="toggleZoom(this)">
-            <img src="images/fulls/06.jpg" alt="Full Image 7" onclick="toggleZoom(this)">
+            <img src="images/fulls/06.jpg" alt="Full Image 1">
+            <img src="images/fulls/03.jpg" alt="Full Image 2">
+            <img src="images/fulls/05.jpg" alt="Full Image 3">
+            <img src="images/fulls/04.jpg" alt="Full Image 4">
+            <img src="images/fulls/02.jpg" alt="Full Image 5">
+            <img src="images/fulls/01.jpg" alt="Full Image 6">
+            <img src="images/fulls/06.jpg" alt="Full Image 7">
             <video src="images/turntable.mp4" controls></video>
-            <!-- Add more images as needed -->
         </div>
     </div>
 
@@ -131,15 +121,11 @@
             document.getElementById("imageModal").style.display = "none";
         }
 
-        // Close the modal if user clicks outside of it
+        // Close the modal if user clicks outside of the modal content
         window.onclick = function(event) {
-            if (event.target == document.getElementById("imageModal")) {
+            if (event.target === document.getElementById("imageModal")) {
                 closeModal();
             }
-        }
-
-        function toggleZoom(image) {
-            image.classList.toggle('zoomed');
         }
     </script>
 </body>
