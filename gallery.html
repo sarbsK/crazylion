@@ -111,7 +111,7 @@
     </div>
     <div class="container">
         <div class="gallery">
-            <!-- Thumbnails that open the modal -->
+            <!-- Thumbnails that open the modal with different sets of images -->
             <img src="images/thumbs/01.jpg" alt="Thumbnail 1" onclick="openModal(0)">
             <img src="images/thumbs/02.jpg" alt="Thumbnail 2" onclick="openModal(1)">
             <img src="images/thumbs/03.jpg" alt="Thumbnail 3" onclick="openModal(2)">
@@ -128,25 +128,37 @@
         <span class="prev" onclick="changeImage(-1)">&#10094;</span>
         <span class="next" onclick="changeImage(1)">&#10095;</span>
         <div class="modal-content" id="modalContent">
-            <!-- Full-size images displayed in modal -->
-            <img src="images/fulls/01.jpg" alt="Full Image 1">
-            <img src="images/fulls/02.jpg" alt="Full Image 2">
-            <img src="images/fulls/03.jpg" alt="Full Image 3">
-            <img src="images/fulls/04.jpg" alt="Full Image 4">
-            <img src="images/fulls/05.jpg" alt="Full Image 5">
-            <img src="images/fulls/06.jpg" alt="Full Image 6">
-            <!-- Add more images as needed -->
+            <!-- Images will be inserted dynamically -->
         </div>
     </div>
 
     <script>
+        // Images for each thumbnail
+        const imageSets = [
+            ["images/fulls/01.jpg", "images/fulls/02.jpg", "images/fulls/03.jpg"],
+            ["images/fulls/04.jpg", "images/fulls/05.jpg", "images/fulls/06.jpg"],
+            ["images/fulls/07.jpg", "images/fulls/08.jpg", "images/fulls/09.jpg"],
+            ["images/fulls/10.jpg", "images/fulls/11.jpg", "images/fulls/12.jpg"],
+            ["images/fulls/13.jpg", "images/fulls/14.jpg", "images/fulls/15.jpg"],
+            ["images/fulls/16.jpg", "images/fulls/17.jpg", "images/fulls/18.jpg"]
+        ];
+
         let currentIndex = 0;
-        const images = document.querySelectorAll('#modalContent img');
+        let currentSet = [];
 
         function openModal(index) {
-            currentIndex = index;
-            document.getElementById("imageModal").style.display = "flex";
+            currentSet = imageSets[index];
+            currentIndex = 0;
+            const modalContent = document.getElementById("modalContent");
+            modalContent.innerHTML = ''; // Clear existing content
+            currentSet.forEach(src => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = 'Full Size Image';
+                modalContent.appendChild(img);
+            });
             showImage(currentIndex);
+            document.getElementById("imageModal").style.display = "flex";
         }
 
         function closeModal() {
@@ -154,13 +166,14 @@
         }
 
         function showImage(index) {
+            const images = document.querySelectorAll('#modalContent img');
             images.forEach((img, i) => {
                 img.style.display = i === index ? 'block' : 'none';
             });
         }
 
         function changeImage(step) {
-            currentIndex = (currentIndex + step + images.length) % images.length;
+            currentIndex = (currentIndex + step + currentSet.length) % currentSet.length;
             showImage(currentIndex);
         }
 
