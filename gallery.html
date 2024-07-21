@@ -23,7 +23,11 @@
             height: auto;
             border: 5px solid #ddd;
             border-radius: 10px;
+            transition: transform 0.3s;
             cursor: pointer;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
         }
         .container {
             max-width: 1200px;
@@ -51,64 +55,36 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5); /* Slightly transparent background */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
         }
         .modal-content {
             position: relative;
             width: 80%;
-            max-width: 800px;
-            height: auto;
-            max-height: 80%; /* Limit height to avoid full screen */
-            background: white;
-            overflow: hidden;
+            margin: auto;
+            padding-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
         }
         .modal-content img {
-            max-width: 100%;
-            max-height: 100%;
-            display: none; /* Hide all images by default */
-        }
-        .modal-content img.active {
-            display: block; /* Show the active image */
+            width: 100%;
+            height: auto;
+            object-fit: cover;
         }
         .close {
             position: absolute;
             top: 10px;
-            right: 10px;
-            color: black;
-            font-size: 30px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .close:hover {
-            color: #bbb;
-        }
-        /* Navigation buttons */
-        .nav-button {
-            position: absolute;
-            top: 50%;
-            width: 50px;
-            height: 50px;
-            background-color: rgba(0,0,0,0.5);
+            right: 25px;
             color: white;
-            border: none;
-            font-size: 24px;
+            font-size: 40px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
             cursor: pointer;
-            transform: translateY(-50%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .prev {
-            left: 10px;
-        }
-        .next {
-            right: 10px;
-        }
-        .nav-button:hover {
-            background-color: rgba(0,0,0,0.8);
         }
     </style>
 </head>
@@ -119,57 +95,35 @@
     </div>
     <div class="container">
         <div class="gallery">
-            <!-- Thumbnail image that opens multiple full-size images -->
+            <!-- Single thumbnail that opens multiple images -->
             <img src="images/thumbs/01.jpg" alt="Thumbnail" onclick="openModal()">
         </div>
     </div>
 
     <!-- Modal -->
     <div id="imageModal" class="modal">
-          <span class="close" onclick="closeModal()">&times;</span>
-          <div class="modal-content" id="modalContent">
-            <!-- Multiple full-size images -->
-            <img src="images/fulls/03.jpg" alt="Full Image 1" class="active">
-            <img src="images/fulls/05.jpg" alt="Full Image 2">
-            <img src="images/fulls/06.jpg" alt="Full Image 3">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content" id="modalContent">
+            <!-- Full-size images displayed in modal -->
+            <img src="images/fulls/06.jpg" alt="Full Image 1">
+            <img src="images/fulls/03.jpg" alt="Full Image 2">
+            <img src="images/fulls/05.jpg" alt="Full Image 3">
             <!-- Add more images as needed -->
-            <span class="close" onclick="closeModal()">&times;</span>
-            <button class="nav-button prev" onclick="prevImage()">&#10094;</button>
-            <button class="nav-button next" onclick="nextImage()">&#10095;</button>
         </div>
     </div>
 
     <script>
-        let currentImageIndex = 0;
-        const images = document.querySelectorAll('#modalContent img');
-
         function openModal() {
-            document.getElementById("imageModal").style.display = "flex";
-            showImage(currentImageIndex);
+            document.getElementById("imageModal").style.display = "block";
         }
 
         function closeModal() {
             document.getElementById("imageModal").style.display = "none";
         }
 
-        function showImage(index) {
-            images.forEach(img => img.classList.remove('active'));
-            images[index].classList.add('active');
-        }
-
-        function prevImage() {
-            currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : images.length - 1;
-            showImage(currentImageIndex);
-        }
-
-        function nextImage() {
-            currentImageIndex = (currentImageIndex < images.length - 1) ? currentImageIndex + 1 : 0;
-            showImage(currentImageIndex);
-        }
-
-        // Close the modal if user clicks outside of the modal content
+        // Close the modal if user clicks outside of it
         window.onclick = function(event) {
-            if (event.target === document.getElementById("imageModal")) {
+            if (event.target == document.getElementById("imageModal")) {
                 closeModal();
             }
         }
