@@ -23,7 +23,6 @@
 						<li><a href="#one">What I Do</a></li>
 						<li><a href="#two">Who I Am</a></li>
 						<li><a href="#work">My Work</a></li>
-						<li><a href="gallery.html">Gallery</a></li>
 						<li><a href="#contact">Contact</a></li>
 					</ul>
 				</nav>
@@ -81,6 +80,12 @@
 					</header> <li><a href="gallery.html">Gallery</a></li>
 
 					<!-- Gallery  -->
+
+						  <div class="thumbnail">
+             			       <a href="images/image1-large.jpg" data-lightbox="gallery" data-title="Collage 1">
+               				         <div class="thumbnail-grid">
+                  			          <img src="images/fulls/02.jpg" alt="Image 1">
+                 			           <img src="images/fulls/01.jpg" alt="Image 2">
 						<div class="gallery">
 							<article class="from-left">
 								<a href="images/fulls/01.jpg" class="image fit"><img src="images/thumbs/01.jpg" title="The Anonymous Red" alt="" /></a>
@@ -102,107 +107,8 @@
 
 								<img src="images/fulls/06.jpg" alt="Description of image 1">
 								<video src="images/turntable.mp4" controls></video>
-								
-Absolutely, you can add videos to your gallery page along with images. To include videos in your gallery page using the "Big Picture" template from HTML5 UP, you'll need to adjust your HTML to include video elements or embed videos from platforms like YouTube or Vimeo.
+								 <iframe width="560" height="315" src="https://www.youtube.com/embed/aChQm8l5VaU?si=QGgNhPOQkFCENw1d" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-Here’s how to do it:
-
-1. Add Videos to the Gallery Page
-You can either embed videos from platforms like YouTube or Vimeo, or you can include local video files.
-
-Embedding Videos from YouTube or Vimeo
-Embed YouTube Videos:
-
-YouTube provides an embed code that you can use to add videos to your HTML. For example:
-
-html
-Copy code
-<iframe width="560" height="315" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-Replace VIDEO_ID with the actual ID of the YouTube video.
-
-Embed Vimeo Videos:
-
-Vimeo also provides an embed code for videos. For example:
-
-html
-Copy code
-<iframe src="https://player.vimeo.com/video/VIDEO_ID" width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-Replace VIDEO_ID with the actual ID of the Vimeo video.
-
-Adding Local Video Files
-Add a Video Tag:
-
-If you have video files that you want to host directly, use the <video> HTML5 element. Here’s a basic example:
-
-html
-Copy code
-<video width="640" height="360" controls>
-    <source src="videos/sample-video.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-</video>
-Place your video files in a directory like videos/.
-
-2. Update the Gallery Page
-Here’s how you can incorporate both images and videos into your gallery page:
-
-html
-Copy code
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery</title>
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <style>
-        /* Simple gallery styling */
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 20px;
-        }
-        .gallery img, .gallery video {
-            margin: 10px;
-            max-width: 300px;
-            height: auto;
-            border: 5px solid #ddd;
-            border-radius: 10px;
-            transition: transform 0.3s;
-        }
-        .gallery img:hover, .gallery video:hover {
-            transform: scale(1.05);
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Header -->
-    <header id="header">
-        <h1><a href="index.html">Big Picture</a></h1>
-        <nav id="nav">
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="gallery.html">Gallery</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Main -->
-    <div id="main">
-        <section id="gallery" class="main">
-            <div class="gallery">
-                <img src="images/photo1.jpg" alt="Description of image 1">
-                <img src="images/photo2.jpg" alt="Description of image 2">
-                <video src="videos/sample-video.mp4" controls></video>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/aChQm8l5VaU?si=QGgNhPOQkFCENw1d" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                <!-- Add more images and videos as needed -->
-            </div>
-        </section>
-    </div>
-							</article>
-						</div>
 
 				</div>
 			</section>
