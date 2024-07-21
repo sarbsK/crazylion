@@ -131,10 +131,10 @@
         <span class="close" onclick="closeModal()">&times;</span>
         <div class="modal-content" id="modalContent">
             <!-- Content for modal will be populated by JavaScript -->
-            <div class="nav-controls">
-                <button onclick="prevImage()">&#10094;</button>
-                <button onclick="nextImage()">&#10095;</button>
-            </div>
+        </div>
+        <div class="nav-controls">
+            <button onclick="prevImage()">&#10094;</button>
+            <button onclick="nextImage()">&#10095;</button>
         </div>
     </div>
 
@@ -172,7 +172,7 @@
 
         function populateModal() {
             const modalContent = document.getElementById("modalContent");
-            modalContent.innerHTML = '';
+            modalContent.innerHTML = ''; // Clear previous content
 
             const set = imageSets[currentSetIndex];
             const content = set[currentImageIndex];
@@ -184,7 +184,8 @@
             } else if (content.type === 'video') {
                 const video = document.createElement('video');
                 video.src = content.src;
-                video.controls = true;
+                video.controls = true; // Ensure controls are added
+                video.style.maxWidth = '100%'; // Ensure video fits within the modal
                 modalContent.appendChild(video);
             } else if (content.type === 'youtube') {
                 const iframe = document.createElement('iframe');
@@ -192,6 +193,8 @@
                 iframe.frameBorder = "0";
                 iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
                 iframe.allowFullscreen = true;
+                iframe.style.width = '100%';
+                iframe.style.height = '500px';
                 modalContent.appendChild(iframe);
             }
         }
