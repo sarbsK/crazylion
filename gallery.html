@@ -135,8 +135,8 @@
         <div class="modal-content" id="modalContent">
             <!-- Full-size images displayed in modal -->
             <img src="images/fulls/03.jpg" alt="Full Image 1">
-            <img src="images/fulls/01.jpg" alt="Full Image 2" style="display:none;">
-            <img src="images/fulls/02.jpg" alt="Full Image 3" style="display:none;">
+            <img src="images/fulls/04.jpg" alt="Full Image 2" style="display:none;">
+            <img src="images/fulls/05.jpg" alt="Full Image 3" style="display:none;">
             <!-- Add more images as needed -->
         </div>
         <button class="nav-button prev" onclick="prevImage()">&#10094;</button>
@@ -146,7 +146,7 @@
     <script>
         let currentImageIndex = 0;
         const images = document.querySelectorAll('#modalContent img');
-
+        
         function openModal(startIndex) {
             currentImageIndex = startIndex;
             document.getElementById("imageModal").style.display = "flex";
