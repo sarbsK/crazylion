@@ -5,7 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery</title>
     <style>
-        /* Include the CSS from above here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .gallery img {
+            margin: 10px;
+            max-width: 300px;
+            height: auto;
+            border: 5px solid #ddd;
+            border-radius: 10px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .header a {
+            color: #ff6f61;
+            text-decoration: none;
+        }
+        .header a:hover {
+            text-decoration: underline;
+        }
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .modal-content {
+            position: relative;
+            width: 80%;
+            margin: auto;
+            padding-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .modal-content img {
+            width: auto;
+            height: 600px;
+            object-fit: cover;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -28,26 +108,27 @@
             <img src="images/fulls/06.jpg" alt="Full Image 1">
             <img src="images/fulls/03.jpg" alt="Full Image 2">
             <img src="images/fulls/05.jpg" alt="Full Image 3">
-            <img src="images/fulls/04.jpg" alt="Full Image 4">
-            <img src="images/fulls/02.jpg" alt="Full Image 5">
-            <img src="images/fulls/01.jpg" alt="Full Image 6">
-            <img src="images/fulls/06.jpg" alt="Full Image 7">
+            <img src="images/fulls/04.jpg" alt="Full Image 3">
+            <img src="images/fulls/02.jpg" alt="Full Image 3">
+            <img src="images/fulls/01.jpg" alt="Full Image 3">
+            <img src="images/fulls/06.jpg" alt="Full Image 3">
             <video src="images/turntable.mp4" controls></video>
+            <!-- Add more images as needed -->
         </div>
     </div>
 
     <script>
         function openModal() {
-            document.getElementById("imageModal").style.display = "flex";
+            document.getElementById("imageModal").style.display = "block";
         }
 
         function closeModal() {
             document.getElementById("imageModal").style.display = "none";
         }
 
-        // Close the modal if user clicks outside of the modal content
+        // Close the modal if user clicks outside of it
         window.onclick = function(event) {
-            if (event.target === document.getElementById("imageModal")) {
+            if (event.target == document.getElementById("imageModal")) {
                 closeModal();
             }
         }
