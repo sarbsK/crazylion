@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gallery</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/panzoom/9.0.0/panzoom.min.css" rel="stylesheet">
     <style>
+        /* Your existing styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -105,17 +105,26 @@
         <span class="close" onclick="closeModal()">&times;</span>
         <div class="modal-content" id="modalContent">
             <!-- Full-size images displayed in modal -->
-            <img src="images/fulls/01.jpg" alt="Full Image 1">
-            <img src="images/fulls/02.jpg" alt="Full Image 2">
-            <img src="images/fulls/03.jpg" alt="Full Image 3">
-            <img src="images/fulls/04.jpg" alt="Full Image 4">
+            <img src="images/fulls/01.jpg" alt="Full Image 1" class="zoomable">
+            <img src="images/fulls/02.jpg" alt="Full Image 2" class="zoomable">
+            <img src="images/fulls/03.jpg" alt="Full Image 3" class="zoomable">
             <!-- Add more images as needed -->
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/panzoom/9.0.0/panzoom.min.js"></script>
     <script>
         function openModal() {
             document.getElementById("imageModal").style.display = "block";
+            // Initialize Panzoom for each zoomable image
+            const zoomableImages = document.querySelectorAll('.zoomable');
+            zoomableImages.forEach(image => {
+                panzoom(image, {
+                    minZoom: 1,
+                    maxZoom: 5,
+                    zoomSpeed: 0.065
+                });
+            });
         }
 
         function closeModal() {
@@ -130,4 +139,3 @@
         }
     </script>
 </body>
-</html>
