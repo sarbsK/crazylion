@@ -72,6 +72,10 @@
             height: auto;
             margin: 10px 0;
         }
+        .modal-content video {
+            width: 80%; /* Set the desired width */
+            max-height: 300px; /* Set the desired height */
+        }
         .modal-content iframe {
             width: 100%;
             height: 500px;
@@ -185,7 +189,7 @@
                 const video = document.createElement('video');
                 video.src = content.src;
                 video.controls = true; // Ensure controls are added
-                video.style.maxWidth = '100%'; // Ensure video fits within the modal
+                video.classList.add('small-video'); // Add class to style the video
                 modalContent.appendChild(video);
             } else if (content.type === 'youtube') {
                 const iframe = document.createElement('iframe');
