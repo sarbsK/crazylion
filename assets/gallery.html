@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .gallery img {
+            margin: 10px;
+            max-width: 300px;
+            height: auto;
+            border: 5px solid #ddd;
+            border-radius: 10px;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .header a {
+            color: #ff6f61;
+            text-decoration: none;
+        }
+        .header a:hover {
+            text-decoration: underline;
+        }
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .modal-content {
+            position: relative;
+            width: 80%;
+            margin: auto;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .modal-content img, .modal-content video {
+            max-width: 100%;
+            height: auto;
+            margin: 10px 0;
+        }
+        .modal-content iframe {
+            width: 100%;
+            height: 500px;
+            margin: 10px 0;
+        }
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .nav-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        .nav-controls button {
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .nav-controls button:hover {
+            background-color: rgba(0,0,0,0.9);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Gallery</h1>
+        <p><a href="index.html">Back to Home</a></p>
+    </div>
+    <div class="container">
+        <div class="gallery">
+            <!-- Thumbnails -->
+            <img src="images/thumbs/01.jpg" alt="Thumbnail 1" onclick="openModal(0)">
+            <img src="images/thumbs/02.jpg" alt="Thumbnail 2" onclick="openModal(1)">
+            <img src="images/thumbs/03.jpg" alt="Thumbnail 3" onclick="openModal(2)">
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content" id="modalContent">
+            <!-- Content for modal will be populated by JavaScript -->
+        </div>
+        <div class="nav-controls">
+            <button onclick="prevImage()">&#10094;</button>
+            <button onclick="nextImage()">&#10095;</button>
+        </div>
+    </div>
+
+    <script>
+        const imageSets = [
+            [
+                { type: 'image', src: 'images/fulls/01.jpg' },
+                { type: 'image', src: 'images/fulls/02.jpg' },
+                { type: 'video', src: 'images/turntable.mp4' },
+                { type: 'youtube', src: 'https://www.youtube.com/embed/dQw4w9WgXcQ' } // YouTube video
+            ],
+            [
+                { type: 'image', src: 'images/fulls/03.jpg' },
+                { type: 'image', src: 'images/fulls/04.jpg' }
+            ],
+            [
+                { type: 'image', src: 'images/fulls/05.jpg' },
+                { type: 'image', src: 'images/fulls/06.jpg' }
+            ]
+        ];
+
+        let currentSetIndex = 0;
+        let currentImageIndex = 0;
+
+        function openModal(setIndex) {
+            currentSetIndex = setIndex;
+            currentImageIndex = 0;
+            populateModal();
+            document.getElementById("imageModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("imageModal").style.display = "none";
+        }
+
+        function populateModal() {
+            const modalContent = document.getElementById("modalContent");
+            modalContent.innerHTML = ''; // Clear previous content
+
+            const set = imageSets[currentSetIndex];
+            const content = set[currentImageIndex];
+
+            if (content.type === 'image') {
+                const img = document.createElement('img');
+                img.src = content.src;
+                modalContent.appendChild(img);
+            } else if (content.type === 'video') {
+                const video = document.createElement('video');
+                video.src = content.src;
+                video.controls = true; // Ensure controls are added
+                video.style.maxWidth = '100%'; // Ensure video fits within the modal
+                modalContent.appendChild(video);
+            } else if (content.type === 'youtube') {
+                const iframe = document.createElement('iframe');
+                iframe.src = content.src;
+                iframe.frameBorder = "0";
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowFullscreen = true;
+                iframe.style.width = '100%';
+                iframe.style.height = '500px';
+                modalContent.appendChild(iframe);
+            }
+        }
+
+        function prevImage() {
+            const set = imageSets[currentSetIndex];
+            if (currentImageIndex > 0) {
+                currentImageIndex--;
+                populateModal();
+            }
+        }
+
+        function nextImage() {
+            const set = imageSets[currentSetIndex];
+            if (currentImageIndex < set.length - 1) {
+                currentImageIndex++;
+                populateModal();
+            }
+        }
+
+        // Close the modal if user clicks outside of it
+        window.onclick = function(event) {
+            if (event.target == document.getElementById("imageModal")) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
