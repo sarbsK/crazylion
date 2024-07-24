@@ -198,15 +198,18 @@
                 video.style.maxWidth = '100%'; // Ensure video fits within the modal
                 modalContent.appendChild(video);
             } else if (content.type === 'youtube') {
-                const iframe = document.createElement('iframe');
-                iframe.src = content.src;
-                iframe.frameBorder = "0";
-                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                iframe.allowFullscreen = true;
-                iframe.style.width = '100%';
-                iframe.style.height = '500%'; // Adjust height to fit within modal
-                modalContent.appendChild(iframe);
-            }
+    const iframe = document.createElement('iframe');
+    iframe.src = content.src;
+    iframe.frameBorder = "0";
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    iframe.allowFullscreen = true;
+    iframe.style.width = '50%'; // Half the width of the modal content
+    iframe.style.height = '50%'; // Half the height of the modal content
+    iframe.style.position = 'relative'; // For proper aspect ratio
+    iframe.style.margin = 'auto'; // Centering the iframe
+    iframe.style.display = 'block'; // Ensure block display
+    modalContent.appendChild(iframe);
+}
         }
 
         function prevImage() {
