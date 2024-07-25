@@ -62,6 +62,7 @@
             position: relative;
             width: 100%;
             max-width: 90%; /* Maximum width for the modal */
+            max-height: 90%; /* Maximum height for the modal */
             margin: auto;
             padding-top: 20px;
             display: flex;
@@ -69,13 +70,13 @@
             align-items: center;
         }
         .modal-content img, .modal-content video {
-            width: 100%;
-            height: auto;
+            max-width: 100%;
+            max-height: 100%;
             margin: 10px 0;
         }
         .modal-content iframe {
-            width: 50%; /* Half the width of the modal content */
-            height: 50%; /* Half the height of the modal content */
+            width: 100%; /* Full width of the modal content */
+            height: 100%; /* Full height of the modal content */
             margin: auto; /* Center the iframe */
             display: block; /* Ensure block display */
         }
@@ -128,7 +129,7 @@
     <div class="container">
         <div class="gallery">
             <!-- Thumbnails -->
-            <img src="images/thumbs/pray-03.jpg" alt="Thumbnail 1" onclick="openModal(0)">
+            <img src="images/thumbs/01.jpg" alt="Thumbnail 1" onclick="openModal(0)">
             <img src="images/thumbs/02.jpg" alt="Thumbnail 2" onclick="openModal(1)">
             <img src="images/thumbs/03.jpg" alt="Thumbnail 3" onclick="openModal(2)">
         </div>
@@ -149,20 +150,10 @@
     <script>
         const imageSets = [
             [
-                { type: 'image', src: 'images/fulls/pray-03.jpg', description: 'Description for Image 1' },
-                { type: 'image', src: 'images/fulls/pray-02.jpg', description: 'Description for Image 2' },
-                { type: 'image', src: 'images/fulls/pray-01.jpg', description: 'Description for Image 2' },
-                { type: 'image', src: 'images/fulls/front-01.jpg', description: 'Description for Image 2' },
-                { type: 'image', src: 'images/fulls/front-02.jpg', description: 'Description for Image 2' },
-                { type: 'image', src: 'images/fulls/closeup-01.jpg', description: 'Description for Image 2' },
-                { type: 'image', src: 'images/fulls/closeup-02.jpg', description: 'Description for Image 2' },
-                { type: 'video', src: 'images/fulls/pray-turntable.mp4', description: 'Description for Video' },
-                { type: 'image', src: 'images/fulls/sculpt-01.jpg', description: 'Description for Image 2' },
-                { type: 'image', src: 'images/fulls/sculpt-02.jpg', description: 'Description for Image 2' },
-                { type: 'image', src: 'images/fulls/sculpt-03.jpg', description: 'Description for Image 2' },
-                { type: 'image', src: 'images/fulls/sculpt-04.jpg', description: 'Description for Image 2' },
-
-                { type: 'youtube', src: 'https://www.youtube-nocookie.com/embed/', description: 'Description for YouTube Video' }
+                { type: 'image', src: 'images/fulls/01.jpg', description: 'Description for Image 1' },
+                { type: 'image', src: 'images/fulls/02.jpg', description: 'Description for Image 2' },
+                { type: 'video', src: 'images/turntable.mp4', description: 'Description for Video' },
+                { type: 'youtube', src: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ', description: 'Description for YouTube Video' }
             ],
             [
                 { type: 'image', src: 'images/fulls/03.jpg', description: 'Description for Image 3' },
@@ -203,7 +194,6 @@
                 const video = document.createElement('video');
                 video.src = content.src;
                 video.controls = true; // Ensure controls are added
-                video.style.maxWidth = '100%'; // Ensure video fits within the modal
                 modalContent.appendChild(video);
             } else if (content.type === 'youtube') {
                 const iframe = document.createElement('iframe');
@@ -211,10 +201,6 @@
                 iframe.frameBorder = "0";
                 iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
                 iframe.allowFullscreen = true;
-                iframe.style.width = '50%'; // Half the width of the modal content
-                iframe.style.height = '50%'; // Half the height of the modal content
-                iframe.style.margin = 'auto'; // Center the iframe
-                iframe.style.display = 'block'; // Ensure block display
                 modalContent.appendChild(iframe);
             }
 
