@@ -60,7 +60,7 @@
         }
         .modal-content {
             position: relative;
-            width: 100%;
+            width: 90%;
             max-width: 90%; /* Maximum width for the modal */
             max-height: 90%; /* Maximum height for the modal */
             margin: auto;
@@ -153,7 +153,7 @@
     <script>
         const imageSets = [
             [
-        		{ type: 'image', src: 'images/fulls/pray-03.jpg', description: 'Description for Image 1' },
+                { type: 'image', src: 'images/fulls/pray-03.jpg', description: 'Description for Image 1' },
                 { type: 'image', src: 'images/fulls/pray-02.jpg', description: 'Description for Image 2' },
                 { type: 'image', src: 'images/fulls/pray-01.jpg', description: 'Description for Image 2' },
                 { type: 'image', src: 'images/fulls/front-01.jpg', description: 'Description for Image 2' },
@@ -165,7 +165,6 @@
                 { type: 'image', src: 'images/fulls/sculpt-02.jpg', description: 'Description for Image 2' },
                 { type: 'image', src: 'images/fulls/sculpt-03.jpg', description: 'Description for Image 2' },
                 { type: 'image', src: 'images/fulls/sculpt-04.jpg', description: 'Description for Image 2' },
-                
                 { type: 'youtube', src: 'https://www.youtube-nocookie.com/embed/ONt6ppBlq7I', description: 'Description for YouTube Video' }
             ],
             [
@@ -173,34 +172,32 @@
                 { type: 'image', src: 'images/fulls/icegoddess-02.jpg', description: 'Description for Image 4' },
                 { type: 'image', src: 'images/fulls/icegoddess-03.jpg', description: 'Description for Image 4' },
                 { type: 'image', src: 'images/fulls/icegoddess.gif', description: 'Description for Image 4' },
-                { type: 'image', src: 'images/fulls/maya-viewport.jpg', description: 'Description for Image 4' },
-               
+                { type: 'image', src: 'images/fulls/maya-viewport.jpg', description: 'Description for Image 4' }
             ],
             [
                 { type: 'image', src: 'images/fulls/drawing.jpg', description: 'Description for Image 5' },
                 { type: 'image', src: 'images/fulls/drawing-02.jpg', description: 'Description for Image 6' },
-                { type: 'image', src: 'images/fulls/painting.jpg', description: 'Description for Image 6' },
-        ],
-        [
+                { type: 'image', src: 'images/fulls/painting.jpg', description: 'Description for Image 6' }
+            ],
+            [
                 { type: 'image', src: 'images/fulls/male_sculpt.jpg', description: 'Description for Image 5' },
                 { type: 'image', src: 'images/fulls/male_render.jpg', description: 'Description for Image 6' },
                 { type: 'youtube', src: 'https://www.youtube-nocookie.com/embed/ONt6ppBlq7I', description: 'Description for YouTube Video' },
-                { type: 'youtube', src: 'https://www.youtube-nocookie.com/embed/oV_MWZk0_k8', description: 'Description for YouTube Video' },
-        ],
-            
-        [
+                { type: 'youtube', src: 'https://www.youtube-nocookie.com/embed/oV_MWZk0_k8', description: 'Description for YouTube Video' }
+            ],
+            [
                 { type: 'image', src: 'images/fulls/female_sculpt.jpg', description: 'Description for Image 5' },
                 { type: 'image', src: 'images/fulls/female_render.jpg', description: 'Description for Image 6' },
                 { type: 'youtube', src: 'https://www.youtube-nocookie.com/embed/29TKtGscX38', description: 'Description for YouTube Video' },
-                { type: 'youtube', src: 'https://www.youtube-nocookie.com/embed/wOIKUQ15ZiU', description: 'Description for YouTube Video' },
-        ],
-         [
+                { type: 'youtube', src: 'https://www.youtube-nocookie.com/embed/wOIKUQ15ZiU', description: 'Description for YouTube Video' }
+            ],
+            [
                 { type: 'image', src: 'images/fulls/01.jpg', description: 'Description for Image 5' },
                 { type: 'image', src: 'images/fulls/02.jpg', description: 'Description for Image 6' },
-                { type: 'image', src: 'images/fulls/03.jpg', description: 'Description for Image 6' },
-             ]
-             ];
-        
+                { type: 'image', src: 'images/fulls/03.jpg', description: 'Description for Image 6' }
+            ]
+        ];
+
         let currentSetIndex = 0;
         let currentImageIndex = 0;
 
@@ -244,13 +241,20 @@
             description.className = 'description';
             description.textContent = content.description;
             modalContent.appendChild(description);
+
+            // Adjust image size to fit the screen
+            const modalWidth = window.innerWidth * 0.9;
+            const modalHeight = window.innerHeight * 0.9;
+            img.style.maxWidth = modalWidth + 'px';
+            img.style.maxHeight = modalHeight + 'px';
         }
 
         function prevImage() {
-            const set = imageSets[currentSetIndex];
             if (currentImageIndex > 0) {
                 currentImageIndex--;
                 populateModal();
+            } else {
+                closeModal();
             }
         }
 
@@ -259,10 +263,18 @@
             if (currentImageIndex < set.length - 1) {
                 currentImageIndex++;
                 populateModal();
+            } else {
+                closeModal();
             }
         }
 
-
+        // Close the modal if user clicks outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById("imageModal");
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
     </script>
 </body>
 </html>
