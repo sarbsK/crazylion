@@ -70,14 +70,16 @@
             align-items: center;
             justify-content: center;
         }
-        .modal-content img, .modal-content video, .modal-content iframe {
+        .modal-content iframe {
+            width: 100%;
+            height: 56.25vw; /* Maintain 16:9 aspect ratio */
+            max-height: 100%;
+            border: none;
+        }
+        .modal-content img, .modal-content video {
             max-width: 100%;
             max-height: 100%;
             margin: 10px 0;
-        }
-        .modal-content iframe {
-            width: 100%; /* Full width of the modal content */
-            height: 100%; /* Full height of the modal content */
         }
         .close {
             position: absolute;
@@ -247,6 +249,12 @@
                 const modalHeight = window.innerHeight * 0.9;
                 element.style.maxWidth = modalWidth + 'px';
                 element.style.maxHeight = modalHeight + 'px';
+
+                // For iframes, maintain aspect ratio
+                if (content.type === 'youtube') {
+                    element.style.height = (modalWidth * 0.5625) + 'px'; // 16:9 aspect ratio
+                    element.style.maxHeight = 'none'; // Override max-height for iframes
+                }
             }
         }
 
