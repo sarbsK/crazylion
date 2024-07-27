@@ -219,8 +219,9 @@
             const set = imageSets[currentSetIndex];
             const content = set[currentImageIndex];
 
+            let img;
             if (content.type === 'image') {
-                const img = document.createElement('img');
+                img = document.createElement('img');
                 img.src = content.src;
                 modalContent.appendChild(img);
             } else if (content.type === 'video') {
@@ -243,10 +244,12 @@
             modalContent.appendChild(description);
 
             // Adjust image size to fit the screen
-            const modalWidth = window.innerWidth * 0.9;
-            const modalHeight = window.innerHeight * 0.9;
-            img.style.maxWidth = modalWidth + 'px';
-            img.style.maxHeight = modalHeight + 'px';
+            if (img) {
+                const modalWidth = window.innerWidth * 0.9;
+                const modalHeight = window.innerHeight * 0.9;
+                img.style.maxWidth = modalWidth + 'px';
+                img.style.maxHeight = modalHeight + 'px';
+            }
         }
 
         function prevImage() {
