@@ -68,8 +68,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
         }
-        .modal-content img, .modal-content video {
+        .modal-content img, .modal-content video, .modal-content iframe {
             max-width: 100%;
             max-height: 100%;
             margin: 10px 0;
@@ -77,8 +78,6 @@
         .modal-content iframe {
             width: 100%; /* Full width of the modal content */
             height: 100%; /* Full height of the modal content */
-            margin: auto; /* Center the iframe */
-            display: block; /* Ensure block display */
         }
         .close {
             position: absolute;
@@ -219,36 +218,35 @@
             const set = imageSets[currentSetIndex];
             const content = set[currentImageIndex];
 
-            let img;
+            let element;
             if (content.type === 'image') {
-                img = document.createElement('img');
-                img.src = content.src;
-                modalContent.appendChild(img);
+                element = document.createElement('img');
+                element.src = content.src;
             } else if (content.type === 'video') {
-                const video = document.createElement('video');
-                video.src = content.src;
-                video.controls = true; // Ensure controls are added
-                modalContent.appendChild(video);
+                element = document.createElement('video');
+                element.src = content.src;
+                element.controls = true; // Ensure controls are added
             } else if (content.type === 'youtube') {
-                const iframe = document.createElement('iframe');
-                iframe.src = content.src;
-                iframe.frameBorder = "0";
-                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                iframe.allowFullscreen = true;
-                modalContent.appendChild(iframe);
+                element = document.createElement('iframe');
+                element.src = content.src;
+                element.frameBorder = "0";
+                element.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                element.allowFullscreen = true;
             }
 
-            const description = document.createElement('p');
-            description.className = 'description';
-            description.textContent = content.description;
-            modalContent.appendChild(description);
+            if (element) {
+                modalContent.appendChild(element);
 
-            // Adjust image size to fit the screen
-            if (img) {
+                const description = document.createElement('p');
+                description.className = 'description';
+                description.textContent = content.description;
+                modalContent.appendChild(description);
+
+                // Adjust size of content to fit the screen
                 const modalWidth = window.innerWidth * 0.9;
                 const modalHeight = window.innerHeight * 0.9;
-                img.style.maxWidth = modalWidth + 'px';
-                img.style.maxHeight = modalHeight + 'px';
+                element.style.maxWidth = modalWidth + 'px';
+                element.style.maxHeight = modalHeight + 'px';
             }
         }
 
