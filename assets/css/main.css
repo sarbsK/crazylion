@@ -320,6 +320,25 @@ a {
   transform: translateY(-2px);
 }
 
+.btn-amber {
+  background: #d97706;
+  color: #fff;
+  border: 1px solid #b45309;
+  box-shadow: 0 4px 15px rgba(217, 119, 6, 0.15);
+}
+
+.btn-amber:hover {
+  transform: translateY(-2px);
+  background: #b45309;
+  box-shadow: 0 6px 20px rgba(217, 119, 6, 0.25);
+}
+
+.hero-spotlights {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 /* Spotlight Card redesigned as a stacked drawing paper sheet */
 .pose-spotlight-card {
   background: #fdfaf2;

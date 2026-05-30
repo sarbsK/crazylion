@@ -30,6 +30,7 @@
     <ul class="nav-menu" id="nav-menu-list">
       <li><a href="#intro" class="nav-link">Intro</a></li>
       <li><a href="#pose-studio" class="nav-link">PoseStudio 3D</a></li>
+      <li><a href="#anatomy-journal" class="nav-link">Anatomy Journal</a></li>
       <li><a href="#skills" class="nav-link">Skills</a></li>
       <li><a href="#gallery" class="nav-link">Portfolio</a></li>
       <li><a href="#about" class="nav-link">Journey</a></li>
@@ -62,22 +63,43 @@
         </div>
       </div>
       
-      <!-- Right side: Spotlight PoseStudio Card -->
-      <div class="pose-spotlight-card">
-        <div class="spotlight-tag">
-          <i class="fa-solid fa-pen-nib"></i>
-          <span>Featured App</span>
+      <!-- Right side: Spotlight Cards Stack -->
+      <div class="hero-spotlights">
+        <!-- Spotlight PoseStudio Card -->
+        <div class="pose-spotlight-card">
+          <div class="spotlight-tag">
+            <i class="fa-solid fa-pen-nib"></i>
+            <span>Featured App</span>
+          </div>
+          <h3>PoseStudio 3D Reference</h3>
+          <p>An interactive, high-end WebGL mannequin posing and lighting studio designed completely offline for fine artists and digital animators. Dial in perfect chiaroscuro key, rim, and ambient lights, study extreme foreshortened drawing perspectives, and morph character anatomies in real-time!</p>
+          <div class="pose-preview-box" style="margin-bottom: 20px;">
+            <span>Rigged 17-Joint Anatomical Frame</span>
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <a href="pose/" target="_blank" class="btn btn-primary" style="width: 100%;">
+            <i class="fa-solid fa-up-right-from-square"></i>
+            Launch PoseStudio 3D
+          </a>
         </div>
-        <h3>PoseStudio 3D Reference</h3>
-        <p>An interactive, high-end WebGL mannequin posing and lighting studio designed completely offline for fine artists and digital animators. Dial in perfect chiaroscuro key, rim, and ambient lights, study extreme foreshortened drawing perspectives, and morph character anatomies in real-time!</p>
-        <div class="pose-preview-box" style="margin-bottom: 20px;">
-          <span>Rigged 17-Joint Anatomical Frame</span>
-          <i class="fa-solid fa-check"></i>
+
+        <!-- Spotlight Anatomica Card -->
+        <div class="pose-spotlight-card anatomy-spotlight">
+          <div class="spotlight-tag" style="background: rgba(245, 158, 11, 0.06); color: #d97706; border-color: rgba(245, 158, 11, 0.18);">
+            <i class="fa-solid fa-book-open"></i>
+            <span>New Journal PWA</span>
+          </div>
+          <h3>Anatomica Reference Journal</h3>
+          <p>An interactive, highly visual 3D skeletal and musculature study guide sourced directly from expert motion analysis. Inspect detailed planar structures, toggle responsive lightboxes, and zoom on muscle flows—100% offline-ready!</p>
+          <div class="pose-preview-box" style="margin-bottom: 20px; background: rgba(245, 158, 11, 0.04); border-color: rgba(245, 158, 11, 0.12);">
+            <span>Planar Muscle & Bone Renders</span>
+            <i class="fa-solid fa-check" style="color: #d97706;"></i>
+          </div>
+          <a href="anatomy/" target="_blank" class="btn btn-amber" style="width: 100%;">
+            <i class="fa-solid fa-up-right-from-square"></i>
+            Launch Anatomica
+          </a>
         </div>
-        <a href="pose/" target="_blank" class="btn btn-primary" style="width: 100%;">
-          <i class="fa-solid fa-up-right-from-square"></i>
-          Launch PoseStudio 3D
-        </a>
       </div>
 
     </div>
@@ -124,6 +146,58 @@
           <h3>PWA Offline Installation</h3>
           <p>Fully package-cached. Tap "Add to Home Screen" on Safari to install it as a standalone fullscreen app that launches and runs completely offline.</p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Anatomica Journal Showcase Detail -->
+  <section id="anatomy-journal" class="section-padding">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag" style="color: #d97706;">Skeletal & Muscle Study</span>
+        <h2 class="section-title">Anatomica Reference Journal</h2>
+      </div>
+      
+      <div class="app-feature-grid">
+        <!-- Feature 1 -->
+        <div class="feature-item-card" style="border-color: rgba(245,158,11,0.15);">
+          <div class="feature-icon-wrapper" style="background: rgba(245,158,11,0.06); color: #d97706; border-color: rgba(245,158,11,0.15);">
+            <i class="fa-solid fa-circle-nodes"></i>
+          </div>
+          <h3>Planar Structural Mapping</h3>
+          <p>Study simplified, planar visual decompositions of human muscle groups and bone segments. Ideal for digital sculptors trying to capture solid, organic forms.</p>
+        </div>
+        <!-- Feature 2 -->
+        <div class="feature-item-card" style="border-color: rgba(245,158,11,0.15);">
+          <div class="feature-icon-wrapper" style="background: rgba(245,158,11,0.06); color: #d97706; border-color: rgba(245,158,11,0.15);">
+            <i class="fa-solid fa-magnifying-glass-plus"></i>
+          </div>
+          <h3>Interactive Lightbox Zoom</h3>
+          <p>Click on any high-fidelity anatomical render to open a high-res lightbox view. Zoom in on precise muscle flows, origins, and insertions with fluid transitions.</p>
+        </div>
+        <!-- Feature 3 -->
+        <div class="feature-item-card" style="border-color: rgba(245,158,11,0.15);">
+          <div class="feature-icon-wrapper" style="background: rgba(245,158,11,0.06); color: #d97706; border-color: rgba(245,158,11,0.15);">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+          </div>
+          <h3>Maximized Canvas View</h3>
+          <p>Hides interface clutter automatically on mobile devices. Uses floating translucent circular controls, maximizing workspace for sketching and sculpting references.</p>
+        </div>
+        <!-- Feature 4 -->
+        <div class="feature-item-card" style="border-color: rgba(245,158,11,0.15);">
+          <div class="feature-icon-wrapper" style="background: rgba(245,158,11,0.06); color: #d97706; border-color: rgba(245,158,11,0.15);">
+            <i class="fa-solid fa-wifi"></i>
+          </div>
+          <h3>100% Offline PWA</h3>
+          <p>Equipped with a custom Service Worker cache. Access detailed skeletal and muscle reference sheets instantaneously at the studio or on the move—no connection required.</p>
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin-top: 48px;">
+        <a href="anatomy/" target="_blank" class="btn btn-amber">
+          <i class="fa-solid fa-book-open"></i>
+          Explore the Full Anatomy Journal
+        </a>
       </div>
     </div>
   </section>
