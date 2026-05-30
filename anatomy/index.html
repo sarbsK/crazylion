@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anatomy for Artists – Powered by Your NotebookLM</title>
+  <meta name="description" content="A premium anatomy reference journal for artists, sourced directly from your NotebookLM notebooks: Anatomical Studies in Motion & Figures in Motion." />
+  
+  <!-- PWA & Mobile Standalone Manifest -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Anatomica" />
+  <link rel="apple-touch-icon" href="images/form_mannequin.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── FLOATING MOBILE CONTROLS ─── -->
+  <div class="mobile-controls" id="mobile-controls">
+    <button class="mobile-control-btn" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+    <button class="mobile-control-btn" onclick="navigateTo('home')" aria-label="Go to Home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+    </button>
+  </div>
+
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="sidebar" id="sidebar" aria-label="Navigation sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="18" cy="8" r="5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M18 13 L18 22 M14 16 L22 16 M14 22 L22 22 M15 22 L13 32 M21 22 L23 32" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">Anatomica</span>
+    </div>
+
+    <!-- NLM source badge -->
+    <div class="nlm-badge" aria-label="Connected to NotebookLM">
+      <span class="nlm-dot" aria-hidden="true"></span>
+      <span>NotebookLM Live</span>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <button class="nav-btn active" id="nav-home" data-section="home" aria-current="page">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 12L5 10M5 10L12 3L19 10M5 10V20a1 1 0 001 1h4m9-11l2 2M19 10V20a1 1 0 01-1 1h-4m-5 0v-6a1 1 0 011-1h2a1 1 0 011 1v6m-5 0h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-btn" id="nav-skeleton" data-section="skeleton">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="5" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v8m-3-5h6m-5 5l-2 5m7-5l2 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>Skeleton</span>
+      </button>
+      <button class="nav-btn" id="nav-muscles" data-section="muscles">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 12C6 8 9 6 12 6s6 2 6 6-3 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 12c-1.5 0-3 1-3 3s1.5 3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>Muscles</span>
+      </button>
+      <button class="nav-btn" id="nav-gesture" data-section="gesture">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 19C5 15 8 12 12 9s7-4 7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M12 9C10 11 8 14 8 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>Gesture & Flow</span>
+      </button>
+      <button class="nav-btn" id="nav-surface" data-section="surface">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 3C12 3 8 8 8 12s4 9 4 9" stroke="currentColor" stroke-width="1.5"/><path d="M3 12h18" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span>Surface Form</span>
+      </button>
+      <button class="nav-btn" id="nav-forms" data-section="forms">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="13" width="7" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><circle cx="17" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M3 7l4 6M14 17l4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span>Basic Forms</span>
+      </button>
+      <button class="nav-btn" id="nav-notebooklm" data-section="notebooklm">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 7h8M8 11h5M7 21l5-4 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>NotebookLM</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="source-info">
+        <div class="source-label">Sources from</div>
+        <div class="source-name">Anatomical Studies in Motion</div>
+        <div class="source-name">Figures in Motion</div>
+        <div class="source-count">311 combined sources</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ─── MAIN CONTENT ─── -->
+  <main class="main-content" id="main-content">
+
+    <!-- ── HOME SECTION ── -->
+    <section class="section active" id="section-home" aria-label="Home">
+      <div class="hero-banner">
+        <div class="hero-text">
+          <div class="hero-eyebrow">Powered by Your NotebookLM · 311 Sources</div>
+          <h1 class="hero-title">Anatomy for<br><em>Artists in Motion</em></h1>
+          <p class="hero-sub">Your personal anatomy reference — built directly from your NotebookLM notebooks <strong>Anatomical Studies in Motion</strong> and <strong>Figures in Motion</strong>. Every insight is grounded in your sources.</p>
+          <div class="hero-cta-row">
+            <button class="btn-primary" onclick="navigateTo('skeleton')">Start Studying</button>
+            <button class="btn-ghost" onclick="navigateTo('notebooklm')">Query Notebooks</button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-img-wrap">
+            <img src="images/skeleton.png" alt="Anatomical skeleton illustration" class="hero-img" loading="eager" fetchpriority="high" />
+            <div class="hero-img-glow"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-num">311</span>
+          <span class="stat-label">Your NLM Sources</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">2</span>
+          <span class="stat-label">Live Notebooks</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">4</span>
+          <span class="stat-label">Study Chapters</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">∞</span>
+          <span class="stat-label">Query Anytime</span>
+        </div>
+      </div>
+
+      <h2 class="section-title">Study Chapters</h2>
+      <div class="chapter-grid">
+        <div class="chapter-card" role="button" tabindex="0" onclick="navigateTo('skeleton')" onkeydown="if(event.key==='Enter')navigateTo('skeleton')" aria-label="Open Skeleton chapter">
+          <div class="chapter-img-wrap">
+            <img src="images/skeleton.png" alt="Skeleton chapter" class="chapter-img" loading="lazy" />
+            <div class="chapter-overlay"><span class="chapter-tag">Chapter 1</span></div>
+          </div>
+          <div class="chapter-body">
+            <h3 class="chapter-title">The Skeleton & Landmarks</h3>
+            <p class="chapter-desc">The rigid structural framework — ribcage, pelvis, spine, and joints — that dictates how soft tissues stretch, compress, and drape during movement.</p>
+            <div class="chapter-meta">
+              <span class="chapter-badge nlm-sourced">From Your Sources</span>
+              <span class="chapter-time">153-source notebook</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chapter-card" role="button" tabindex="0" onclick="navigateTo('muscles')" onkeydown="if(event.key==='Enter')navigateTo('muscles')" aria-label="Open Muscles chapter">
+          <div class="chapter-img-wrap">
+            <img src="images/muscles.png" alt="Muscles chapter" class="chapter-img" loading="lazy" />
+            <div class="chapter-overlay"><span class="chapter-tag">Chapter 2</span></div>
+          </div>
+          <div class="chapter-body">
+            <h3 class="chapter-title">Musculature & Surface Form</h3>
+            <p class="chapter-desc">How muscles layer over bone to create surface contours — tension lines, compression folds, torsion diagonals, and the squash-and-stretch of living form.</p>
+            <div class="chapter-meta">
+              <span class="chapter-badge nlm-sourced">From Your Sources</span>
+              <span class="chapter-time">158-source notebook</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chapter-card" role="button" tabindex="0" onclick="navigateTo('gesture')" onkeydown="if(event.key==='Enter')navigateTo('gesture')" aria-label="Open Gesture chapter">
+          <div class="chapter-img-wrap">
+            <img src="images/gesture.png" alt="Gesture chapter" class="chapter-img" loading="lazy" />
+            <div class="chapter-overlay"><span class="chapter-tag">Chapter 3</span></div>
+          </div>
+          <div class="chapter-body">
+            <h3 class="chapter-title">Gesture, Rhythm & Motion</h3>
+            <p class="chapter-desc">Action lines, contrapposto, torsional flow, and the "Structure + Gesture = Style" formula drawn directly from your motion study sources.</p>
+            <div class="chapter-meta">
+              <span class="chapter-badge nlm-sourced">From Your Sources</span>
+              <span class="chapter-time">Both notebooks</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chapter-card" role="button" tabindex="0" onclick="navigateTo('surface')" onkeydown="if(event.key==='Enter')navigateTo('surface')" aria-label="Open Surface Form chapter">
+          <div class="chapter-img-wrap">
+            <img src="images/proportions.png" alt="Surface form chapter" class="chapter-img" loading="lazy" />
+            <div class="chapter-overlay"><span class="chapter-tag">Chapter 4</span></div>
+          </div>
+          <div class="chapter-body">
+            <h3 class="chapter-title">Surface Form in Motion</h3>
+            <p class="chapter-desc">How joints, skin folds, bone landmarks, and fat distribution transform the body's surface from static to dynamic — squash, stretch, and drape.</p>
+            <div class="chapter-meta">
+              <span class="chapter-badge nlm-sourced">From Your Sources</span>
+              <span class="chapter-time">Figures in Motion</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chapter-card" role="button" tabindex="0" onclick="navigateTo('forms')" onkeydown="if(event.key==='Enter')navigateTo('forms')" aria-label="Open Basic Forms chapter">
+          <div class="chapter-img-wrap">
+            <img src="images/form_mannequin.png" alt="Basic Forms chapter" class="chapter-img" loading="lazy" />
+            <div class="chapter-overlay"><span class="chapter-tag">Chapter 5</span></div>
+          </div>
+          <div class="chapter-body">
+            <h3 class="chapter-title">Basic Forms & Structure</h3>
+            <p class="chapter-desc">Spheres, eggs, cylinders, boxes and wedges — reduce the human body to fundamental 3D volumes and build all anatomy on top. The mannikin principle.</p>
+            <div class="chapter-meta">
+              <span class="chapter-badge nlm-sourced">From Your Sources</span>
+              <span class="chapter-time">Both notebooks</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SKELETON SECTION ── -->
+    <section class="section" id="section-skeleton" aria-label="Skeleton chapter" hidden>
+      <div class="section-header">
+        <div class="breadcrumb">
+          <button class="btn-breadcrumb-back" onclick="navigateTo('home')" aria-label="Back to home">← Back to Home</button>
+          <span class="breadcrumb-sep">•</span>
+          Chapter 1 · Anatomical Studies in Motion
+        </div>
+        <h1 class="page-title">The Skeleton & Landmarks</h1>
+        <p class="page-sub">The rigid structural framework that dictates how all soft tissues stretch, compress, and drape during movement.</p>
+      </div>
+
+      <div class="content-layout">
+        <div class="content-main">
+          <div class="highlight-box">
+            <h2>Why Bony Landmarks Are the Artist's Foundation</h2>
+            <p>Based on the 3D skeletal and anatomical models in your sources, bony landmarks form the <em>rigid structural framework</em> that dictates how soft tissues — muscles, fat, and skin — stretch, compress, and drape during movement. Unlike muscles which shift and deform, bony landmarks never change shape, making them the most reliable reference points in any pose.</p>
+          </div>
+
+          <div class="visual-grid">
+            <div class="visual-card" id="topic-ribcage-pelvis">
+              <div class="v-img-wrap">
+                <img src="images/sk_ribcage_pelvis.png" alt="Ribcage & Pelvis skeletal structure" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">01 · Core Volumes</div>
+                <h3>Ribcage & Pelvis</h3>
+                <p>The two primary non-deforming masses of the torso. The ribcage is a large egg-shaped volume anchoring the upper body; the pelvis is a rigid basin anchoring the lower body. Together they are the most vital landmarks for mapping proportions and twists.</p>
+                <ul class="key-points">
+                  <li>Rib border visible when bending backward — skin pulls tightly over the hard edge</li>
+                  <li>Iliac crest (top ridge of pelvis) anchors abdominal muscles</li>
+                  <li>Pelvis tilts independently of the ribcage — essential for drawing torsion</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-spine">
+              <div class="v-img-wrap">
+                <img src="images/sk_spine.png" alt="The Spinal Column" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">02 · Central Axis</div>
+                <h3>The Spinal Column</h3>
+                <p>The spine is the sole skeletal connection between the ribcage and pelvis — it serves as the <em>primary action line of the torso</em>. Depending on pose, it forms a deep topographical valley (backbend) or bows outward as a prominent ridge (forward bend).</p>
+                <ul class="key-points">
+                  <li>Deeply compressed in backbends — creates a sharp spinal valley</li>
+                  <li>Bows outward prominently in forward bends</li>
+                  <li>S-curve connects neck to sacrum through 4 natural curves</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-shoulder-girdle">
+              <div class="v-img-wrap">
+                <img src="images/sk_shoulder_girdle.png" alt="Shoulder Girdle (Clavicles, Sternum & Scapulae)" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">03 · Shoulder Girdle</div>
+                <h3>Clavicles, Sternum & Scapulae</h3>
+                <p>Clavicles form a distinct horizontal ridge bridging shoulders to the sternum at chest center — in slender or aging figures they create sharp, jagged topographical lines that strongly catch light. Scapulae glide freely over the rear ribcage, drastically altering back topography with arm movement.</p>
+                <ul class="key-points">
+                  <li>Clavicle-sternum junction is highly visible from any angle</li>
+                  <li>Scapulae shift dramatically when arms raise, pull back, or push forward</li>
+                  <li>Acromion (bony shoulder point) is always a reliable landmark</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-limb-joints">
+              <div class="v-img-wrap">
+                <img src="images/sk_limb_joints.png" alt="Limb Joints (Knees, Ankles & Elbows)" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">04 · Limb Joints</div>
+                <h3>Knees, Ankles & Elbows</h3>
+                <p>Joints have very little fat or muscle padding them, so they appear as pronounced, blocky ridges — especially in older figures. When structural tension transfers through limbs, joints become the sharpest visual anchor points on the body.</p>
+                <ul class="key-points">
+                  <li>Patella — shield-like block at the knee, changes shape when bent</li>
+                  <li>Malleoli — hard rounded protrusions bridging leg to foot on both sides</li>
+                  <li>Olecranon (elbow point) — highly visible when arm is bent or bearing weight</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="nlm-source-note" aria-label="Source attribution">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1" y="1" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 14l3-3 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Sourced from <strong>Anatomical Studies in Motion</strong> · 153 sources in your NotebookLM
+          </div>
+
+          <div class="notebooklm-prompt-box">
+            <div class="prompt-header">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 7h8M8 11h5M7 21l5-4 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Ask Your Notebooks — Skeleton
+            </div>
+            <div class="prompt-list">
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"How does the pelvis tilt independently of the ribcage, and how does this create torsion in figure drawing?"</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"How do scapulae shift the surface topography of the back when arms are raised above the head?"</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"How does the spine's role as the action line of the torso change between a backbend and a forward fold?"</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"Compare how bony landmarks appear differently in a youthful figure vs. an aging figure and why."</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="content-sidebar" aria-label="Chapter image">
+          <div class="sticky-img-wrap">
+            <img src="images/skeleton.png" alt="Full skeleton anatomical illustration" class="side-img" loading="lazy" />
+            <div class="img-caption">Human skeleton — key landmarks for figure drawing from your 3D anatomical sources.</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ── MUSCLES SECTION ── -->
+    <section class="section" id="section-muscles" aria-label="Muscles chapter" hidden>
+      <div class="section-header">
+        <div class="breadcrumb">
+          <button class="btn-breadcrumb-back" onclick="navigateTo('home')" aria-label="Back to home">← Back to Home</button>
+          <span class="breadcrumb-sep">•</span>
+          Chapter 2 · Figures in Motion + Anatomical Studies in Motion
+        </div>
+        <h1 class="page-title">Musculature & Surface Form</h1>
+        <p class="page-sub">How muscles layer over the skeleton to create visible contours, tension lines, and compression folds during movement.</p>
+      </div>
+
+      <div class="content-layout">
+        <div class="content-main">
+          <div class="highlight-box">
+            <h2>The Four Laws of Muscle-Driven Surface Form</h2>
+            <p>Your sources identify four key mechanical principles: <em>Dynamic Tension</em> (elongation creates long sweeping lines), <em>Compression & Bunching</em> (opposite side forces soft tissue outward into folds), <em>Torsional Diagonal Flow</em> (twisting shifts anatomy from vertical to oblique pathways like a wrung towel), and <em>Active vs. Passive Draping</em> (weight-bearing muscles harden; a lifted figure's relaxed tissues drape with gravity). Without this knowledge, you risk "bumps in all the wrong places."</p>
+          </div>
+
+          <div class="muscle-region-tabs" role="tablist" aria-label="Muscle region tabs">
+            <button class="tab-btn active" id="tab-torso" role="tab" aria-selected="true" aria-controls="muscle-torso" onclick="switchTab('torso')">Torso</button>
+            <button class="tab-btn" id="tab-arms" role="tab" aria-selected="false" aria-controls="muscle-arms" onclick="switchTab('arms')">Arms</button>
+            <button class="tab-btn" id="tab-legs" role="tab" aria-selected="false" aria-controls="muscle-legs" onclick="switchTab('legs')">Legs</button>
+            <button class="tab-btn" id="tab-form" role="tab" aria-selected="false" aria-controls="muscle-form" onclick="switchTab('form')">Surface Flow</button>
+          </div>
+
+          <div class="muscle-content" id="muscle-torso" role="tabpanel" aria-labelledby="tab-torso">
+            <div class="visual-grid">
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/mu_torso.png" alt="Chest - Pectoralis Major muscle structure" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">M1 · Chest</div>
+                  <h3>Pectoralis Major</h3>
+                  <p>A fan-shaped muscle attaching to the clavicle, sternum, and ribs, stretching across to the humerus to pull the arm forward. Acts as a complex system of overlapping planes connecting ribcage to pelvis.</p>
+                  <ul class="key-points">
+                    <li>Creates the "chest shelf" from the front view</li>
+                    <li>Lower edge curves naturally into the armpit</li>
+                    <li>Twists on its insertion — watch this in arm raises</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/mu_torso.png" alt="Abdomen & Obliques muscle structure" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">M2 · Abs & Sides</div>
+                  <h3>Rectus Abdominis & Obliques</h3>
+                  <p>The rectus spans from pubic bone to rib cartilages — each tier slants further upward. External obliques wrap the waist, responsible for twisting and bending the trunk, creating a prominent bulge (the "flank") over the iliac crest.</p>
+                  <ul class="key-points">
+                    <li>Serratus anterior interlocks with obliques in a saw-tooth pattern</li>
+                    <li>Serratus visible below armpit when arm is raised</li>
+                    <li>Oblique flank defines the waist transition to hip</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/mu_torso.png" alt="Trapezius muscle structure" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">M3 · Upper Back</div>
+                  <h3>Trapezius</h3>
+                  <p>A large kite- or diamond-shaped muscle on the upper back and neck that moves the shoulder blades. Creates the slope from neck to shoulder and the prominent upper-back surface mass seen in all back-view drawings.</p>
+                  <ul class="key-points">
+                    <li>Upper fibers — shoulder elevation (shrug)</li>
+                    <li>Middle fibers — retract scapulae toward spine</li>
+                    <li>Lower fibers — stabilize and depress scapulae</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/mu_torso.png" alt="Latissimus Dorsi & Erector Spinae muscle structure" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">M4 · Lower Back</div>
+                  <h3>Latissimus Dorsi & Erector Spinae</h3>
+                  <p>The lats form a large V-shape covering the lower back and wrapping under the arm to the front of the humerus, creating the back wall of the armpit. Erector spinae are two thick column-like masses either side of the spine that pull the body upright.</p>
+                  <ul class="key-points">
+                    <li>Lats create the V-taper silhouette from behind</li>
+                    <li>Lats visible as side flare below the armpit</li>
+                    <li>Erectors form the prominent groove on a muscular back</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="muscle-content hidden" id="muscle-arms" role="tabpanel" aria-labelledby="tab-arms">
+            <div class="visual-grid">
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/mu_arms.png" alt="Deltoids shoulder muscle structure" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">M5 · Shoulders</div>
+                  <h3>Deltoids</h3>
+                  <p>A triangular, wedge-shaped muscle capping the shoulder. Overlaps arm, chest, and shoulder blade muscles. Its three heads divide the shoulder into distinct facets that catch light differently depending on arm position.</p>
+                  <ul class="key-points">
+                    <li>Anterior head — arm flexion, visible from front</li>
+                    <li>Middle head — abduction, defines shoulder width</li>
+                    <li>Posterior head — extension, visible from back</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/mu_arms.png" alt="Biceps, Triceps & Brachialis arm muscle structure" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">M6 · Upper Arm</div>
+                  <h3>Biceps, Triceps & Brachialis</h3>
+                  <p>Antagonistic pair: biceps (front, two heads) contract to bend the elbow while triceps (back, three heads) contract to straighten it. Brachialis sits between them on the lower humerus, clearly visible on the outside of the arm — Michelangelo favored this form.</p>
+                  <ul class="key-points">
+                    <li>Biceps long head creates the characteristic "peak" when flexed</li>
+                    <li>Triceps are the largest arm muscle by mass</li>
+                    <li>Brachialis visible between biceps and triceps at the elbow</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/mu_arms.png" alt="Forearm muscle groups" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">M7 · Forearm</div>
+                  <h3>Forearm Muscle Groups</h3>
+                  <p>Three simplified groups: Flexors (palm-side, bend wrist and fingers), Extensors (back side, extend wrist, create rhythmic lines that lead the eye), and Ridge Muscles — notably the Brachioradialis, which creates a highly visible bulge and cross-contour line on the thumb side.</p>
+                  <ul class="key-points">
+                    <li>Extensor group — back of forearm, rhythmic lines for the eye</li>
+                    <li>Brachioradialis — dominant thumb-side ridge muscle</li>
+                    <li>Forearm tapers toward the wrist in a prismatic cross-section</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="muscle-content hidden" id="muscle-legs" role="tabpanel" aria-labelledby="tab-legs">
+            <div class="visual-grid">
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/mu_legs.png" alt="Hips & Glutes muscle structure" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">M8 · Hips & Glutes</div>
+                  <h3>Gluteus Maximus & Medius</h3>
+                  <p>The gluteus maximus is the large power muscle of the buttocks (hip extension). The medius sits higher on the side of the hip — it's the walking stabilizer that prevents the pelvis from dropping with each step. Both are essential for figure artists.</p>
+                  <ul class="key-points">
+                    <li>Gluteal fold is a skin crease, not the muscle edge</li>
+                    <li>Medius creates the hip fullness seen from front/side views</li>
+                    <li>Greater trochanter (bony point) sits just below the medius</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/mu_legs.png" alt="Quadriceps thigh muscle structure" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">M9 · Front Thigh</div>
+                  <h3>Quadriceps</h3>
+                  <p>Four-headed muscle group on the front thigh that extends the knee. The rectus femoris is the central high mass; the vastus medialis creates the distinctive teardrop shape on the inside of the knee — a critical landmark for leg drawings.</p>
+                  <ul class="key-points">
+                    <li>Vastus lateralis — dominant outer bulge of the thigh</li>
+                    <li>Vastus medialis teardrop — key landmark above the kneecap</li>
+                    <li>Rectus femoris — central, directly surface-visible</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/mu_legs.png" alt="Hamstrings & Sartorius leg muscle structure" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">M10 · Back Thigh</div>
+                  <h3>Hamstrings & Sartorius</h3>
+                  <p>Hamstrings form a straight structural line down the back of the leg, defining the popliteal tendons at the knee pit. The Sartorius is the longest muscle in the body, strapping diagonally from outer hip to inner knee, creating a beautiful S-curve rhythm that artists often emphasize.</p>
+                  <ul class="key-points">
+                    <li>Hamstring tendons border the knee pit on both sides</li>
+                    <li>Sartorius creates the "S" rhythm across the thigh</li>
+                    <li>Biceps femoris creates outer thigh separation line</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/mu_legs.png" alt="Calves & Tibialis Anterior lower leg muscle structure" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">M11 · Lower Leg</div>
+                  <h3>Calves & Tibialis Anterior</h3>
+                  <p>The gastrocnemius (two heads, split belly) creates the heart-shaped calf, tapering into the Achilles tendon. The soleus lies beneath it and shows on the sides. Tibialis anterior on the front shin — Michelangelo's favored form for defining the leg's gestural curve.</p>
+                  <ul class="key-points">
+                    <li>Medial gastrocnemius head is lower and larger</li>
+                    <li>Soleus visible below gastrocnemius on both sides</li>
+                    <li>Achilles tendon — strongest tendon, always a key landmark</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="muscle-content hidden" id="muscle-form" role="tabpanel" aria-labelledby="tab-form">
+            <div class="highlight-box" style="margin-bottom:1.5rem">
+              <h2>Tension vs. Compression — The Core Law</h2>
+              <p>Every dynamic movement creates opposing mechanical forces. On the <em>tension side</em>: muscles and skin pull tight across the skeleton, creating long, smooth, sweeping lines. On the <em>compression side</em>: soft tissue has nowhere to go but outward — it bunches and folds into distinct overlapping creases. Both sides must be captured simultaneously to create a living drawing.</p>
+            </div>
+            <div class="visual-grid">
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/muscles.png" alt="Torsion and diagonal flow muscular mechanics in twists" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">SF1 · Torsion</div>
+                  <h3>Diagonal Flow in Twists</h3>
+                  <p>Because the ribcage and pelvis rotate semi-independently, twisting acts like a wrung-out towel — shifting anatomy from vertical to oblique, diagonal pathways. Sharp diagonal tension lines bridge opposing points (left shoulder → right hip), highlighting the specific core muscles engaged.</p>
+                  <ul class="key-points">
+                    <li>Rib border becomes a hard edge in torsional poses</li>
+                    <li>Core muscles visibly separate from skeletal ridges</li>
+                    <li>Oblique lines replace the body's usual vertical flow</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/proportions.png" alt="Active vs Passive muscle draping mechanics" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">SF2 · Weight</div>
+                  <h3>Active vs. Passive Draping</h3>
+                  <p>When a figure bears external load (lifting), the supporting muscles visibly contract, bulge, and harden — spine stiffens, core locks, replacing fluid lines with rigid structural stability. The lifted figure's relaxed tissues drape, sag, and conform to gravity and the supporter's hard anatomy.</p>
+                  <ul class="key-points">
+                    <li>Active figure: rigid, structural, compressed lines</li>
+                    <li>Passive figure: draping, sagging, passive fold conformity</li>
+                    <li>Deep compression folds where two bodies meet</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="visual-card">
+                <div class="v-img-wrap">
+                  <img src="images/skeleton.png" alt="Skeletal map differences across body types" class="v-img" loading="lazy" />
+                </div>
+                <div class="v-body">
+                  <div class="topic-number">SF3 · Age & Type</div>
+                  <h3>Body Type Variation</h3>
+                  <p>Youthful lean forms: high tissue elasticity creates clean structural lines tightly mapped over skeletal protrusions. Heavier figures: subcutaneous fat smooths muscle group transitions into softer gradients. Aging figures: muscle loss makes the skeleton a stark topographical map — harsh lighting catches jagged ridges of ribcage and clavicles.</p>
+                  <ul class="key-points">
+                    <li>Young/lean — sharp edges, high contrast structural lines</li>
+                    <li>Heavier — soft gradients, more profound fold depth</li>
+                    <li>Older — skeletal ridges dominant, sinewy tendons visible</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nlm-source-note">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1" y="1" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 14l3-3 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Sourced from <strong>Figures in Motion</strong> & <strong>Anatomical Studies in Motion</strong> · 311 combined sources
+          </div>
+
+          <div class="notebooklm-prompt-box">
+            <div class="prompt-header">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 7h8M8 11h5M7 21l5-4 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Ask Your Notebooks — Muscles
+            </div>
+            <div class="prompt-list">
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"Show me how the serratus anterior and external obliques interlock and where they're visible on the figure."</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"How does twisting torsion shift the surface anatomy from vertical to diagonal pathways?"</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"Create flashcards for the most important muscles in the torso for a figure artist to memorize."</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"How does the sartorius muscle create the S-curve rhythm of the leg and how do artists use it?"</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="content-sidebar">
+          <div class="sticky-img-wrap">
+            <img src="images/muscles.png" alt="Musculature posterior view" class="side-img" loading="lazy" />
+            <div class="img-caption">Posterior musculature — from your Figures in Motion sources.</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ── GESTURE SECTION ── -->
+    <section class="section" id="section-gesture" aria-label="Gesture chapter" hidden>
+      <div class="section-header">
+        <div class="breadcrumb">
+          <button class="btn-breadcrumb-back" onclick="navigateTo('home')" aria-label="Back to home">← Back to Home</button>
+          <span class="breadcrumb-sep">•</span>
+          Chapter 3 · Both Notebooks
+        </div>
+        <h1 class="page-title">Gesture, Rhythm & Motion</h1>
+        <p class="page-sub">"Structure + Gesture = Style!" — the formula from your sources. How action lines, weight shift, and rhythmic flow create a living figure.</p>
+      </div>
+
+      <div class="content-layout">
+        <div class="content-main">
+          <div class="highlight-box">
+            <h2>The Formula: Structure + Gesture = Style</h2>
+            <p>Your sources define the fundamental equation: <em>Structure</em> (the skeleton's rigid framework) plus <em>Gesture</em> (the dynamic flow of movement) equals your unique artistic style. Without structure, gesture becomes formless. Without gesture, structure becomes stiff. The goal is to capture the <em>continuous interplay</em> between rigid skeletal framework and yielding soft tissues.</p>
+          </div>
+
+          <div class="visual-grid">
+            <div class="visual-card" id="topic-action-line">
+              <div class="v-img-wrap">
+                <img src="images/gesture.png" alt="Action lines and long axis gestures" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">G1 · Foundation</div>
+                <h3>Action Lines</h3>
+                <p>The action line — also called the long axis — is <em>the longest uninterrupted line running through the core or along the edge of the figure</em>. Before any anatomy is drawn, the action line captures the primary thrust, intent, and "sweep" of the pose. It establishes the direction and speed of movement, ensuring the entire body pushes toward a unified action.</p>
+                <ul class="key-points">
+                  <li>Draw this first — before any anatomy or structure</li>
+                  <li>C-curve — bending, reaching, arching poses</li>
+                  <li>S-curve — contrapposto, elegant standing poses</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-weight">
+              <div class="v-img-wrap">
+                <img src="images/proportions.png" alt="Weight shift and contrapposto mechanics" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">G2 · Balance</div>
+                <h3>Weight Shift & Contrapposto</h3>
+                <p>When a figure distributes weight unevenly — resting on one leg — the hip tilts downward toward the relaxed leg, and the shoulders tilt in the opposite direction to compensate. This is contrapposto. The twist curves the spine into a serpentine S-shape. A vertical line from the pit of the neck to the weight-bearing foot confirms the pose's believability.</p>
+                <ul class="key-points">
+                  <li>Hips and shoulders tilt in opposing directions</li>
+                  <li>Center of gravity: neck pit → weight-bearing foot</li>
+                  <li>Spine curves naturally into S-shape under contrapposto</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-rhythm">
+              <div class="v-img-wrap">
+                <img src="images/gesture.png" alt="Rhythm lines and flow curves" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">G3 · Flow</div>
+                <h3>Rhythm Lines</h3>
+                <p>Rhythm is the <em>continuous, undulating flow of lines</em> — often forming S-curves or wave patterns — that travel across and between anatomical forms. Rather than isolated parts, rhythm creates a "symphony of line" that connects contours to one another, guiding the viewer's eye from the stretch of the neck through the pinch of the obliques and down the curve of the leg.</p>
+                <ul class="key-points">
+                  <li>Rhythm ensures transitions between masses feel continuous</li>
+                  <li>S-curves and wave patterns are the visual "connective tissue"</li>
+                  <li>Shoulder-to-hip opposition is rhythm at the macro scale</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-torsion">
+              <div class="v-img-wrap">
+                <img src="images/gesture.png" alt="Torso twists and diagonal oblique flow" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">G4 · Torsion</div>
+                <h3>Diagonal Flow in Twists</h3>
+                <p>Because the ribcage and pelvis rotate semi-independently, twisting acts like a wrung-out towel — fundamentally shifting the flow of anatomy from vertical lines to oblique, diagonal pathways. Sharp diagonal tension lines bridge opposing points (left shoulder → right hip), highlighting specific core muscles engaged in the twist.</p>
+                <ul class="key-points">
+                  <li>Torso twists create diagonal, not vertical, surface lines</li>
+                  <li>Opposing shoulder and hip create the diagonal anchor points</li>
+                  <li>Rib border becomes a distinct hard edge in torsion</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-torso-machine">
+              <div class="v-img-wrap">
+                <img src="images/skeleton.png" alt="Torso machine masses (ribcage, spine, pelvis)" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">G5 · The Engine</div>
+                <h3>The Torso Machine</h3>
+                <p>The torso operates as a <em>dynamic system</em>: two rigid bony masses (ribcage + pelvis) connected by the flexible spine — not as a single solid block. In extreme extensions, the ribcage thrusts upward aggressively and the abdomen stretches taut. In forward flexions, the chest collapses, shoulders roll forward, and structural tension transfers entirely to a broad, outward-bowing back.</p>
+                <ul class="key-points">
+                  <li>Backbend: ribcage dominant, abdomen taut, lower back compressed</li>
+                  <li>Forward bend: chest collapsed, back bows outward broadly</li>
+                  <li>Side bend: ribcage drops to pelvis, opposite side stretches</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-age-gesture">
+              <div class="v-img-wrap">
+                <img src="images/proportions.png" alt="Gesture across different age groups" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">G6 · Adaptation</div>
+                <h3>Gesture Across Age & Body Type</h3>
+                <p>Youthful figures (18–25): taut skin and muscle tone create sharp sweeping structural tension lines over skeletal protrusions. Heavier figures (late 20s–40s): thicker subcutaneous fat smooths transitions, requiring deeper bunching in compression. Older figures (50s+): muscle loss makes the skeleton a stark map — harsh lighting catches jagged ridges without muscle cushion.</p>
+                <ul class="key-points">
+                  <li>Young — sharp, sweeping, tightly mapped structural lines</li>
+                  <li>Heavier — softer gradients, profound fold compression</li>
+                  <li>Older — skeletal ridges dominate, sinewy tendons stark</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="nlm-source-note">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1" y="1" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 14l3-3 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Sourced from both <strong>Anatomical Studies in Motion</strong> &amp; <strong>Figures in Motion</strong>
+          </div>
+
+          <div class="notebooklm-prompt-box">
+            <div class="prompt-header">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 7h8M8 11h5M7 21l5-4 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Ask Your Notebooks — Gesture & Motion
+            </div>
+            <div class="prompt-list">
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"Using examples from the sources, show me how the 'torso machine' behaves differently in a backbend vs. a forward fold."</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"How does contrapposto work mechanically — explain the opposing tilt of shoulders and hips and what the spine does."</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"Generate an Audio Overview of the gesture and motion principles in the Figures in Motion notebook."</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"What does the Casey Bridge yoga pose reveal about torsion, weight shift, and active vs. passive figure mechanics?"</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="content-sidebar">
+          <div class="sticky-img-wrap">
+            <img src="images/gesture.png" alt="Dynamic gesture study" class="side-img" loading="lazy" />
+            <div class="img-caption">Dynamic gesture studies — motion, flow, action lines and weight shift.</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ── SURFACE FORM SECTION ── -->
+    <section class="section" id="section-surface" aria-label="Surface Form chapter" hidden>
+      <div class="section-header">
+        <div class="breadcrumb">
+          <button class="btn-breadcrumb-back" onclick="navigateTo('home')" aria-label="Back to home">← Back to Home</button>
+          <span class="breadcrumb-sep">•</span>
+          Chapter 4 · Figures in Motion
+        </div>
+        <h1 class="page-title">Surface Form in Motion</h1>
+        <p class="page-sub">How the body's surface transforms from static to dynamic — squash, stretch, skin folds, and shifting bone landmarks at every major joint.</p>
+      </div>
+
+      <div class="content-layout">
+        <div class="content-main">
+          <div class="highlight-box">
+            <h2>Squash & Stretch — The Core Principle</h2>
+            <p>Your sources identify <em>squash and stretch</em> as the fundamental law of surface form in motion. Muscles work in antagonistic pairs: the primary working muscle contracts, shortens, expands, and bulges outward — while the opposing muscle must elongate, flatten, and stretch. Track where flesh is compressing, where it's stretching, and where hard bones are pressing against the surface — and you can capture the living energy and physical weight of the body in motion.</p>
+          </div>
+
+          <div class="visual-grid">
+            <div class="visual-card" id="topic-sf-arms">
+              <div class="v-img-wrap">
+                <img src="images/mu_arms.png" alt="Elbow & arm mechanics, bicep compression and tricep stretching" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">SF1 · Arms</div>
+                <h3>Elbow & Arm Mechanics</h3>
+                <p>When bending the elbow, the biceps compress and bulge while the triceps at the back stretch out and straighten. When the arm is locked straight, the elbow bone (ulna) aligns and forms a dimpled depression. When bent, the ulna acts as a lever, juts out sharply, stretches the skin over its point, and surrounding skin sags.</p>
+                <ul class="key-points">
+                  <li>Biceps compress/bulge — triceps elongate/flatten simultaneously</li>
+                  <li>Elbow point (olecranon) juts sharply when arm bends</li>
+                  <li>Bending wrist creates major stair-like skin folds</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-sf-legs">
+              <div class="v-img-wrap">
+                <img src="images/mu_legs.png" alt="Knee & leg mechanics, patella sliding and hamstring rounding" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">SF2 · Legs</div>
+                <h3>Knee & Leg Mechanics</h3>
+                <p>In neutral standing, hamstrings and adductors merge into one soft form. When the knee bends, the hamstrings actively flex — shortening and becoming rounder. The patella slides down into a cartilaginous groove when the knee is deeply bent, exposing the flat bottom plane and knobby femoral condyles beneath the skin.</p>
+                <ul class="key-points">
+                  <li>Bent knee: patella slides down, femoral condyles become visible</li>
+                  <li>Fat around kneecap can shift, creating a recessed dimple</li>
+                  <li>Hamstrings visibly shorten and round when knee is flexed</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-sf-torso">
+              <div class="v-img-wrap">
+                <img src="images/mu_torso.png" alt="Waist & torso folds, compression and stretch" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">SF3 · Torso</div>
+                <h3>Waist & Torso Folds</h3>
+                <p>Forward bend: abdominal muscles shorten and bunch like an accordion, creating deep transverse folds around the navel. Backward extension: abdomen stretches tight, skin bunches along the back and sides. Lateral bend: compressed side develops a prominent waistline fold; opposite side stretches taut.</p>
+                <ul class="key-points">
+                  <li>Forward fold — accordion-like transverse abdominal folds</li>
+                  <li>Backbend — back skin bunches, abdomen pulls taut</li>
+                  <li>Side bend — waistline fold on compressed side</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-sf-hips">
+              <div class="v-img-wrap">
+                <img src="images/proportions.png" alt="Gluteal & hip mechanics under load and weight shifts" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">SF4 · Hips</div>
+                <h3>Gluteal & Hip Mechanics</h3>
+                <p>When a leg is weight-bearing, the buttock flattens out. When relaxed, muscle and fat drop — making the gluteal fold lower and rounder. Seated: fleshy masses compress and spread outward like an elastic cushion. Leg abducted sideways: femur presses deeply between gluteal muscles, creating a noticeable concave hollow at the hip.</p>
+                <ul class="key-points">
+                  <li>Weight-bearing leg: buttock flattens and firms</li>
+                  <li>Relaxed leg: gluteal fold drops lower and becomes rounder</li>
+                  <li>Abduction: femur creates a concave hollow at the hip</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-sf-shoulders">
+              <div class="v-img-wrap">
+                <img src="images/muscles.png" alt="Scapula & armpit motion, posterior view" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">SF5 · Shoulders</div>
+                <h3>Scapula & Armpit Motion</h3>
+                <p>Scapulae slide dynamically across the back of the ribcage. When the arm raises above the head, the scapula rotates, pushing its inner edge outward. At the front, raising the arm stretches the pectoralis upward, dramatically opening and changing the shape of the armpit — a frequently neglected transformation in figure drawing.</p>
+                <ul class="key-points">
+                  <li>Scapula inner edge pushes outward when arm is raised overhead</li>
+                  <li>Armpit shape transforms dramatically with arm elevation</li>
+                  <li>Pec major stretches upward — its lower edge lifts with it</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="visual-card" id="topic-sf-wrist">
+              <div class="v-img-wrap">
+                <img src="images/form_hands.png" alt="Wrist & hand details, blocky wedge construction" class="v-img" loading="lazy" />
+              </div>
+              <div class="v-body">
+                <div class="topic-number">SF6 · Wrist</div>
+                <h3>Wrist & Hand Details</h3>
+                <p>Bending the wrist creates major, stair-like skin folds to manage compression. When the thumb is hyperextended outward, the two tendons at its base pull tight against the skin, forming a distinct triangular depression — the "anatomical snuff box" — a reliable reference point for hand artists.</p>
+                <ul class="key-points">
+                  <li>Wrist bend — stair-like stacked skin folds on compressed side</li>
+                  <li>Thumb extension — anatomical snuff box depression visible</li>
+                  <li>Tendon pathways become visible cords on the back of the hand</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="nlm-source-note">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1" y="1" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 14l3-3 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Sourced from <strong>Figures in Motion</strong> · 158 sources in your NotebookLM
+          </div>
+
+          <div class="notebooklm-prompt-box">
+            <div class="prompt-header">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 7h8M8 11h5M7 21l5-4 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Ask Your Notebooks — Surface Form
+            </div>
+            <div class="prompt-list">
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"Walk me through exactly how the skin folds and muscle mechanics change at the knee when the leg goes from straight to deeply bent."</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"How does the shape of the armpit and pectoralis change when the arm moves from resting at the side to raised above the head?"</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+              <div class="prompt-item" tabindex="0" role="button">
+                <span class="prompt-icon">💬</span>
+                <span>"Generate a visual report on squash-and-stretch mechanics at every major joint from the Figures in Motion sources."</span>
+                <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="content-sidebar">
+          <div class="sticky-img-wrap">
+            <img src="images/proportions.png" alt="Body proportions and surface form diagram" class="side-img" loading="lazy" />
+            <div class="img-caption">Surface form study — dynamic proportions and form transformation from your sources.</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ── BASIC FORMS SECTION ── -->
+    <section class="section" id="section-forms" aria-label="Basic Forms and Structure" hidden>
+      <div class="section-header">
+        <div class="breadcrumb">
+          <button class="btn-breadcrumb-back" onclick="navigateTo('home')" aria-label="Back to home">← Back to Home</button>
+          <span class="breadcrumb-sep">•</span>
+          Chapter 5 · Both Notebooks
+        </div>
+        <h1 class="page-title">Basic Forms & Structure</h1>
+        <p class="page-sub">Before anatomy, there is geometry. Reduce the human body to fundamental 3D volumes — spheres, eggs, cylinders, boxes and wedges — then build detail on top.</p>
+      </div>
+
+      <div class="content-main" style="max-width:1100px">
+        <div class="highlight-box">
+          <h2>The Mannikin Principle</h2>
+          <p>Your sources confirm that artists construct the human body by breaking down complex anatomy into a framework of fundamental 3D shapes. The goal is to manipulate the figure in three-dimensional space, accurately project foreshortened limbs, and establish a convincing sense of weight and bulk — <em>before</em> detailing the surface anatomy. Think of it as building a sculpture armature before adding clay.</p>
+        </div>
+
+        <!-- 3-Mass Overview -->
+        <div class="forms-hero-card">
+          <div class="forms-hero-img">
+            <img src="images/form_mannequin.png" alt="3-mass mannequin method showing sphere, egg and wedge in multiple poses" loading="lazy" />
+          </div>
+          <div class="forms-hero-text">
+            <div class="topic-number">Foundation</div>
+            <h3>The Three Primary Masses</h3>
+            <p>The entire human figure is built on three main rigid masses connected by a flexible spine. These masses can twist and tilt against each other, creating the full range of human gesture. Draw these three masses first — in correct relationship and perspective — before adding any anatomy.</p>
+            <div class="three-mass-list">
+              <div class="mass-item">
+                <span class="mass-shape">◯</span>
+                <div>
+                  <strong>Head</strong>
+                  <span>Sphere or cube — with flattened sides for the temples and jawline</span>
+                </div>
+              </div>
+              <div class="mass-item">
+                <span class="mass-shape">⬭</span>
+                <div>
+                  <strong>Ribcage</strong>
+                  <span>Egg / barrel — largest single mass of the body, oval at bottom, squarish at shoulders</span>
+                </div>
+              </div>
+              <div class="mass-item">
+                <span class="mass-shape">⬜</span>
+                <div>
+                  <strong>Pelvis</strong>
+                  <span>Box / wedge — counterbalances the ribcage, connected by elastic abdominal wall</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Form Cards Grid -->
+        <h2 class="section-title" style="margin-top:2.5rem">Form-by-Form Breakdown</h2>
+        <div class="visual-form-grid">
+
+          <div class="visual-form-card">
+            <div class="vfc-img-wrap">
+              <img src="images/form_head.png" alt="Head constructed as sphere with facial plane" loading="lazy" class="vfc-img" />
+            </div>
+            <div class="vfc-body">
+              <div class="topic-number">F1 · Head</div>
+              <h3>Sphere + Facial Plane</h3>
+              <p>The skull is constructed first as a perfect sphere (the cranium) with a flat facial plane attached to its front face. This makes perspective and tilt calculations simple and definite.</p>
+              <ul class="key-points">
+                <li>Cranium = sphere; face = angled flat plane</li>
+                <li>Flattened sides represent the temples</li>
+                <li>Ear aligns at the sphere's equator line</li>
+                <li>Jawline is a wedge below the sphere</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-form-card">
+            <div class="vfc-img-wrap">
+              <img src="images/form_ribcage.png" alt="Ribcage as egg shape and pelvis as wedge form" loading="lazy" class="vfc-img" />
+            </div>
+            <div class="vfc-body">
+              <div class="topic-number">F2 · Torso Core</div>
+              <h3>Egg & Bowl</h3>
+              <p>The ribcage is a large egg-shaped or barrel volume with an inverted V-shaped costal arch at the bottom. The pelvis is a rigid boxy basin. These two non-deforming volumes anchor all figure construction.</p>
+              <ul class="key-points">
+                <li>Ribcage: egg/barrel, wider at the bottom third</li>
+                <li>Pelvis: box/wedge, tilts forward slightly (anterior tilt)</li>
+                <li>Spine connects them — the only bridge between the masses</li>
+                <li>Visualize them as two counterbalancing boxes</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-form-card">
+            <div class="vfc-img-wrap">
+              <img src="images/form_cylinders.png" alt="Arms and legs as tapering cylinders with cross-contour lines" loading="lazy" class="vfc-img" />
+            </div>
+            <div class="vfc-body">
+              <div class="topic-number">F3 · Limbs</div>
+              <h3>Tapering Cylinders</h3>
+              <p>Arms and legs are depicted as elongated, tapering cylinders or tubular forms to capture their length, mass, and direction. Cross-contour wrap lines communicate 3D form and are essential for correct foreshortening.</p>
+              <ul class="key-points">
+                <li>Upper arm & thigh: round cylinders</li>
+                <li>Forearm & calf: triangular wedge cross-section</li>
+                <li>Cross-contour lines show the cylinder turning in space</li>
+                <li>"Wedging and passing" conveys interlocking depth</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-form-card">
+            <div class="vfc-img-wrap">
+              <img src="images/form_planes.png" alt="Torso simplified into front, side and top planes" loading="lazy" class="vfc-img" />
+            </div>
+            <div class="vfc-body">
+              <div class="topic-number">F4 · Torso Planes</div>
+              <h3>The Box & Planes</h3>
+              <p>The torso is broken into clear planes — front, side, and top — that catch light differently. Understanding these planes is what separates flat figure drawings from ones that feel three-dimensional and solid.</p>
+              <ul class="key-points">
+                <li>Front plane: pecs, abs, sternum — faces the viewer</li>
+                <li>Side planes: lats, obliques — turn away from viewer</li>
+                <li>Top plane: clavicles, shoulders — faces upward</li>
+                <li>Each plane has a distinct light value under direct light</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-form-card">
+            <div class="vfc-img-wrap">
+              <img src="images/form_hands.png" alt="Hands as box and foot as wedge construction diagram" loading="lazy" class="vfc-img" />
+            </div>
+            <div class="vfc-body">
+              <div class="topic-number">F5 · Hands & Feet</div>
+              <h3>Blocks & Wedges</h3>
+              <p>Because hands and feet are highly complex, they are blocked out as simple solid forms first. The hand is a 3D box (palm) with smaller cylindrical or boxy segments (fingers). The foot is a primary wedge with toe blocks at the front.</p>
+              <ul class="key-points">
+                <li>Palm = flat 3D box; thumb = separate wedge</li>
+                <li>Fingers = interlocking boxy segments in 3 rows</li>
+                <li>Foot = elongated wedge (arch) + heel block</li>
+                <li>Foot divides into 3 equal boxes: toes, arch, heel</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="visual-form-card">
+            <div class="vfc-img-wrap">
+              <img src="images/form_mannequin.png" alt="3-mass mannequin in multiple action poses" loading="lazy" class="vfc-img" />
+            </div>
+            <div class="vfc-body">
+              <div class="topic-number">F6 · Joints</div>
+              <h3>Spheres & Hinge Blocks</h3>
+              <p>Areas of structural articulation — shoulders, elbows, knees — are built using simple spheres or block-like hinges that define exactly where cylindrical limbs connect and pivot. Getting joints right is what makes limbs feel attached rather than floating.</p>
+              <ul class="key-points">
+                <li>Shoulder: sphere sinking into the upper arm (deltoid wedge)</li>
+                <li>Elbow & knee: square/block hinge forms</li>
+                <li>Wrist: transitional block between forearm and hand box</li>
+                <li>Kneecap: distinct flattened geometric block</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="nlm-source-note" style="margin-top:2rem">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1" y="1" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 14l3-3 3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Sourced from both <strong>Anatomical Studies in Motion</strong> &amp; <strong>Figures in Motion</strong> · 311 combined sources
+        </div>
+
+        <div class="notebooklm-prompt-box">
+          <div class="prompt-header">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 7h8M8 11h5M7 21l5-4 5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Ask Your Notebooks — Basic Forms
+          </div>
+          <div class="prompt-list">
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"Walk me through how to construct a full figure using only the 3-mass mannequin method — step by step from the three masses to limbs to extremities."</span>
+              <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+            </div>
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"How do I draw a foreshortened arm pointing directly at the viewer using cylinder construction and cross-contour lines?"</span>
+              <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+            </div>
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"What is the 'wedging and passing' concept for limbs and how does it create a sense of overlapping 3D depth?"</span>
+              <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+            </div>
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"Create a beginner's exercise: draw the 3 masses in 5 different gestures using only boxes and cylinders, then describe what anatomy to add next."</span>
+              <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── NOTEBOOKLM SECTION ── -->
+    <section class="section" id="section-notebooklm" aria-label="NotebookLM guide" hidden>
+      <div class="section-header">
+        <div class="breadcrumb">
+          <button class="btn-breadcrumb-back" onclick="navigateTo('home')" aria-label="Back to home">← Back to Home</button>
+          <span class="breadcrumb-sep">•</span>
+          Live Connection
+        </div>
+        <h1 class="page-title">Query Your Notebooks</h1>
+        <p class="page-sub">You are connected to <strong>Anatomical Studies in Motion</strong> (153 sources) and <strong>Figures in Motion</strong> (158 sources). Use these prompts directly in NotebookLM for deeper dives.</p>
+      </div>
+
+      <div class="content-main" style="max-width:900px">
+        <div class="notebooks-status">
+          <div class="notebook-card-status">
+            <div class="nb-status-dot"></div>
+            <div class="nb-status-info">
+              <div class="nb-status-title">Anatomical Studies in Motion</div>
+              <div class="nb-status-meta">153 sources · Live</div>
+            </div>
+          </div>
+          <div class="notebook-card-status">
+            <div class="nb-status-dot"></div>
+            <div class="nb-status-info">
+              <div class="nb-status-title">Figures in Motion</div>
+              <div class="nb-status-meta">158 sources · Live</div>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="section-title" style="margin-top:2rem">Power Prompts for Your Notebooks</h2>
+
+        <div class="notebooklm-prompt-box">
+          <div class="prompt-header">🦴 Skeleton & Landmarks</div>
+          <div class="prompt-list">
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"Create a study guide listing every major bony landmark visible through the skin, organized by body region."</span>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"How does skeletal structure change with age and why does this matter for artists drawing older subjects?"</span>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="notebooklm-prompt-box">
+          <div class="prompt-header">💪 Muscles & Form</div>
+          <div class="prompt-list">
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"Create a set of flashcards for the top 20 muscles most important for figure artists, with artist-relevant descriptions."</span>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"How does fat distribution differ between male and female figures and how does this affect the surface forms artists draw?"</span>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="notebooklm-prompt-box">
+          <div class="prompt-header">🏃 Gesture & Motion</div>
+          <div class="prompt-list">
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"Generate an Audio Overview of gesture and motion principles — format it as a podcast for listening while I warm up sketching."</span>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"Design a 30-day anatomy study plan based on the content in these notebooks, starting from gesture and building to detailed musculature."</span>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"Based on the Casey Bridge yoga pose study, what are the most instructive examples of active vs. passive figure mechanics?"</span>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="notebooklm-prompt-box">
+          <div class="prompt-header">📊 Generate Studio Content</div>
+          <div class="prompt-list">
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"Generate a full written report on how dynamic movement transforms surface anatomy — include all major body regions."</span>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"Create a slide deck summarizing the key principles of gesture drawing from both notebooks — one slide per principle."</span>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-item" tabindex="0" role="button">
+              <span class="prompt-icon">💬</span>
+              <span>"Quiz me on anatomy landmarks — ask 10 questions based on the sources and tell me whether my answers are correct."</span>
+              <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-box" style="margin-top:2rem">
+          <h2>🔄 Refresh Content Anytime</h2>
+          <p>This app is connected to your NotebookLM via MCP. Open a terminal and run <code style="background:var(--bg-base);padding:2px 6px;border-radius:4px;font-size:0.85em">notebooklm-mcp-server auth</code> to refresh your session if it expires. Your session is saved at <code style="background:var(--bg-base);padding:2px 6px;border-radius:4px;font-size:0.85em">~/.notebooklm-mcp/auth.json</code>.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close image lightbox">&times;</button>
+    <div class="lightbox-content">
+      <div class="lightbox-img-wrap">
+        <img id="lightbox-img" class="lightbox-img" src="" alt="Expanded anatomy detail view" />
+      </div>
+      <div class="lightbox-caption">
+        <h3 id="lightbox-title"></h3>
+        <p id="lightbox-desc"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">Prompt copied!</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
