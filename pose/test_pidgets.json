@@ -1,0 +1,1 @@
+{"status":"failure","code":40,"message":"Board not found.","endpoint_name":"v3_pidget_get_board_pins","data":null,"error":{"message":"None"}}

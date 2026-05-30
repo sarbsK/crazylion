@@ -1,0 +1,19 @@
+{
+  "name": "PoseStudio 3D | Interactive Anatomy & Light",
+  "short_name": "PoseStudio",
+  "description": "Premium 3D mannequin posing studio and lighting reference tool for artists.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#06b6d4",
+  "orientation": "any",
+  "categories": ["utilities", "education", "graphics"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

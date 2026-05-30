@@ -1,0 +1,1 @@
+{"status":"success","code":0,"message":"ok","endpoint_name":"v3_pidget_get_user_pins","data":{"user":{"profile_url":"https://www.pinterest.com/proko/","id":"547820879581544573","image_small_url":"https://s.pinimg.com/images/user/default_60.png","about":"","follower_count":1,"pin_count":0,"full_name":"Ana Sanchez"},"pins":[]}}

@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="bg-grad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </radialGradient>
+    
+    <!-- Neon Cyan Gradient -->
+    <linearGradient id="cyan-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+    
+    <!-- Neon Amber/Orange Gradient -->
+    <linearGradient id="amber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Dark Premium Rounded Background -->
+  <rect width="512" height="512" rx="128" fill="url(#bg-grad)"/>
+  
+  <!-- Outer glowing rings indicating 3D rotation gizmos -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="url(#cyan-grad)" stroke-width="4" stroke-dasharray="10 15" opacity="0.4"/>
+  <circle cx="256" cy="256" r="150" fill="none" stroke="url(#amber-grad)" stroke-width="6" stroke-dasharray="250 150" opacity="0.7" filter="url(#glow)"/>
+  
+  <!-- Stylized Mannequin / Joint Art Figure -->
+  <!-- Head -->
+  <circle cx="256" cy="140" r="32" fill="url(#cyan-grad)" filter="url(#glow)"/>
+  
+  <!-- Neck/Spine -->
+  <path d="M256,172 L256,220" stroke="url(#cyan-grad)" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Shoulder Joint & Upper Torso -->
+  <path d="M190,220 L322,220" stroke="url(#cyan-grad)" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="190" cy="220" r="12" fill="url(#amber-grad)"/>
+  <circle cx="322" cy="220" r="12" fill="url(#amber-grad)"/>
+  
+  <!-- Lower Torso / Spine -->
+  <path d="M256,220 L256,310" stroke="url(#cyan-grad)" stroke-width="14" stroke-linecap="round"/>
+  
+  <!-- Pelvis joint -->
+  <path d="M205,310 L307,310" stroke="url(#cyan-grad)" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="205" cy="310" r="14" fill="#06b6d4"/>
+  <circle cx="307" cy="310" r="14" fill="#06b6d4"/>
+
+  <!-- Left Arm (Dynamic pose) -->
+  <path d="M190,220 L150,270 L170,330" fill="none" stroke="url(#cyan-grad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="150" cy="270" r="8" fill="#06b6d4"/>
+  <circle cx="170" cy="330" r="6" fill="#f59e0b"/>
+
+  <!-- Right Arm (Raised in active gesture) -->
+  <path d="M322,220 L370,180 L350,120" fill="none" stroke="url(#cyan-grad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+  <circle cx="370" cy="180" r="8" fill="#f59e0b"/>
+  <circle cx="350" cy="120" r="6" fill="#06b6d4"/>
+
+  <!-- Left Leg -->
+  <path d="M205,310 L180,390 L210,460" fill="none" stroke="url(#cyan-grad)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="180" cy="390" r="10" fill="#f59e0b"/>
+  <circle cx="210" cy="460" r="8" fill="#06b6d4"/>
+
+  <!-- Right Leg -->
+  <path d="M307,310 L340,380 L310,450" fill="none" stroke="url(#cyan-grad)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="340" cy="380" r="10" fill="#06b6d4"/>
+  <circle cx="310" cy="450" r="8" fill="#f59e0b"/>
+  
+  <!-- Subtle lighting accents to indicate perspective grid -->
+  <path d="M80,440 L432,440" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+  <path d="M120,410 L392,410" stroke="rgba(255,255,255,0.05)" stroke-width="2"/>
+</svg>
