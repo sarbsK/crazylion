@@ -1,8 +1,8 @@
-const CACHE_NAME = 'anatomica-cache-v2';
+const CACHE_NAME = 'anatomica-cache-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './style.css?v=1.3',
+  './style.css?v=1.4',
   './app.js',
   './manifest.json',
   './images/form_cylinders.png',
