@@ -348,7 +348,7 @@ a {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: 8px;
-  padding: 28px;
+  padding: 20px 22px;
   position: relative;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   transition: all var(--transition-normal);
@@ -375,30 +375,35 @@ a {
 
 .pose-spotlight-card h3 {
   font-family: var(--font-headers);
-  font-size: 1.6rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   color: var(--text-primary);
 }
 
 .pose-spotlight-card p {
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  margin-bottom: 24px;
-  line-height: 1.6;
+  font-size: 0.82rem;
+  margin-bottom: 14px;
+  line-height: 1.55;
 }
 
 .pose-preview-box {
   background: rgba(22, 22, 28, 0.5);
   border: 1px solid var(--border-light);
   border-radius: 4px;
-  padding: 16px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-style: italic;
   color: var(--text-secondary);
+}
+
+.pose-spotlight-card .btn {
+  padding: 10px 20px;
+  font-size: 0.88rem;
 }
 
 .pose-preview-box i {
