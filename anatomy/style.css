@@ -1451,4 +1451,15 @@ body.lightbox-open {
   .notebooks-status { grid-template-columns: 1fr; }
 }
 
+/* ─── HIDE NOTEBOOKLM ELEMENTS ─── */
+.nlm-badge,
+.nlm-source-note,
+.notebooklm-prompt-box,
+#nav-notebooklm,
+#section-notebooklm,
+.sidebar-footer .source-info,
+.sidebar-logo .logo-subtitle {
+  display: none !important;
+}
+
 
