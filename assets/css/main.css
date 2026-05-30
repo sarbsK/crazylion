@@ -481,9 +481,14 @@ a {
 }
 
 .feature-item-card:hover {
-  background: #fcf8ee;
+  background: var(--bg-card-hover);
+  border-color: var(--accent-cyan);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.feature-item-card.cyan-card:hover {
   border-color: var(--accent-purple);
-  transform: translateY(-2px);
 }
 
 .feature-icon-wrapper {
