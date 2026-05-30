@@ -1501,4 +1501,14 @@ body.lightbox-open {
   }
 }
 
+/* ─── SIDEBAR BACK BUTTON HOVER ─── */
+.sidebar-back-btn:hover {
+  background: var(--accent-glow) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--accent) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(201, 168, 76, 0.15);
+}
+
+
 
