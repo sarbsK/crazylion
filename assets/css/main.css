@@ -1,40 +1,41 @@
 /* 
    Crazylion Studio Custom Design System
-   Leonardo da Vinci - Renaissance Sketchbook Theme
+   Anatomica Dark Gold & Sanguine Theme
    Created by Antigravity Studio AI for Sarbeswar
 */
 
 /* -------------------------------------------------------------
-   1. RENAISSANCE FONT IMPORTS & ROOT DESIGN VARIABLES
+   1. ANATOMICA FONT IMPORTS & ROOT DESIGN VARIABLES
    ------------------------------------------------------------- */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
 
 :root {
-  /* Sepia Parchment Paper Base Colors */
-  --bg-primary: #faf6eb;        /* Classic warm cream sketch paper */
-  --bg-secondary: #f3edd8;      /* Slightly aged, weathered parchment paper */
-  --bg-nav: rgba(250, 246, 235, 0.85); /* Translucent parchment header */
-  --bg-card: rgba(78, 54, 41, 0.03);    /* Warm diluted sepia overlay */
-  --bg-card-hover: rgba(78, 54, 41, 0.07);
+  /* Dark Charcoal Base Colors */
+  --bg-primary: #0e0e11;        /* Dark slate base */
+  --bg-secondary: #16161c;      /* Dark surface */
+  --bg-nav: rgba(14, 14, 17, 0.85); /* Translucent dark header */
+  --bg-card: #1a1a24;           /* Sleek dark card background */
+  --bg-card-hover: #22222f;
   
-  /* Accent Colors (Sanguine Chalk, Antique Gold, Earth Umber) */
-  --accent-cyan: #9c3030;       /* Classical Sanguine Red Chalk */
-  --accent-cyan-glow: rgba(156, 48, 48, 0.12); /* Soft Sanguine shadow glow */
-  --accent-purple: #c29955;     /* Antique Gold drafting/wash accent */
-  --accent-purple-glow: rgba(194, 153, 85, 0.12);
-  --accent-emerald: #5c4533;    /* Diluted Bistre / Raw Umber ink */
-  --accent-emerald-glow: rgba(92, 69, 51, 0.12);
+  /* Accent Colors (Anatomica Gold, Copper Sanguine, Amber Gold) */
+  --accent-cyan: #c9a84c;       /* Anatomica Gold */
+  --accent-cyan-glow: rgba(201, 168, 76, 0.18);
+  --accent-purple: #e07b5a;     /* Copper Sanguine */
+  --accent-purple-glow: rgba(224, 123, 90, 0.18);
+  --accent-emerald: #a07830;    /* Amber Gold */
+  --accent-emerald-glow: rgba(160, 120, 48, 0.18);
   
-  /* Text and Lines (Deep Sepia Ink & Earth Tones) */
-  --text-primary: #291d12;      /* Deep concentrated sepia ink */
-  --text-secondary: #5c4533;    /* Mid-tone warm umber ink */
-  --text-muted: #8c735d;        /* Faded brown chalk wash */
-  --border-light: rgba(92, 69, 51, 0.18); /* Fine drafting line borders */
-  --border-glow: rgba(156, 48, 48, 0.2);
+  /* Text and Lines */
+  --text-primary: #f0ece2;      /* Warm primary white */
+  --text-secondary: #9e9880;    /* Warm tan */
+  --text-muted: #5c5848;        /* Muted gold-grey */
+  --border-light: rgba(201, 168, 76, 0.12); /* Gold border */
+  --border-glow: rgba(201, 168, 76, 0.25);
   
-  /* Elegant Renaissance Serif Typography */
-  --font-headers: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'EB Garamond', Georgia, serif;
+  /* Premium Typography */
+  --font-headers: 'Cinzel', Georgia, serif;
+  --font-body: 'Inter', sans-serif;
+  --font-prose: 'Lora', serif;
   
   --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -62,9 +63,9 @@ body {
   overflow-x: hidden;
   line-height: 1.65;
   background-image: 
-    /* Soft, organic paper texture simulations */
-    radial-gradient(circle at 10% 10%, rgba(78, 54, 41, 0.02) 0%, transparent 80%),
-    radial-gradient(circle at 90% 90%, rgba(156, 48, 48, 0.02) 0%, transparent 80%);
+    /* Soft dark mode organic glows */
+    radial-gradient(circle at 10% 10%, rgba(201, 168, 76, 0.03) 0%, transparent 80%),
+    radial-gradient(circle at 90% 90%, rgba(224, 123, 90, 0.03) 0%, transparent 80%);
 }
 
 img {
@@ -209,8 +210,8 @@ a {
     linear-gradient(90deg, transparent 71.95%, var(--border-light) 72%, transparent 72.05%),
     linear-gradient(0deg, transparent 49.95%, var(--border-light) 50%, transparent 50.05%),
     /* Micro-fine coordinate sketch grids */
-    linear-gradient(rgba(78, 54, 41, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(78, 54, 41, 0.015) 1px, transparent 1px);
+    linear-gradient(rgba(201, 168, 76, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 168, 76, 0.02) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 80px 80px, 80px 80px;
   pointer-events: none;
   z-index: 1;
@@ -341,12 +342,12 @@ a {
 
 /* Spotlight Card redesigned as a stacked drawing paper sheet */
 .pose-spotlight-card {
-  background: #fdfaf2;
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 28px;
   position: relative;
-  box-shadow: 0 8px 24px rgba(78, 54, 41, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   transition: all var(--transition-normal);
   overflow: hidden;
 }
@@ -459,12 +460,12 @@ a {
 }
 
 .feature-item-card {
-  background: #fdfaf2;
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 28px;
   position: relative;
-  box-shadow: 0 4px 15px rgba(78, 54, 41, 0.03);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   transition: all var(--transition-fast);
 }
 
@@ -528,14 +529,14 @@ a {
 }
 
 .skill-card {
-  background: #fdfaf2;
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 36px 28px;
   text-align: center;
   position: relative;
   transition: all var(--transition-normal);
-  box-shadow: 0 4px 15px rgba(78, 54, 41, 0.03);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .skill-card::after {
@@ -656,14 +657,14 @@ a {
 
 .gallery-card {
   position: relative;
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--border-light);
   aspect-ratio: 4/3;
   cursor: pointer;
   transition: all var(--transition-normal);
-  background: #fdfaf2;
-  box-shadow: 0 4px 15px rgba(78, 54, 41, 0.05);
+  background: var(--bg-card);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* Dark wooden board inner shading overlay */
@@ -790,8 +791,9 @@ a {
 .lightbox-content-box video {
   max-width: 100%;
   max-height: 70vh;
-  border-radius: 4px;
-  border: 8px solid #fdfaf2; /* Elegant sketch mount framing */
+  border-radius: 8px;
+  border: 6px solid var(--bg-card);
+  outline: 1px solid var(--border-light);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
 }
 
@@ -799,14 +801,15 @@ a {
   width: 100%;
   height: 56.25vw; /* 16:9 ratio */
   max-height: 70vh;
-  border-radius: 4px;
-  border: 8px solid #fdfaf2;
+  border-radius: 8px;
+  border: 6px solid var(--bg-card);
+  outline: 1px solid var(--border-light);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
 }
 
 .lightbox-description {
   font-family: var(--font-headers);
-  color: #fdfaf2;
+  color: var(--text-primary);
   font-size: 1.15rem;
   margin-top: 24px;
   text-align: center;
@@ -856,11 +859,11 @@ a {
 }
 
 .contact-card {
-  background: #fdfaf2;
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 44px;
-  box-shadow: 0 10px 30px rgba(78, 54, 41, 0.06);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   position: relative;
 }
 
@@ -903,8 +906,8 @@ a {
 .input-field-wrapper textarea:focus {
   outline: none;
   border-color: var(--accent-cyan);
-  box-shadow: 0 0 12px rgba(156, 48, 48, 0.15);
-  background: #fdfaf2;
+  box-shadow: 0 0 12px var(--accent-cyan-glow);
+  background: var(--bg-card);
 }
 
 .input-field-wrapper textarea {
@@ -932,7 +935,7 @@ a {
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: rgba(250, 246, 235, 0.6);
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   display: flex;
   align-items: center;
@@ -990,8 +993,8 @@ a {
       radial-gradient(circle at 50% 75%, transparent 280px, var(--border-light) 280px, var(--border-light) 281px, transparent 282px),
       linear-gradient(90deg, transparent 49.95%, var(--border-light) 50%, transparent 50.05%),
       linear-gradient(0deg, transparent 74.95%, var(--border-light) 75%, transparent 75.05%),
-      linear-gradient(rgba(78, 54, 41, 0.015) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(78, 54, 41, 0.015) 1px, transparent 1px);
+      linear-gradient(rgba(201, 168, 76, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201, 168, 76, 0.02) 1px, transparent 1px);
   }
 }
 
