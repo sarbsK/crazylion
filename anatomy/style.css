@@ -1462,4 +1462,43 @@ body.lightbox-open {
   display: none !important;
 }
 
+/* ─── FLOATING DESKTOP HOME BUTTON ─── */
+.studio-home-floating-btn {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.6rem 1.2rem;
+  font-family: var(--font-display), serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  background: rgba(22, 22, 28, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-strong);
+  border-radius: 99px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all var(--transition);
+  pointer-events: auto;
+}
+.studio-home-floating-btn:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .studio-home-floating-btn {
+    display: none !important;
+  }
+}
+
 

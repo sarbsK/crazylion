@@ -297,7 +297,7 @@ a {
 
 .btn-primary {
   background: var(--accent-cyan);
-  color: #fff;
+  color: #0e0e11;
   border: 1px solid #7c2222;
   box-shadow: 0 4px 15px rgba(156, 48, 48, 0.15);
 }
@@ -305,21 +305,24 @@ a {
 .btn-primary:hover {
   transform: translateY(-2px);
   background: #822222;
+  color: #fff;
   box-shadow: 0 6px 20px rgba(156, 48, 48, 0.25);
 }
 
 .btn-secondary {
-  background: rgba(250, 246, 235, 0.6);
-  color: var(--text-primary);
+  background: rgba(22, 22, 28, 0.65);
+  color: var(--accent-cyan);
   border: 1px solid var(--border-light);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 .btn-secondary:hover {
   background: var(--bg-secondary);
+  color: var(--text-primary);
   border-color: var(--accent-cyan);
   transform: translateY(-2px);
 }
+
 
 .btn-amber {
   background: #d97706;
@@ -386,7 +389,7 @@ a {
 }
 
 .pose-preview-box {
-  background: rgba(243, 237, 214, 0.5);
+  background: rgba(22, 22, 28, 0.5);
   border: 1px solid var(--border-light);
   border-radius: 4px;
   padding: 16px;
