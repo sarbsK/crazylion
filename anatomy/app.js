@@ -273,14 +273,44 @@ document.addEventListener('keydown', (e) => {
 if (lightboxImg) {
   lightboxImg.addEventListener('click', (e) => {
     e.stopPropagation();
+    
+    // Calculate click coordinates percentage on the unzoomed image
+    const rect = lightboxImg.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+    const pctX = clickX / rect.width;
+    const pctY = clickY / rect.height;
+    
     lightboxImg.classList.toggle('zoomed');
     const isZoomed = lightboxImg.classList.contains('zoomed');
     const wrap = lightboxImg.closest('.lightbox-img-wrap');
+    
     if (wrap) {
       wrap.classList.toggle('zoomed-parent', isZoomed);
     }
     if (lightbox) {
       lightbox.classList.toggle('zoomed-modal', isZoomed);
+    }
+    
+    if (isZoomed) {
+      // Wait for layout updates, then center the viewport scroll on the clicked area
+      setTimeout(() => {
+        const scrollTargetX = (lightboxImg.offsetWidth * pctX) - (lightbox.clientWidth / 2);
+        const scrollTargetY = (lightboxImg.offsetHeight * pctY) - (lightbox.clientHeight / 2);
+        
+        lightbox.scrollTo({
+          left: Math.max(0, scrollTargetX),
+          top: Math.max(0, scrollTargetY),
+          behavior: 'smooth'
+        });
+      }, 50);
+    } else {
+      // Reset viewport scroll back to top-left
+      lightbox.scrollTo({
+        left: 0,
+        top: 0,
+        behavior: 'smooth'
+      });
     }
   });
 }

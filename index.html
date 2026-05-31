@@ -425,16 +425,44 @@
         mediaElement.style.cursor = 'zoom-in';
         mediaElement.addEventListener('click', function(e) {
           e.stopPropagation();
+          
+          // Calculate click coordinates percentage on the unzoomed image
+          const rect = mediaElement.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const clickY = e.clientY - rect.top;
+          const pctX = clickX / rect.width;
+          const pctY = clickY / rect.height;
+          
           mediaElement.classList.toggle('zoomed');
           const isZoomed = mediaElement.classList.contains('zoomed');
+          
           if (isZoomed) {
             mediaElement.style.cursor = 'zoom-out';
             contentBox.classList.add('zoomed-parent');
             modal.classList.add('zoomed-modal');
+            
+            // Wait for layout updates, then center the viewport scroll on the clicked area
+            setTimeout(() => {
+              const scrollTargetX = (mediaElement.offsetWidth * pctX) - (modal.clientWidth / 2);
+              const scrollTargetY = (mediaElement.offsetHeight * pctY) - (modal.clientHeight / 2);
+              
+              modal.scrollTo({
+                left: Math.max(0, scrollTargetX),
+                top: Math.max(0, scrollTargetY),
+                behavior: 'smooth'
+              });
+            }, 50);
           } else {
             mediaElement.style.cursor = 'zoom-in';
             contentBox.classList.remove('zoomed-parent');
             modal.classList.remove('zoomed-modal');
+            
+            // Reset viewport scroll back to top-left
+            modal.scrollTo({
+              left: 0,
+              top: 0,
+              behavior: 'smooth'
+            });
           }
         });
       } else if (activeItem.type === 'video') {
