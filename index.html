@@ -226,34 +226,34 @@
       
       <div class="gallery-grid" style="margin-top: 32px;">
         <!-- Game 1: Onrush -->
-        <a href="https://www.mobygames.com/person/501467/sarbeswar-kalita/credits/" target="_blank" class="gallery-card" style="text-decoration: none;">
+        <div class="gallery-card" onclick="openLightbox(6)">
           <img src="assets/images/thumbs/credit_onrush.png" alt="Onrush Game Credits" loading="lazy">
           <div class="gallery-card-overlay">
             <span class="gallery-card-category" style="color: var(--accent-cyan);">Codemasters · Dhruva</span>
             <h3 class="gallery-card-title" style="font-size: 1.35rem; margin-bottom: 2px;">Onrush</h3>
             <span class="gallery-card-category" style="color: var(--text-secondary); text-transform: none; font-size: 0.78rem; font-family: var(--font-prose); font-weight: 400; letter-spacing: 0;">Vehicles Department · 2018</span>
           </div>
-        </a>
+        </div>
 
         <!-- Game 2: Forza Horizon -->
-        <a href="https://www.mobygames.com/person/501467/sarbeswar-kalita/credits/" target="_blank" class="gallery-card" style="text-decoration: none;">
+        <div class="gallery-card" onclick="openLightbox(7)">
           <img src="assets/images/thumbs/credit_forza.png" alt="Forza Horizon Credits" loading="lazy">
           <div class="gallery-card-overlay">
             <span class="gallery-card-category" style="color: var(--accent-cyan);">Xbox Game Studios · Dhruva</span>
             <h3 class="gallery-card-title" style="font-size: 1.35rem; margin-bottom: 2px;">Forza Horizon</h3>
             <span class="gallery-card-category" style="color: var(--text-secondary); text-transform: none; font-size: 0.78rem; font-family: var(--font-prose); font-weight: 400; letter-spacing: 0;">3D Vehicle Modeling · AAA Co-Dev</span>
           </div>
-        </a>
+        </div>
 
         <!-- Game 3: EA Sports titles -->
-        <a href="https://www.mobygames.com/person/501467/sarbeswar-kalita/credits/" target="_blank" class="gallery-card" style="text-decoration: none;">
+        <div class="gallery-card" onclick="openLightbox(8)">
           <img src="assets/images/thumbs/credit_easports.png" alt="EA Sports Credits" loading="lazy">
           <div class="gallery-card-overlay">
             <span class="gallery-card-category" style="color: var(--accent-cyan);">Electronic Arts</span>
             <h3 class="gallery-card-title" style="font-size: 1.35rem; margin-bottom: 2px;">EA Sports</h3>
             <span class="gallery-card-category" style="color: var(--text-secondary); text-transform: none; font-size: 0.78rem; font-family: var(--font-prose); font-weight: 400; letter-spacing: 0;">3D Character production · EA Career</span>
           </div>
-        </a>
+        </div>
       </div>
     </div>
   </section>
@@ -422,6 +422,15 @@
         { type: 'image', src: 'assets/images/fulls/01.jpg', description: 'Figurative Bust Sculpture - Detailed digital clay sculpt front view' },
         { type: 'image', src: 'assets/images/fulls/02.jpg', description: 'Figurative Bust Sculpture - Detailed digital clay sculpt side view' },
         { type: 'image', src: 'assets/images/fulls/03.jpg', description: 'Figurative Bust Sculpture - Detailed digital clay sculpt rear view' }
+      ],
+      [
+        { type: 'image', src: 'assets/images/fulls/credit_onrush.png', description: 'Onrush — Vehicles Department · 2018 (Codemasters · Dhruva AAA Co-Dev). <a href="https://www.mobygames.com/person/501467/sarbeswar-kalita/credits/" target="_blank" style="color: var(--accent-cyan); text-decoration: underline; margin-left: 8px;">View Full Profile on MobyGames <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85em;"></i></a>' }
+      ],
+      [
+        { type: 'image', src: 'assets/images/fulls/credit_forza.png', description: 'Forza Horizon — 3D Vehicle Modeling (Xbox Game Studios · Dhruva AAA Co-Dev). <a href="https://www.mobygames.com/person/501467/sarbeswar-kalita/credits/" target="_blank" style="color: var(--accent-cyan); text-decoration: underline; margin-left: 8px;">View Full Profile on MobyGames <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85em;"></i></a>' }
+      ],
+      [
+        { type: 'image', src: 'assets/images/fulls/credit_easports.png', description: 'EA Sports — 3D Character Production · EA Career (Electronic Arts). <a href="https://www.mobygames.com/person/501467/sarbeswar-kalita/credits/" target="_blank" style="color: var(--accent-cyan); text-decoration: underline; margin-left: 8px;">View Full Profile on MobyGames <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85em;"></i></a>' }
       ]
     ];
 
@@ -556,7 +565,7 @@
       
       if (mediaElement) {
         contentBox.appendChild(mediaElement);
-        descText.innerText = activeItem.description;
+        descText.innerHTML = activeItem.description;
       }
     }
 
