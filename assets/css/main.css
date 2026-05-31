@@ -714,7 +714,7 @@ a {
 /* Deep Zoom for Female Ecorche Study (Torso Focus) */
 .gallery-card.zoom-thumb-female img {
   transform: scale(2.35); /* Extreme deep zoom focusing strictly on the torso musculature */
-  transform-origin: center 42%; /* Shift vertically to focus precisely on the abs, obliques, chest, and hip area */
+  transform-origin: center 25%; /* Shift vertically to focus precisely on the abs, obliques, and chest */
 }
 
 .gallery-card.zoom-thumb-female:hover img {
