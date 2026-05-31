@@ -701,6 +701,16 @@ a {
   filter: sepia(0.2) contrast(1.02); /* Slight organic warm balance */
 }
 
+/* Deep Zoom for specific anatomical study thumbnails */
+.gallery-card.zoom-thumb img {
+  transform: scale(1.85); /* Deeply zoom in on the torso/abs of the ecorche model */
+  transform-origin: center 30%; /* Focus on the premium muscular details of the upper body/torso */
+}
+
+.gallery-card.zoom-thumb:hover img {
+  transform: scale(1.92); /* Subtle extra hover zoom */
+}
+
 .gallery-card-overlay {
   position: absolute;
   top: 0;
