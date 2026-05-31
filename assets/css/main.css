@@ -701,14 +701,24 @@ a {
   filter: sepia(0.2) contrast(1.02); /* Slight organic warm balance */
 }
 
-/* Deep Zoom for specific anatomical study thumbnails */
-.gallery-card.zoom-thumb img {
-  transform: scale(1.85); /* Deeply zoom in on the torso/abs of the ecorche model */
-  transform-origin: center 30%; /* Focus on the premium muscular details of the upper body/torso */
+/* Deep Zoom for Male Ecorche Study (Torso Focus) */
+.gallery-card.zoom-thumb-male img {
+  transform: scale(2.15); /* Extreme zoom to focus entirely on the torso musculature */
+  transform-origin: center 35%; /* Vertically center on the chest, abs, and obliques */
 }
 
-.gallery-card.zoom-thumb:hover img {
-  transform: scale(1.92); /* Subtle extra hover zoom */
+.gallery-card.zoom-thumb-male:hover img {
+  transform: scale(2.22); /* Smooth interactive hover scale */
+}
+
+/* Deep Zoom for Female Ecorche Study (Torso Focus) */
+.gallery-card.zoom-thumb-female img {
+  transform: scale(2.15); /* Extreme zoom to focus entirely on the torso musculature */
+  transform-origin: center 48%; /* Vertically center on the chest, abs, and obliques */
+}
+
+.gallery-card.zoom-thumb-female:hover img {
+  transform: scale(2.22); /* Smooth interactive hover scale */
 }
 
 .gallery-card-overlay {
