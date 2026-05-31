@@ -704,7 +704,7 @@ a {
 /* Deep Zoom for Male Ecorche Study (Torso Focus) */
 .gallery-card.zoom-thumb-male img {
   transform: scale(2.35); /* Extreme deep zoom focusing strictly on the torso musculature */
-  transform-origin: center 25%; /* Shift vertically to focus precisely on the abs, obliques, and chest */
+  transform-origin: 38% 25%; /* Shift horizontally to center the body, and vertically to focus precisely on the abs, obliques, and chest */
 }
 
 .gallery-card.zoom-thumb-male:hover img {
