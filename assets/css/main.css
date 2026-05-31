@@ -703,12 +703,12 @@ a {
 
 /* Deep Zoom for Male Ecorche Study (Torso Focus) */
 .gallery-card.zoom-thumb-male img {
-  transform: scale(2.15); /* Extreme zoom to focus entirely on the torso musculature */
-  transform-origin: center 35%; /* Vertically center on the chest, abs, and obliques */
+  transform: scale(1.85); /* Deeply zoom in on the torso/abs of the ecorche model */
+  transform-origin: center 30%; /* Focus on the premium muscular details of the upper body/torso */
 }
 
 .gallery-card.zoom-thumb-male:hover img {
-  transform: scale(2.22); /* Smooth interactive hover scale */
+  transform: scale(1.92); /* Smooth interactive hover scale */
 }
 
 /* Deep Zoom for Female Ecorche Study (Torso Focus) */
@@ -719,6 +719,16 @@ a {
 
 .gallery-card.zoom-thumb-female:hover img {
   transform: scale(2.22); /* Smooth interactive hover scale */
+}
+
+/* Deep Zoom for Demonic Creature Study (Face Focus) */
+.gallery-card.zoom-thumb-creature img {
+  transform: scale(1.45); /* Zoom in to highlight facial organic detailing */
+  transform-origin: center 40%; /* Frame the creature facial features */
+}
+
+.gallery-card.zoom-thumb-creature:hover img {
+  transform: scale(1.52); /* Smooth interactive hover scale */
 }
 
 .gallery-card-overlay {
