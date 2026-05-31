@@ -544,27 +544,75 @@
         mediaElement.src = activeItem.src;
         mediaElement.alt = activeItem.description;
         
-        // Double-click or click interactive zoom to inspect details
-        mediaElement.style.cursor = 'zoom-in';
+        // Open zoomed by default for finer detail viewing
+        mediaElement.classList.add('zoomed');
+        mediaElement.style.cursor = 'zoom-out';
+        contentBox.classList.add('zoomed-parent');
+        modal.classList.add('zoomed-modal');
+        
+        // Initially scroll-center the viewport
+        setTimeout(() => {
+          const scrollTargetX = (mediaElement.offsetWidth * 0.5) - (modal.clientWidth / 2);
+          const scrollTargetY = (mediaElement.offsetHeight * 0.5) - (modal.clientHeight / 2);
+          modal.scrollTo({
+            left: Math.max(0, scrollTargetX),
+            top: Math.max(0, scrollTargetY)
+          });
+        }, 50);
+
+        // Instantly register desktop mouse panning
+        if (!('ontouchstart' in window) || window.matchMedia('(hover: hover)').matches) {
+          lightboxMouseMoveHandler = function(evt) {
+            if (!mediaElement.classList.contains('zoomed')) return;
+            const maxScrollLeft = modal.scrollWidth - modal.clientWidth;
+            const maxScrollTop = modal.scrollHeight - modal.clientHeight;
+            
+            if (maxScrollLeft > 0 || maxScrollTop > 0) {
+              const xRatio = evt.clientX / modal.clientWidth;
+              const yRatio = evt.clientY / modal.clientHeight;
+              
+              modal.scrollLeft = xRatio * maxScrollLeft;
+              modal.scrollTop = yRatio * maxScrollTop;
+            }
+          };
+          modal.addEventListener('mousemove', lightboxMouseMoveHandler);
+        }
+
+        // Toggling zoom state on click
         mediaElement.addEventListener('click', function(e) {
           e.stopPropagation();
-          
-          // Calculate click coordinates percentage on the unzoomed image
-          const rect = mediaElement.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const clickY = e.clientY - rect.top;
-          const pctX = clickX / rect.width;
-          const pctY = clickY / rect.height;
-          
-          mediaElement.classList.toggle('zoomed');
           const isZoomed = mediaElement.classList.contains('zoomed');
           
           if (isZoomed) {
+            // Zoom out
+            mediaElement.classList.remove('zoomed');
+            mediaElement.style.cursor = 'zoom-in';
+            contentBox.classList.remove('zoomed-parent');
+            modal.classList.remove('zoomed-modal');
+            
+            if (lightboxMouseMoveHandler) {
+              modal.removeEventListener('mousemove', lightboxMouseMoveHandler);
+              lightboxMouseMoveHandler = null;
+            }
+            
+            modal.scrollTo({
+              left: 0,
+              top: 0,
+              behavior: 'smooth'
+            });
+          } else {
+            // Zoom back in centered on click location
+            mediaElement.classList.add('zoomed');
             mediaElement.style.cursor = 'zoom-out';
             contentBox.classList.add('zoomed-parent');
             modal.classList.add('zoomed-modal');
             
-            // Wait for layout updates, then center the viewport scroll on the clicked area
+            const rect = mediaElement.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+            const pctX = clickX / rect.width;
+            const pctY = clickY / rect.height;
+            
             setTimeout(() => {
               const scrollTargetX = (mediaElement.offsetWidth * pctX) - (modal.clientWidth / 2);
               const scrollTargetY = (mediaElement.offsetHeight * pctY) - (modal.clientHeight / 2);
@@ -576,7 +624,6 @@
               });
             }, 50);
 
-            // Desktop-only slide-through by mouse movement once zoomed
             if (!('ontouchstart' in window) || window.matchMedia('(hover: hover)').matches) {
               lightboxMouseMoveHandler = function(evt) {
                 if (!mediaElement.classList.contains('zoomed')) return;
@@ -587,29 +634,12 @@
                   const xRatio = evt.clientX / modal.clientWidth;
                   const yRatio = evt.clientY / modal.clientHeight;
                   
-                  // Instantaneous scroll alignment to float the image under the cursor
                   modal.scrollLeft = xRatio * maxScrollLeft;
                   modal.scrollTop = yRatio * maxScrollTop;
                 }
               };
               modal.addEventListener('mousemove', lightboxMouseMoveHandler);
             }
-          } else {
-            mediaElement.style.cursor = 'zoom-in';
-            contentBox.classList.remove('zoomed-parent');
-            modal.classList.remove('zoomed-modal');
-            
-            if (lightboxMouseMoveHandler) {
-              modal.removeEventListener('mousemove', lightboxMouseMoveHandler);
-              lightboxMouseMoveHandler = null;
-            }
-            
-            // Reset viewport scroll back to top-left
-            modal.scrollTo({
-              left: 0,
-              top: 0,
-              behavior: 'smooth'
-            });
           }
         });
       } else if (activeItem.type === 'video') {

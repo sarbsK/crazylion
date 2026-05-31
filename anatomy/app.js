@@ -164,14 +164,46 @@ function openLightbox(imgSrc, altText, titleText, descText) {
   if (!lightbox || !lightboxImg) return;
   lightboxImg.src = imgSrc;
   lightboxImg.alt = altText || 'Expanded anatomy detail view';
-  lightboxImg.classList.remove('zoomed'); // reset zoom state
+  
+  // Set zoomed state by default for finer detail viewing
+  lightboxImg.classList.add('zoomed');
+  lightboxImg.style.cursor = 'zoom-out';
   
   const wrap = lightboxImg.closest('.lightbox-img-wrap');
-  if (wrap) wrap.classList.remove('zoomed-parent');
-  lightbox.classList.remove('zoomed-modal');
+  if (wrap) wrap.classList.add('zoomed-parent');
+  lightbox.classList.add('zoomed-modal');
+  
   if (anatomyMouseMoveHandler) {
     lightbox.removeEventListener('mousemove', anatomyMouseMoveHandler);
     anatomyMouseMoveHandler = null;
+  }
+  
+  // Wait for layout updates, then center viewport scroll initially
+  setTimeout(() => {
+    const scrollTargetX = (lightboxImg.offsetWidth * 0.5) - (lightbox.clientWidth / 2);
+    const scrollTargetY = (lightboxImg.offsetHeight * 0.5) - (lightbox.clientHeight / 2);
+    lightbox.scrollTo({
+      left: Math.max(0, scrollTargetX),
+      top: Math.max(0, scrollTargetY)
+    });
+  }, 50);
+
+  // Instantly register desktop mouse panning
+  if (!('ontouchstart' in window) || window.matchMedia('(hover: hover)').matches) {
+    anatomyMouseMoveHandler = function(evt) {
+      if (!lightboxImg.classList.contains('zoomed')) return;
+      const maxScrollLeft = lightbox.scrollWidth - lightbox.clientWidth;
+      const maxScrollTop = lightbox.scrollHeight - lightbox.clientHeight;
+      
+      if (maxScrollLeft > 0 || maxScrollTop > 0) {
+        const xRatio = evt.clientX / lightbox.clientWidth;
+        const yRatio = evt.clientY / lightbox.clientHeight;
+        
+        lightbox.scrollLeft = xRatio * maxScrollLeft;
+        lightbox.scrollTop = yRatio * maxScrollTop;
+      }
+    };
+    lightbox.addEventListener('mousemove', anatomyMouseMoveHandler);
   }
   
   if (lightboxTitle) lightboxTitle.textContent = titleText || '';
@@ -283,26 +315,39 @@ if (lightboxImg) {
   lightboxImg.addEventListener('click', (e) => {
     e.stopPropagation();
     
-    // Calculate click coordinates percentage on the unzoomed image
-    const rect = lightboxImg.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const clickY = e.clientY - rect.top;
-    const pctX = clickX / rect.width;
-    const pctY = clickY / rect.height;
-    
-    lightboxImg.classList.toggle('zoomed');
     const isZoomed = lightboxImg.classList.contains('zoomed');
     const wrap = lightboxImg.closest('.lightbox-img-wrap');
     
-    if (wrap) {
-      wrap.classList.toggle('zoomed-parent', isZoomed);
-    }
-    if (lightbox) {
-      lightbox.classList.toggle('zoomed-modal', isZoomed);
-    }
-    
     if (isZoomed) {
-      // Wait for layout updates, then center the viewport scroll on the clicked area
+      // Zoom out
+      lightboxImg.classList.remove('zoomed');
+      lightboxImg.style.cursor = 'zoom-in';
+      if (wrap) wrap.classList.remove('zoomed-parent');
+      if (lightbox) lightbox.classList.remove('zoomed-modal');
+      
+      if (anatomyMouseMoveHandler) {
+        lightbox.removeEventListener('mousemove', anatomyMouseMoveHandler);
+        anatomyMouseMoveHandler = null;
+      }
+      
+      lightbox.scrollTo({
+        left: 0,
+        top: 0,
+        behavior: 'smooth'
+      });
+    } else {
+      // Zoom back in centered on click location
+      lightboxImg.classList.add('zoomed');
+      lightboxImg.style.cursor = 'zoom-out';
+      if (wrap) wrap.classList.add('zoomed-parent');
+      if (lightbox) lightbox.classList.add('zoomed-modal');
+      
+      const rect = lightboxImg.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+      const pctX = clickX / rect.width;
+      const pctY = clickY / rect.height;
+      
       setTimeout(() => {
         const scrollTargetX = (lightboxImg.offsetWidth * pctX) - (lightbox.clientWidth / 2);
         const scrollTargetY = (lightboxImg.offsetHeight * pctY) - (lightbox.clientHeight / 2);
@@ -314,7 +359,6 @@ if (lightboxImg) {
         });
       }, 50);
 
-      // Desktop-only slide-through by mouse movement once zoomed
       if (!('ontouchstart' in window) || window.matchMedia('(hover: hover)').matches) {
         anatomyMouseMoveHandler = function(evt) {
           if (!lightboxImg.classList.contains('zoomed')) return;
@@ -325,25 +369,12 @@ if (lightboxImg) {
             const xRatio = evt.clientX / lightbox.clientWidth;
             const yRatio = evt.clientY / lightbox.clientHeight;
             
-            // Instantaneous scroll alignment to float the image under the cursor
             lightbox.scrollLeft = xRatio * maxScrollLeft;
             lightbox.scrollTop = yRatio * maxScrollTop;
           }
         };
         lightbox.addEventListener('mousemove', anatomyMouseMoveHandler);
       }
-    } else {
-      if (anatomyMouseMoveHandler) {
-        lightbox.removeEventListener('mousemove', anatomyMouseMoveHandler);
-        anatomyMouseMoveHandler = null;
-      }
-      
-      // Reset viewport scroll back to top-left
-      lightbox.scrollTo({
-        left: 0,
-        top: 0,
-        behavior: 'smooth'
-      });
     }
   });
 }
