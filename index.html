@@ -401,11 +401,15 @@
     function closeLightbox() {
       modal.style.display = 'none';
       contentBox.innerHTML = ''; // Clear content
+      contentBox.classList.remove('zoomed-parent');
+      modal.classList.remove('zoomed-modal');
       document.body.style.overflow = ''; // Unlock scrolling
     }
 
     function populateLightbox() {
       contentBox.innerHTML = '';
+      contentBox.classList.remove('zoomed-parent');
+      modal.classList.remove('zoomed-modal');
       
       const activeSet = portfolioSets[currentSetIdx];
       const activeItem = activeSet[currentImgIdx];
@@ -422,10 +426,15 @@
         mediaElement.addEventListener('click', function(e) {
           e.stopPropagation();
           mediaElement.classList.toggle('zoomed');
-          if (mediaElement.classList.contains('zoomed')) {
+          const isZoomed = mediaElement.classList.contains('zoomed');
+          if (isZoomed) {
             mediaElement.style.cursor = 'zoom-out';
+            contentBox.classList.add('zoomed-parent');
+            modal.classList.add('zoomed-modal');
           } else {
             mediaElement.style.cursor = 'zoom-in';
+            contentBox.classList.remove('zoomed-parent');
+            modal.classList.remove('zoomed-modal');
           }
         });
       } else if (activeItem.type === 'video') {

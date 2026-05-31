@@ -165,6 +165,10 @@ function openLightbox(imgSrc, altText, titleText, descText) {
   lightboxImg.alt = altText || 'Expanded anatomy detail view';
   lightboxImg.classList.remove('zoomed'); // reset zoom state
   
+  const wrap = lightboxImg.closest('.lightbox-img-wrap');
+  if (wrap) wrap.classList.remove('zoomed-parent');
+  lightbox.classList.remove('zoomed-modal');
+  
   if (lightboxTitle) lightboxTitle.textContent = titleText || '';
   if (lightboxDesc) lightboxDesc.textContent = descText || '';
   
@@ -180,6 +184,12 @@ function openLightbox(imgSrc, altText, titleText, descText) {
 function closeLightbox() {
   if (!lightbox) return;
   lightbox.classList.remove('show');
+  lightbox.classList.remove('zoomed-modal');
+  if (lightboxImg) {
+    lightboxImg.classList.remove('zoomed');
+    const wrap = lightboxImg.closest('.lightbox-img-wrap');
+    if (wrap) wrap.classList.remove('zoomed-parent');
+  }
   document.body.classList.remove('lightbox-open');
   
   // Hide after transition completes
@@ -264,6 +274,14 @@ if (lightboxImg) {
   lightboxImg.addEventListener('click', (e) => {
     e.stopPropagation();
     lightboxImg.classList.toggle('zoomed');
+    const isZoomed = lightboxImg.classList.contains('zoomed');
+    const wrap = lightboxImg.closest('.lightbox-img-wrap');
+    if (wrap) {
+      wrap.classList.toggle('zoomed-parent', isZoomed);
+    }
+    if (lightbox) {
+      lightbox.classList.toggle('zoomed-modal', isZoomed);
+    }
   });
 }
 

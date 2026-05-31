@@ -807,13 +807,38 @@ a {
   border: 6px solid var(--bg-card);
   outline: 1px solid var(--border-light);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
-  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: center center;
+  will-change: max-width, max-height, transform;
 }
 
 .lightbox-content-box img.zoomed {
-  transform: scale(1.6);
+  max-width: 180%;
+  max-height: 180vh;
+  transform: scale(1.05);
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+}
+
+/* Bypass flex centering scroll clipping bug when zoomed */
+.lightbox-modal.zoomed-modal {
+  overflow: auto !important;
+}
+
+.lightbox-modal.zoomed-modal .lightbox-content-wrapper {
+  max-width: none;
+  width: 95%;
+  margin: 4vh auto;
+  min-height: auto;
+}
+
+.lightbox-content-box.zoomed-parent {
+  justify-content: flex-start !important;
+  align-items: flex-start !important;
+  padding: 4vh 4vw;
+  width: auto;
 }
 
 .lightbox-content-box video {

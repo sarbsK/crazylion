@@ -1311,6 +1311,13 @@ a { color: var(--text-link); }
   border: 1px solid var(--border-strong);
   box-shadow: 0 20px 50px rgba(0,0,0,0.5);
   background: var(--bg-base);
+  transition: max-height 0.4s ease;
+}
+
+.lightbox-img-wrap.zoomed-parent {
+  max-height: none !important;
+  overflow: visible !important;
+  width: auto;
 }
 
 .lightbox-img {
@@ -1318,12 +1325,34 @@ a { color: var(--text-link); }
   max-width: 100%;
   object-fit: contain;
   cursor: zoom-in;
-  transition: transform 0.3s ease;
+  transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center center;
+  will-change: max-width, max-height, transform;
 }
 
 .lightbox-img.zoomed {
-  transform: scale(1.6);
+  max-width: 180%;
+  max-height: 180vh;
+  transform: scale(1.05);
   cursor: zoom-out;
+}
+
+/* Bypass flex centering scroll clipping bug when zoomed */
+.lightbox.zoomed-modal {
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  overflow: auto !important;
+}
+
+.lightbox.zoomed-modal .lightbox-content {
+  max-width: none;
+  max-height: none;
+  align-items: flex-start !important;
+  margin: 4vh auto;
+  pointer-events: auto;
 }
 
 .lightbox-caption {
@@ -1513,6 +1542,7 @@ body.lightbox-open {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(201, 168, 76, 0.15);
 }
+
 
 
 
