@@ -425,3 +425,11 @@ if (menuToggle && sidebar) {
   });
 }
 
+// Lock right-click and image dragging to deter casual downloading of art
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('dragstart', e => {
+  if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
+    e.preventDefault();
+  }
+});
+
