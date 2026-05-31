@@ -11,7 +11,7 @@
   <meta name="author" content="Sarbeswar Kalita">
   
   <!-- Styling -->
-  <link rel="stylesheet" href="assets/css/main.css?v=1.5">
+  <link rel="stylesheet" href="assets/css/main.css?v=1.6">
   
   <!-- FontAwesome Icons for Social Dock -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -164,7 +164,7 @@
           <img src="assets/images/thumbs/pray-03.jpg" alt="Praying Figure Sculpture">
           <div class="gallery-card-overlay">
             <span class="gallery-card-category">Figurative Sculpture</span>
-            <h3 class="gallery-card-title">Seated Praying Figure</h3>
+            <h3 class="gallery-card-title">pray-03</h3>
           </div>
         </div>
         
@@ -173,7 +173,7 @@
           <img src="assets/images/thumbs/icegoddess-01.jpg" alt="Ice Goddess digital render">
           <div class="gallery-card-overlay">
             <span class="gallery-card-category">Game Character Art</span>
-            <h3 class="gallery-card-title">Ice Goddess</h3>
+            <h3 class="gallery-card-title">icegoddess-01</h3>
           </div>
         </div>
         
@@ -182,7 +182,7 @@
           <img src="assets/images/thumbs/thumb_drawing.jpg" alt="Traditional pencil sketch study">
           <div class="gallery-card-overlay">
             <span class="gallery-card-category">Traditional Studies</span>
-            <h3 class="gallery-card-title">Portrait & Gesture Drawing</h3>
+            <h3 class="gallery-card-title">thumb_drawing</h3>
           </div>
         </div>
         
@@ -191,7 +191,7 @@
           <img src="assets/images/thumbs/male_render.jpg" alt="Anatomical Male Study Zbrush Render">
           <div class="gallery-card-overlay">
             <span class="gallery-card-category">Anatomy Study</span>
-            <h3 class="gallery-card-title">Ecorche Male Study</h3>
+            <h3 class="gallery-card-title">male_render</h3>
           </div>
         </div>
         
@@ -200,7 +200,7 @@
           <img src="assets/images/thumbs/female_render.jpg" alt="Anatomical Female Study Zbrush Render">
           <div class="gallery-card-overlay">
             <span class="gallery-card-category">Anatomy Study</span>
-            <h3 class="gallery-card-title">Ecorche Female Study</h3>
+            <h3 class="gallery-card-title">female_render</h3>
           </div>
         </div>
         
@@ -209,7 +209,7 @@
           <img src="assets/images/thumbs/03.jpg" alt="Figurative Bust Sculptures">
           <div class="gallery-card-overlay">
             <span class="gallery-card-category">Figurative Sculpture</span>
-            <h3 class="gallery-card-title">Bust Clay Sculptures</h3>
+            <h3 class="gallery-card-title">03</h3>
           </div>
         </div>
       </div>
@@ -347,10 +347,10 @@
         { type: 'image', src: 'assets/images/fulls/closeup-01.jpg', description: 'Praying Figure - Detailed upper torso and head close-up' },
         { type: 'image', src: 'assets/images/fulls/closeup-02.jpg', description: 'Praying Figure - Alternative face plane close-up study' },
         { type: 'video', src: 'assets/images/fulls/pray-turntable.mp4', description: 'Seated Praying Figure - Full 360-degree studio turntable showcase' },
-        { type: 'image', src: 'assets/images/fulls/sculpt-01.jpg', description: 'Anatomical sculpt study - frontal planes' },
-        { type: 'image', src: 'assets/images/fulls/sculpt-02.jpg', description: 'Anatomical sculpt study - back planes' },
-        { type: 'image', src: 'assets/images/fulls/sculpt-03.jpg', description: 'Anatomical sculpt study - side planes' },
-        { type: 'image', src: 'assets/images/fulls/sculpt-04.jpg', description: 'Anatomical sculpt study - three-quarter planes' }
+        { type: 'image', src: 'assets/images/fulls/pray_sculpt-01.jpg', description: 'Anatomical sculpt study - frontal planes' },
+        { type: 'image', src: 'assets/images/fulls/pray_sculpt-02.jpg', description: 'Anatomical sculpt study - back planes' },
+        { type: 'image', src: 'assets/images/fulls/pray_sculpt-03.jpg', description: 'Anatomical sculpt study - side planes' },
+        { type: 'image', src: 'assets/images/fulls/pray_sculpt-04.jpg', description: 'Anatomical sculpt study - three-quarter planes' }
       ],
       [
         { type: 'image', src: 'assets/images/fulls/icegoddess-01.jpg', description: 'Ice Goddess digital model - Front character rendering' },
@@ -416,6 +416,18 @@
         mediaElement = document.createElement('img');
         mediaElement.src = activeItem.src;
         mediaElement.alt = activeItem.description;
+        
+        // Double-click or click interactive zoom to inspect details
+        mediaElement.style.cursor = 'zoom-in';
+        mediaElement.addEventListener('click', function(e) {
+          e.stopPropagation();
+          mediaElement.classList.toggle('zoomed');
+          if (mediaElement.classList.contains('zoomed')) {
+            mediaElement.style.cursor = 'zoom-out';
+          } else {
+            mediaElement.style.cursor = 'zoom-in';
+          }
+        });
       } else if (activeItem.type === 'video') {
         mediaElement = document.createElement('video');
         mediaElement.src = activeItem.src;
