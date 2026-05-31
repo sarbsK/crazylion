@@ -713,12 +713,12 @@ a {
 
 /* Deep Zoom for Female Ecorche Study (Torso Focus) */
 .gallery-card.zoom-thumb-female img {
-  transform: scale(2.35); /* Extreme deep zoom focusing strictly on the torso musculature */
-  transform-origin: center 25%; /* Shift vertically to focus precisely on the abs, obliques, and chest */
+  transform: scale(2.1); /* Zoom factor optimized to capture width from chest to pelvis */
+  transform-origin: center 38%; /* Vertically center on the chest-to-pelvis anatomy details */
 }
 
 .gallery-card.zoom-thumb-female:hover img {
-  transform: scale(2.42); /* Smooth interactive hover scale */
+  transform: scale(2.18); /* Smooth interactive hover scale */
 }
 
 /* Deep Zoom for Demonic Creature Study (Face Focus) */
