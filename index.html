@@ -385,6 +385,7 @@
 
     let currentSetIdx = 0;
     let currentImgIdx = 0;
+    let lightboxMouseMoveHandler = null;
 
     const modal = document.getElementById('lightboxModal');
     const contentBox = document.getElementById('lightboxContent');
@@ -403,6 +404,10 @@
       contentBox.innerHTML = ''; // Clear content
       contentBox.classList.remove('zoomed-parent');
       modal.classList.remove('zoomed-modal');
+      if (lightboxMouseMoveHandler) {
+        modal.removeEventListener('mousemove', lightboxMouseMoveHandler);
+        lightboxMouseMoveHandler = null;
+      }
       document.body.style.overflow = ''; // Unlock scrolling
     }
 
@@ -410,6 +415,10 @@
       contentBox.innerHTML = '';
       contentBox.classList.remove('zoomed-parent');
       modal.classList.remove('zoomed-modal');
+      if (lightboxMouseMoveHandler) {
+        modal.removeEventListener('mousemove', lightboxMouseMoveHandler);
+        lightboxMouseMoveHandler = null;
+      }
       
       const activeSet = portfolioSets[currentSetIdx];
       const activeItem = activeSet[currentImgIdx];
@@ -452,10 +461,34 @@
                 behavior: 'smooth'
               });
             }, 50);
+
+            // Desktop-only slide-through by mouse movement once zoomed
+            if (!('ontouchstart' in window) || window.matchMedia('(hover: hover)').matches) {
+              lightboxMouseMoveHandler = function(evt) {
+                if (!mediaElement.classList.contains('zoomed')) return;
+                const maxScrollLeft = modal.scrollWidth - modal.clientWidth;
+                const maxScrollTop = modal.scrollHeight - modal.clientHeight;
+                
+                if (maxScrollLeft > 0 || maxScrollTop > 0) {
+                  const xRatio = evt.clientX / modal.clientWidth;
+                  const yRatio = evt.clientY / modal.clientHeight;
+                  
+                  // Instantaneous scroll alignment to float the image under the cursor
+                  modal.scrollLeft = xRatio * maxScrollLeft;
+                  modal.scrollTop = yRatio * maxScrollTop;
+                }
+              };
+              modal.addEventListener('mousemove', lightboxMouseMoveHandler);
+            }
           } else {
             mediaElement.style.cursor = 'zoom-in';
             contentBox.classList.remove('zoomed-parent');
             modal.classList.remove('zoomed-modal');
+            
+            if (lightboxMouseMoveHandler) {
+              modal.removeEventListener('mousemove', lightboxMouseMoveHandler);
+              lightboxMouseMoveHandler = null;
+            }
             
             // Reset viewport scroll back to top-left
             modal.scrollTo({

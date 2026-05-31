@@ -158,6 +158,7 @@ const lightboxImg = document.getElementById('lightbox-img');
 const lightboxClose = document.getElementById('lightbox-close');
 const lightboxTitle = document.getElementById('lightbox-title');
 const lightboxDesc = document.getElementById('lightbox-desc');
+let anatomyMouseMoveHandler = null;
 
 function openLightbox(imgSrc, altText, titleText, descText) {
   if (!lightbox || !lightboxImg) return;
@@ -168,6 +169,10 @@ function openLightbox(imgSrc, altText, titleText, descText) {
   const wrap = lightboxImg.closest('.lightbox-img-wrap');
   if (wrap) wrap.classList.remove('zoomed-parent');
   lightbox.classList.remove('zoomed-modal');
+  if (anatomyMouseMoveHandler) {
+    lightbox.removeEventListener('mousemove', anatomyMouseMoveHandler);
+    anatomyMouseMoveHandler = null;
+  }
   
   if (lightboxTitle) lightboxTitle.textContent = titleText || '';
   if (lightboxDesc) lightboxDesc.textContent = descText || '';
@@ -189,6 +194,10 @@ function closeLightbox() {
     lightboxImg.classList.remove('zoomed');
     const wrap = lightboxImg.closest('.lightbox-img-wrap');
     if (wrap) wrap.classList.remove('zoomed-parent');
+  }
+  if (anatomyMouseMoveHandler) {
+    lightbox.removeEventListener('mousemove', anatomyMouseMoveHandler);
+    anatomyMouseMoveHandler = null;
   }
   document.body.classList.remove('lightbox-open');
   
@@ -304,7 +313,31 @@ if (lightboxImg) {
           behavior: 'smooth'
         });
       }, 50);
+
+      // Desktop-only slide-through by mouse movement once zoomed
+      if (!('ontouchstart' in window) || window.matchMedia('(hover: hover)').matches) {
+        anatomyMouseMoveHandler = function(evt) {
+          if (!lightboxImg.classList.contains('zoomed')) return;
+          const maxScrollLeft = lightbox.scrollWidth - lightbox.clientWidth;
+          const maxScrollTop = lightbox.scrollHeight - lightbox.clientHeight;
+          
+          if (maxScrollLeft > 0 || maxScrollTop > 0) {
+            const xRatio = evt.clientX / lightbox.clientWidth;
+            const yRatio = evt.clientY / lightbox.clientHeight;
+            
+            // Instantaneous scroll alignment to float the image under the cursor
+            lightbox.scrollLeft = xRatio * maxScrollLeft;
+            lightbox.scrollTop = yRatio * maxScrollTop;
+          }
+        };
+        lightbox.addEventListener('mousemove', anatomyMouseMoveHandler);
+      }
     } else {
+      if (anatomyMouseMoveHandler) {
+        lightbox.removeEventListener('mousemove', anatomyMouseMoveHandler);
+        anatomyMouseMoveHandler = null;
+      }
+      
       // Reset viewport scroll back to top-left
       lightbox.scrollTo({
         left: 0,
