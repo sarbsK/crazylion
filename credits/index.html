@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AAA Game Credits | Crazylion Studio</title>
+  
+  <!-- SEO & Description -->
+  <meta name="description" content="Official AAA Game Credits and industry contributions of Sarbeswar Kalita—senior digital sculptor and game artist. Features credits for Onrush, Forza Horizon, and EA Sports franchise titles.">
+  <meta name="author" content="Sarbeswar Kalita">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="../assets/css/main.css?v=1.6">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts for Design System -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Custom style refinements for the standalone Credits sub-page */
+    .credits-hero {
+      position: relative;
+      padding: 140px 0 60px 0;
+      text-align: center;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-light);
+      overflow: hidden;
+    }
+    .credits-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 2;
+    }
+    .credits-grid-section {
+      padding: 80px 0 100px 0;
+      background: var(--bg-primary);
+    }
+    .credits-cta-box {
+      margin-top: 60px;
+      text-align: center;
+      padding: 40px 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+    .header-nav {
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .credits-hero {
+        padding: 100px 0 40px 0;
+      }
+      .credits-hero h1 {
+        font-size: 2.2rem !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Blurred Glass Header -->
+  <header class="header-nav">
+    <div class="nav-logo" onclick="window.location.href='../'" style="cursor: pointer;">
+      <i class="fa-solid fa-compass"></i>
+      <span>crazylion studio</span>
+    </div>
+    <div class="header-actions">
+      <a href="../" class="btn btn-secondary" style="border-color: var(--accent-cyan); color: var(--accent-cyan); padding: 8px 18px; font-size: 0.82rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; border-radius: 6px; text-decoration: none; transition: all 0.2s ease;">
+        <i class="fa-solid fa-arrow-left"></i>
+        Studio Home
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero Header Section -->
+  <section class="credits-hero">
+    <div class="hero-grid-pattern" style="opacity: 0.12;"></div>
+    <div class="credits-container">
+      <div class="spotlight-tag" style="background: rgba(194, 153, 85, 0.08); color: var(--accent-purple); border-color: var(--border-light); margin: 0 auto 20px auto; width: fit-content;">
+        <i class="fa-solid fa-gamepad"></i>
+        <span>Industry Portfolio</span>
+      </div>
+      <h1 style="font-size: 3rem; line-height: 1.2; margin-bottom: 16px; font-family: 'Cinzel', serif; color: var(--text-primary); font-weight: 700; letter-spacing: 0.03em;">AAA Game Credits</h1>
+      <p style="font-family: 'Lora', serif; font-size: 1.15rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto; line-height: 1.6;">
+        Professional contributions and 3D character production for internationally acclaimed console, PC, and sports titles.
+      </p>
+    </div>
+  </section>
+
+  <!-- Credits Grid Section -->
+  <section class="credits-grid-section">
+    <div class="credits-container">
+      <div class="gallery-grid">
+        <!-- Game 1: Onrush -->
+        <div class="gallery-card" onclick="openLightbox(0)">
+          <img src="../assets/images/thumbs/credit_onrush.png" alt="Onrush Game Credits">
+          <div class="gallery-card-overlay" style="opacity: 1; background: rgba(14, 14, 17, 0.45);">
+            <span class="gallery-card-category" style="color: var(--accent-cyan); font-weight: 600;">Codemasters · Dhruva</span>
+            <h3 class="gallery-card-title" style="font-size: 1.45rem; margin-bottom: 2px;">Onrush</h3>
+            <span class="gallery-card-category" style="color: var(--text-secondary); text-transform: none; font-size: 0.8rem; font-family: var(--font-prose); font-weight: 400; letter-spacing: 0;">Vehicles Department · 2018</span>
+          </div>
+        </div>
+
+        <!-- Game 2: Forza Horizon -->
+        <div class="gallery-card" onclick="openLightbox(1)">
+          <img src="../assets/images/thumbs/credit_forza.png" alt="Forza Horizon Credits">
+          <div class="gallery-card-overlay" style="opacity: 1; background: rgba(14, 14, 17, 0.45);">
+            <span class="gallery-card-category" style="color: var(--accent-cyan); font-weight: 600;">Xbox Game Studios · Dhruva</span>
+            <h3 class="gallery-card-title" style="font-size: 1.45rem; margin-bottom: 2px;">Forza Horizon</h3>
+            <span class="gallery-card-category" style="color: var(--text-secondary); text-transform: none; font-size: 0.8rem; font-family: var(--font-prose); font-weight: 400; letter-spacing: 0;">3D Vehicle Modeling · AAA Co-Dev</span>
+          </div>
+        </div>
+
+        <!-- Game 3: EA Sports titles -->
+        <div class="gallery-card" onclick="openLightbox(2)">
+          <img src="../assets/images/thumbs/credit_easports.png" alt="EA Sports Credits">
+          <div class="gallery-card-overlay" style="opacity: 1; background: rgba(14, 14, 17, 0.45);">
+            <span class="gallery-card-category" style="color: var(--accent-cyan); font-weight: 600;">Electronic Arts</span>
+            <h3 class="gallery-card-title" style="font-size: 1.45rem; margin-bottom: 2px;">EA Sports</h3>
+            <span class="gallery-card-category" style="color: var(--text-secondary); text-transform: none; font-size: 0.8rem; font-family: var(--font-prose); font-weight: 400; letter-spacing: 0;">3D Character production · EA Career</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="credits-cta-box">
+        <h3 style="font-family: 'Cinzel', serif; font-size: 1.45rem; color: var(--text-primary); margin-bottom: 12px; font-weight: 600;">Official Industry Registry</h3>
+        <p style="color: var(--text-secondary); font-family: 'Lora', serif; font-size: 0.98rem; margin-bottom: 24px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.6;">
+          Every credit is fully cataloged and verified in the official international game credits database. You can review my complete professional profile and registry on MobyGames.
+        </p>
+        <a href="https://www.mobygames.com/person/501467/sarbeswar-kalita/credits/" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; border-radius: 6px; padding: 12px 28px; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          View MobyGames Registry
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer-section" style="background: var(--bg-secondary); border-top: 1px solid var(--border-light); padding: 40px 0; text-align: center;">
+    <p>&copy; 2026 Crazylion Studio. Designed with Antigravity Studio.</p>
+  </footer>
+
+  <!-- Lightbox Modal Container -->
+  <div id="lightboxModal" class="lightbox-modal">
+    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+    <div class="lightbox-content-wrapper">
+      <div class="lightbox-content-box" id="lightboxContent"></div>
+      <div class="lightbox-description" id="lightboxDescription"></div>
+    </div>
+    <div class="lightbox-nav-controls">
+      <button onclick="prevSlide()" aria-label="Previous Reference"><i class="fa-solid fa-chevron-left"></i></button>
+      <button onclick="nextSlide()" aria-label="Next Reference"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+  <script>
+    // Local credits set for Lightbox integration
+    const portfolioSets = [
+      [
+        { type: 'image', src: '../assets/images/fulls/credit_onrush.png', description: 'Onrush — Vehicles Department · 2018 (Codemasters · Dhruva AAA Co-Dev). <a href="https://www.mobygames.com/person/501467/sarbeswar-kalita/credits/" target="_blank" style="color: var(--accent-cyan); text-decoration: underline; margin-left: 8px;">View Full Profile on MobyGames <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85em;"></i></a>' }
+      ],
+      [
+        { type: 'image', src: '../assets/images/fulls/credit_forza.png', description: 'Forza Horizon — 3D Vehicle Modeling (Xbox Game Studios · Dhruva AAA Co-Dev). <a href="https://www.mobygames.com/person/501467/sarbeswar-kalita/credits/" target="_blank" style="color: var(--accent-cyan); text-decoration: underline; margin-left: 8px;">View Full Profile on MobyGames <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85em;"></i></a>' }
+      ],
+      [
+        { type: 'image', src: '../assets/images/fulls/credit_easports.png', description: 'EA Sports — 3D Character Production · EA Career (Electronic Arts). <a href="https://www.mobygames.com/person/501467/sarbeswar-kalita/credits/" target="_blank" style="color: var(--accent-cyan); text-decoration: underline; margin-left: 8px;">View Full Profile on MobyGames <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85em;"></i></a>' }
+      ]
+    ];
+
+    let currentSetIdx = 0;
+    let currentImgIdx = 0;
+    let lightboxMouseMoveHandler = null;
+
+    const modal = document.getElementById('lightboxModal');
+    const contentBox = document.getElementById('lightboxContent');
+    const descText = document.getElementById('lightboxDescription');
+
+    function openLightbox(setIdx) {
+      currentSetIdx = setIdx;
+      currentImgIdx = 0;
+      populateLightbox();
+      modal.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      modal.style.display = 'none';
+      contentBox.innerHTML = '';
+      contentBox.classList.remove('zoomed-parent');
+      modal.classList.remove('zoomed-modal');
+      if (lightboxMouseMoveHandler) {
+        modal.removeEventListener('mousemove', lightboxMouseMoveHandler);
+        lightboxMouseMoveHandler = null;
+      }
+      document.body.style.overflow = '';
+    }
+
+    function populateLightbox() {
+      contentBox.innerHTML = '';
+      contentBox.classList.remove('zoomed-parent');
+      modal.classList.remove('zoomed-modal');
+      if (lightboxMouseMoveHandler) {
+        modal.removeEventListener('mousemove', lightboxMouseMoveHandler);
+        lightboxMouseMoveHandler = null;
+      }
+      
+      const activeSet = portfolioSets[currentSetIdx];
+      const activeItem = activeSet[currentImgIdx];
+      
+      let mediaElement;
+      
+      if (activeItem.type === 'image') {
+        mediaElement = document.createElement('img');
+        mediaElement.src = activeItem.src;
+        mediaElement.alt = activeItem.description;
+        mediaElement.style.cursor = 'zoom-in';
+        
+        mediaElement.addEventListener('click', function(e) {
+          e.stopPropagation();
+          
+          const rect = mediaElement.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const clickY = e.clientY - rect.top;
+          const pctX = clickX / rect.width;
+          const pctY = clickY / rect.height;
+          
+          mediaElement.classList.toggle('zoomed');
+          const isZoomed = mediaElement.classList.contains('zoomed');
+          
+          if (isZoomed) {
+            mediaElement.style.cursor = 'zoom-out';
+            contentBox.classList.add('zoomed-parent');
+            modal.classList.add('zoomed-modal');
+            
+            setTimeout(() => {
+              const scrollTargetX = (mediaElement.offsetWidth * pctX) - (modal.clientWidth / 2);
+              const scrollTargetY = (mediaElement.offsetHeight * pctY) - (modal.clientHeight / 2);
+              
+              modal.scrollTo({
+                left: Math.max(0, scrollTargetX),
+                top: Math.max(0, scrollTargetY),
+                behavior: 'smooth'
+              });
+            }, 50);
+
+            if (!('ontouchstart' in window) || window.matchMedia('(hover: hover)').matches) {
+              lightboxMouseMoveHandler = function(evt) {
+                if (!mediaElement.classList.contains('zoomed')) return;
+                const maxScrollLeft = modal.scrollWidth - modal.clientWidth;
+                const maxScrollTop = modal.scrollHeight - modal.clientHeight;
+                
+                if (maxScrollLeft > 0 || maxScrollTop > 0) {
+                  const xRatio = evt.clientX / modal.clientWidth;
+                  const yRatio = evt.clientY / modal.clientHeight;
+                  
+                  modal.scrollLeft = xRatio * maxScrollLeft;
+                  modal.scrollTop = yRatio * maxScrollTop;
+                }
+              };
+              modal.addEventListener('mousemove', lightboxMouseMoveHandler);
+            }
+          } else {
+            mediaElement.style.cursor = 'zoom-in';
+            contentBox.classList.remove('zoomed-parent');
+            modal.classList.remove('zoomed-modal');
+            
+            if (lightboxMouseMoveHandler) {
+              modal.removeEventListener('mousemove', lightboxMouseMoveHandler);
+              lightboxMouseMoveHandler = null;
+            }
+            
+            modal.scrollTo({
+              left: 0,
+              top: 0,
+              behavior: 'smooth'
+            });
+          }
+        });
+      }
+      
+      if (mediaElement) {
+        contentBox.appendChild(mediaElement);
+        descText.innerHTML = activeItem.description;
+      }
+    }
+
+    function prevSlide() {
+      if (currentImgIdx > 0) {
+        currentImgIdx--;
+        populateLightbox();
+      } else {
+        currentImgIdx = portfolioSets[currentSetIdx].length - 1;
+        populateLightbox();
+      }
+    }
+
+    function nextSlide() {
+      const activeSet = portfolioSets[currentSetIdx];
+      if (currentImgIdx < activeSet.length - 1) {
+        currentImgIdx++;
+        populateLightbox();
+      } else {
+        currentImgIdx = 0;
+        populateLightbox();
+      }
+    }
+
+    window.onclick = function(e) {
+      if (e.target === modal) {
+        closeLightbox();
+      }
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (modal.style.display === 'block') {
+        if (e.key === 'ArrowLeft') {
+          prevSlide();
+        } else if (e.key === 'ArrowRight') {
+          nextSlide();
+        } else if (e.key === 'Escape') {
+          closeLightbox();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
