@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=1.5" />
+  <link rel="stylesheet" href="style.css?v=1.6" />
 </head>
 <body>
 
@@ -296,6 +296,14 @@
                 <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
               </div>
             </div>
+          </div>
+
+          <!-- Chapter Navigation -->
+          <div class="chapter-nav-row">
+            <button class="btn-nav-next" onclick="navigateTo('muscles')">
+              <span class="nav-label">Next Chapter</span>
+              <span class="nav-title">Chapter 2 · Musculature Reference →</span>
+            </button>
           </div>
         </div>
 
@@ -601,6 +609,18 @@
               </div>
             </div>
           </div>
+
+          <!-- Chapter Navigation -->
+          <div class="chapter-nav-row">
+            <button class="btn-nav-prev" onclick="navigateTo('skeleton')">
+              <span class="nav-label">← Previous Chapter</span>
+              <span class="nav-title">Chapter 1 · Skeleton</span>
+            </button>
+            <button class="btn-nav-next" onclick="navigateTo('gesture')">
+              <span class="nav-label">Next Chapter</span>
+              <span class="nav-title">Chapter 3 · Gesture &amp; Flow →</span>
+            </button>
+          </div>
         </div>
 
         <aside class="content-sidebar">
@@ -762,6 +782,18 @@
               </div>
             </div>
           </div>
+
+          <!-- Chapter Navigation -->
+          <div class="chapter-nav-row">
+            <button class="btn-nav-prev" onclick="navigateTo('muscles')">
+              <span class="nav-label">← Previous Chapter</span>
+              <span class="nav-title">Chapter 2 · Muscles</span>
+            </button>
+            <button class="btn-nav-next" onclick="navigateTo('surface')">
+              <span class="nav-label">Next Chapter</span>
+              <span class="nav-title">Chapter 4 · Surface Form →</span>
+            </button>
+          </div>
         </div>
 
         <aside class="content-sidebar">
@@ -917,6 +949,18 @@
                 <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
               </div>
             </div>
+          </div>
+
+          <!-- Chapter Navigation -->
+          <div class="chapter-nav-row">
+            <button class="btn-nav-prev" onclick="navigateTo('gesture')">
+              <span class="nav-label">← Previous Chapter</span>
+              <span class="nav-title">Chapter 3 · Gesture</span>
+            </button>
+            <button class="btn-nav-next" onclick="navigateTo('forms')">
+              <span class="nav-label">Next Chapter</span>
+              <span class="nav-title">Chapter 5 · Basic Forms →</span>
+            </button>
           </div>
         </div>
 
@@ -1122,6 +1166,18 @@
               <button class="copy-btn" onclick="copyPrompt(this)" aria-label="Copy this prompt">Copy</button>
             </div>
           </div>
+        </div>
+
+        <!-- Chapter Navigation -->
+        <div class="chapter-nav-row">
+          <button class="btn-nav-prev" onclick="navigateTo('surface')">
+            <span class="nav-label">← Previous Chapter</span>
+            <span class="nav-title">Chapter 4 · Surface Form</span>
+          </button>
+          <button class="btn-nav-next" onclick="navigateTo('home')">
+            <span class="nav-label">Back to Home</span>
+            <span class="nav-title">Return to Homepage ⌂</span>
+          </button>
         </div>
       </div>
     </section>
