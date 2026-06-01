@@ -658,7 +658,16 @@
       
       if (mediaElement) {
         contentBox.appendChild(mediaElement);
-        descText.innerHTML = activeItem.description;
+        
+        let displayText = activeItem.description;
+        if (activeItem.src && (activeItem.src.startsWith('assets/images/fulls/') || activeItem.src.startsWith('images/fulls/'))) {
+          const urlParts = activeItem.src.split('/');
+          const fileNameWithExt = urlParts[urlParts.length - 1];
+          let title = fileNameWithExt.substring(0, fileNameWithExt.lastIndexOf('.'));
+          title = decodeURIComponent(title).trim();
+          displayText = `<div style="font-family:'Cinzel', serif; font-size: 1.15rem; color: var(--accent); margin-bottom: 6px; font-weight: 600; text-transform: none; letter-spacing: 0.02em;">${title}</div><div style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.5;">${activeItem.description}</div>`;
+        }
+        descText.innerHTML = displayText;
       }
     }
 

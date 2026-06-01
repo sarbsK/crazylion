@@ -267,7 +267,18 @@
 
                 const description = document.createElement('p');
                 description.className = 'description';
-                description.textContent = content.description;
+                
+                let displayText = content.description;
+                if (content.src && (content.src.startsWith('images/fulls/') || content.src.startsWith('assets/images/fulls/'))) {
+                    const urlParts = content.src.split('/');
+                    const fileNameWithExt = urlParts[urlParts.length - 1];
+                    let title = fileNameWithExt.substring(0, fileNameWithExt.lastIndexOf('.'));
+                    title = decodeURIComponent(title).trim();
+                    displayText = `<div style="font-size: 1.15rem; color: #ff6f61; margin-bottom: 6px; font-weight: 600;">${title}</div><div style="font-size: 0.92rem; color: #ccc; line-height: 1.5;">${content.description}</div>`;
+                    description.innerHTML = displayText;
+                } else {
+                    description.textContent = content.description;
+                }
                 modalContent.appendChild(description);
 
                 // Adjust size of content to fit the screen
