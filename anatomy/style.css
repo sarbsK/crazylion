@@ -1565,6 +1565,7 @@ body.lightbox-open {
   padding: 1rem 1.5rem;
   transition: all var(--transition);
   min-width: 240px;
+  max-width: 100%;
   flex: 1;
 }
 
