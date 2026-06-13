@@ -1611,6 +1611,10 @@ function setupUIEventListeners() {
   // Capturing / Export / Import Poses
   document.getElementById('btn-capture').addEventListener('click', captureReferencePNG);
   document.getElementById('btn-search-reference').addEventListener('click', searchPoseReference);
+  const btnFloatingSearch = document.getElementById('btn-floating-search');
+  if (btnFloatingSearch) {
+    btnFloatingSearch.addEventListener('click', searchPoseReference);
+  }
   document.getElementById('btn-save-pose').addEventListener('click', exportPoseJSON);
   document.getElementById('btn-export-mesh').addEventListener('click', exportMannequinOBJ);
   document.getElementById('btn-export-gltf').addEventListener('click', exportMannequinGLTF);
