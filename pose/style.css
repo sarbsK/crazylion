@@ -723,33 +723,6 @@ input:checked + .slider:before {
     margin-bottom: 0 !important; /* Handled by flex gap */
   }
 
-  /* Beautiful floating trigger button for mobile PWA */
-  .mobile-menu-toggle {
-    display: flex !important;
-    align-items: center;
-    gap: 6px;
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 999;
-    padding: 10px 16px;
-    font-weight: 700;
-    font-size: 12px;
-    font-family: inherit;
-    color: #000;
-    background: var(--rim-color);
-    border: none;
-    border-radius: 50px;
-    box-shadow: 0 4px 16px rgba(6, 182, 212, 0.4);
-    cursor: pointer;
-    pointer-events: auto;
-    transition: all var(--transition-fast);
-  }
-  
-  .mobile-menu-toggle:active {
-    transform: scale(0.95);
-    box-shadow: 0 2px 8px rgba(6, 182, 212, 0.2);
-  }
 
   /* Rounded close button inside sidebar header */
   .mobile-only-close {
@@ -1549,6 +1522,36 @@ body.clean-screen-mode .floating-logo-header {
   .scale-value-display {
     width: 35px !important;
     font-size: 11px !important;
+  }
+
+  /* Reference Sidebar Mobile Styling */
+  .reference-sidebar {
+    position: fixed !important;
+    top: 10px !important;
+    right: 10px !important;
+    bottom: 10px !important;
+    width: 270px !important;
+    max-width: calc(100% - 20px) !important;
+    height: calc(100vh - 20px) !important;
+    z-index: 1000 !important;
+    transform: translateX(110%) !important;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease-out !important;
+    background: rgba(25, 25, 35, 0.85) !important; /* Frosted glass matching left sidebar */
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25) !important;
+    pointer-events: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    opacity: 0 !important;
+  }
+  
+  .app-interface.has-reference-sidebar .reference-sidebar {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+    padding: 12px 16px !important;
   }
 }
 
