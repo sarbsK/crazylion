@@ -1220,3 +1220,111 @@ body.clean-screen-mode .camera-quick-presets {
   }
 }
 
+/* Sidebar Collapse Mode */
+.app-interface.sidebar-collapsed {
+  grid-template-columns: 0px 1fr 0px;
+}
+
+.app-interface.sidebar-collapsed .sidebar {
+  transform: translateX(-390px);
+  pointer-events: none;
+}
+
+/* Floating Logo Header (Transparent overlay when sidebar is collapsed) */
+.floating-logo-header {
+  position: absolute;
+  top: 35px;
+  left: 35px;
+  z-index: 100;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  background: none;
+  border: none;
+  padding: 0;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.floating-logo-header h1 {
+  margin: 0;
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.floating-logo-header p {
+  margin: 4px 0 12px 0;
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.btn-expand-sidebar {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-expand-sidebar:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.btn-expand-sidebar:active {
+  transform: translateY(0);
+}
+
+/* Visibility classes for close and collapse buttons */
+.mobile-only-close {
+  display: none;
+}
+
+.desktop-only-collapse {
+  display: flex;
+}
+
+body.clean-screen-mode .floating-logo-header {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.35s ease-out !important;
+}
+
+@media (max-width: 768px) {
+  .mobile-only-close {
+    display: flex !important;
+  }
+  
+  .desktop-only-collapse {
+    display: none !important;
+  }
+  
+  .floating-logo-header {
+    display: none !important;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+

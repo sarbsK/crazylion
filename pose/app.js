@@ -516,6 +516,16 @@ function init() {
   // 8. Start Render Animation Loop
   animate();
   
+  // Initialize scale slider config on startup
+  const optionJoint = document.querySelector('#scale-mode-selector option[value="joint"]');
+  if (optionJoint) optionJoint.disabled = true;
+
+  const scaleSelector = document.getElementById('scale-mode-selector');
+  if (scaleSelector) {
+    scaleSelector.value = 'torsoHeight'; // Default anatomy option
+  }
+  updateBottomScaleSliderConfig();
+
   // Adjust to viewport size changes
   window.addEventListener('resize', onWindowResize);
 }
@@ -972,6 +982,53 @@ function setup3DRaycasting() {
   });
 }
 
+const bottomScalePanelConfig = {
+  joint: { min: 50, max: 200, isTilt: false, sidebarId: null },
+  torsoHeight: { min: 70, max: 140, isTilt: false, sidebarId: 'prop-torso-height' },
+  torsoWidth: { min: 70, max: 150, isTilt: false, sidebarId: 'prop-torso-width' },
+  chestWidth: { min: 60, max: 160, isTilt: false, sidebarId: 'prop-chest-width' },
+  pelvisWidth: { min: 60, max: 160, isTilt: false, sidebarId: 'prop-pelvis-width' },
+  pelvisTilt: { min: -30, max: 30, isTilt: true, sidebarId: 'prop-pelvis-tilt' },
+  armLength: { min: 70, max: 140, isTilt: false, sidebarId: 'prop-arm-length' },
+  legLength: { min: 70, max: 140, isTilt: false, sidebarId: 'prop-leg-length' },
+  limbThickness: { min: 70, max: 150, isTilt: false, sidebarId: 'prop-limb-thickness' },
+  headScale: { min: 70, max: 140, isTilt: false, sidebarId: 'prop-head-scale' }
+};
+
+function updateBottomScaleSliderConfig() {
+  const selector = document.getElementById('scale-mode-selector');
+  const slider = document.getElementById('joint-scale');
+  const valText = document.getElementById('joint-scale-val');
+  if (!selector || !slider) return;
+
+  const mode = selector.value;
+  const config = bottomScalePanelConfig[mode];
+  if (!config) return;
+
+  slider.min = config.min;
+  slider.max = config.max;
+
+  let value = 100;
+  if (mode === 'joint') {
+    const jointGroup = state.joints[state.selectedJointName];
+    if (jointGroup) {
+      value = Math.round(jointGroup.scale.x * 100);
+    }
+  } else {
+    const rawVal = state.anatomy[mode];
+    if (config.isTilt) {
+      value = Math.round(rawVal);
+    } else {
+      value = Math.round(rawVal * 100);
+    }
+  }
+
+  slider.value = value;
+  if (valText) {
+    valText.innerText = value + (config.isTilt ? '°' : '%');
+  }
+}
+
 function deselectJoint() {
   // 1. Reset color of previously selected joint sphere
   const oldSphere = state.jointSpheres.find(s => s.userData.jointName === state.selectedJointName);
@@ -998,11 +1055,16 @@ function deselectJoint() {
     topPanel.style.display = 'none';
   }
 
-  // 6. Hide bottom scale panel
-  const scalePanel = document.getElementById('bottom-scale-panel');
-  if (scalePanel) {
-    scalePanel.style.display = 'none';
+  // 6. Update bottom scale panel state (keep visible but disable active joint option)
+  const optionJoint = document.querySelector('#scale-mode-selector option[value="joint"]');
+  if (optionJoint) optionJoint.disabled = true;
+
+  const scaleSelector = document.getElementById('scale-mode-selector');
+  if (scaleSelector && scaleSelector.value === 'joint') {
+    scaleSelector.value = 'torsoHeight'; // Default anatomy option
   }
+  
+  updateBottomScaleSliderConfig();
 }
 
 function selectJoint(jointName) {
@@ -1036,14 +1098,16 @@ function selectJoint(jointName) {
   updateSliderState('rotate-y', rotY);
   updateSliderState('rotate-z', rotZ);
 
-  // Sync scale slider
-  const scaleSlider = document.getElementById('joint-scale');
-  const scaleValText = document.getElementById('joint-scale-val');
-  if (scaleSlider) {
-    const currentScale = Math.round(jointGroup.scale.x * 100);
-    scaleSlider.value = currentScale;
-    if (scaleValText) scaleValText.innerText = currentScale + '%';
+  // Enable active joint option in selector and default to it
+  const optionJoint = document.querySelector('#scale-mode-selector option[value="joint"]');
+  if (optionJoint) optionJoint.disabled = false;
+
+  const scaleSelector = document.getElementById('scale-mode-selector');
+  if (scaleSelector) {
+    scaleSelector.value = 'joint';
   }
+
+  updateBottomScaleSliderConfig();
 
   // Show and update top rotation panel
   const topPanel = document.getElementById('top-rotation-panel');
@@ -1055,7 +1119,7 @@ function selectJoint(jointName) {
     topJointNameSpan.innerText = jointName;
   }
 
-  // Show and update bottom scale panel
+  // Show bottom scale panel
   const scalePanel = document.getElementById('bottom-scale-panel');
   if (scalePanel) {
     scalePanel.style.display = 'flex';
@@ -1157,6 +1221,28 @@ function setupUIEventListeners() {
   if (sideManipOff) sideManipOff.addEventListener('click', () => setManipMode('off'));
   if (sideManipRotate) sideManipRotate.addEventListener('click', () => setManipMode('rotate'));
   if (sideManipTranslate) sideManipTranslate.addEventListener('click', () => setManipMode('translate'));
+
+  // ---- Sidebar Collapse / Expand (Desktop) ----
+  const btnCollapseSidebar = document.getElementById('btn-collapse-sidebar');
+  const btnExpandSidebar = document.getElementById('btn-expand-sidebar');
+  const appInterface = document.querySelector('.app-interface');
+  const floatingLogoHeader = document.getElementById('floating-logo-header');
+
+  if (btnCollapseSidebar && appInterface) {
+    btnCollapseSidebar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      appInterface.classList.add('sidebar-collapsed');
+      if (floatingLogoHeader) floatingLogoHeader.style.display = 'flex';
+    });
+  }
+
+  if (btnExpandSidebar && appInterface) {
+    btnExpandSidebar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      appInterface.classList.remove('sidebar-collapsed');
+      if (floatingLogoHeader) floatingLogoHeader.style.display = 'none';
+    });
+  }
 
   // ---- Floating Clean Screen / Hide UI Mode ----
   const btnToggleUI = document.getElementById('btn-toggle-ui');
@@ -1281,19 +1367,54 @@ function setupUIEventListeners() {
     });
   }
 
+  // scale-mode-selector Dropdown Change
+  const scaleModeSelector = document.getElementById('scale-mode-selector');
+  if (scaleModeSelector) {
+    scaleModeSelector.addEventListener('change', () => {
+      updateBottomScaleSliderConfig();
+    });
+  }
+
   // Parametric Scale Change
   const jointScaleSlider = document.getElementById('joint-scale');
   if (jointScaleSlider) {
     jointScaleSlider.addEventListener('input', (e) => {
       const val = parseInt(e.target.value);
+      const selector = document.getElementById('scale-mode-selector');
+      if (!selector) return;
+      const mode = selector.value;
+      const config = bottomScalePanelConfig[mode];
+      if (!config) return;
+
       const valText = document.getElementById('joint-scale-val');
-      if (valText) valText.innerText = val + '%';
-      
-      const jointGroup = state.joints[state.selectedJointName];
-      if (jointGroup) {
-        const scaleScalar = val / 100;
-        jointGroup.scale.setScalar(scaleScalar);
-        if (state.skeletonVisible) drawSkeletonLines();
+      if (valText) {
+        valText.innerText = val + (config.isTilt ? '°' : '%');
+      }
+
+      if (mode === 'joint') {
+        const jointGroup = state.joints[state.selectedJointName];
+        if (jointGroup) {
+          const scaleScalar = val / 100;
+          jointGroup.scale.setScalar(scaleScalar);
+          if (state.skeletonVisible) drawSkeletonLines();
+        }
+      } else {
+        // Anatomy proportions
+        if (config.isTilt) {
+          state.anatomy[mode] = val;
+        } else {
+          state.anatomy[mode] = val / 100;
+        }
+
+        // Sync to sidebar slider if it exists
+        if (config.sidebarId) {
+          const sidebarSlider = document.getElementById(config.sidebarId);
+          if (sidebarSlider) sidebarSlider.value = val;
+          const sidebarValText = document.getElementById(config.sidebarId + '-val');
+          if (sidebarValText) sidebarValText.innerText = val + (config.isTilt ? '°' : '%');
+        }
+
+        updateMannequinProportions();
       }
     });
     jointScaleSlider.addEventListener('change', () => {
@@ -1311,10 +1432,7 @@ function setupUIEventListeners() {
       updateSliderState('rotate-y', 0);
       updateSliderState('rotate-z', 0);
 
-      const scaleSlider = document.getElementById('joint-scale');
-      const scaleValText = document.getElementById('joint-scale-val');
-      if (scaleSlider) scaleSlider.value = 100;
-      if (scaleValText) scaleValText.innerText = '100%';
+      updateBottomScaleSliderConfig();
 
       if (state.skeletonVisible) drawSkeletonLines();
       triggerAutoMatchPose();
@@ -1332,6 +1450,7 @@ function setupUIEventListeners() {
     state.joints['pelvis'].position.z = 0;
 
     selectJoint(state.selectedJointName);
+    updateBottomScaleSliderConfig();
     if (state.skeletonVisible) drawSkeletonLines();
     triggerAutoMatchPose();
   });
@@ -1739,6 +1858,7 @@ function setupUIEventListeners() {
     state.anatomy.torsoHeight = parseFloat(e.target.value) / 100;
     torsoHeightVal.innerText = e.target.value + '%';
     updateMannequinProportions();
+    updateBottomScaleSliderConfig();
   });
 
   const torsoWidthSlider = document.getElementById('prop-torso-width');
@@ -1747,6 +1867,7 @@ function setupUIEventListeners() {
     state.anatomy.torsoWidth = parseFloat(e.target.value) / 100;
     torsoWidthVal.innerText = e.target.value + '%';
     updateMannequinProportions();
+    updateBottomScaleSliderConfig();
   });
 
   const chestWidthSlider = document.getElementById('prop-chest-width');
@@ -1755,6 +1876,7 @@ function setupUIEventListeners() {
     state.anatomy.chestWidth = parseFloat(e.target.value) / 100;
     chestWidthVal.innerText = e.target.value + '%';
     updateMannequinProportions();
+    updateBottomScaleSliderConfig();
   });
 
   const pelvisWidthSlider = document.getElementById('prop-pelvis-width');
@@ -1763,6 +1885,7 @@ function setupUIEventListeners() {
     state.anatomy.pelvisWidth = parseFloat(e.target.value) / 100;
     pelvisWidthVal.innerText = e.target.value + '%';
     updateMannequinProportions();
+    updateBottomScaleSliderConfig();
   });
 
   const pelvisTiltSlider = document.getElementById('prop-pelvis-tilt');
@@ -1771,6 +1894,7 @@ function setupUIEventListeners() {
     state.anatomy.pelvisTilt = parseFloat(e.target.value);
     pelvisTiltVal.innerText = e.target.value + '°';
     updateMannequinProportions();
+    updateBottomScaleSliderConfig();
   });
 
   const armLengthSlider = document.getElementById('prop-arm-length');
@@ -1779,6 +1903,7 @@ function setupUIEventListeners() {
     state.anatomy.armLength = parseFloat(e.target.value) / 100;
     armLengthVal.innerText = e.target.value + '%';
     updateMannequinProportions();
+    updateBottomScaleSliderConfig();
   });
 
   const legLengthSlider = document.getElementById('prop-leg-length');
@@ -1787,6 +1912,7 @@ function setupUIEventListeners() {
     state.anatomy.legLength = parseFloat(e.target.value) / 100;
     legLengthVal.innerText = e.target.value + '%';
     updateMannequinProportions();
+    updateBottomScaleSliderConfig();
   });
 
   const limbThicknessSlider = document.getElementById('prop-limb-thickness');
@@ -1795,6 +1921,7 @@ function setupUIEventListeners() {
     state.anatomy.limbThickness = parseFloat(e.target.value) / 100;
     limbThicknessVal.innerText = e.target.value + '%';
     updateMannequinProportions();
+    updateBottomScaleSliderConfig();
   });
 
   const headScaleSlider = document.getElementById('prop-head-scale');
@@ -1803,6 +1930,7 @@ function setupUIEventListeners() {
     state.anatomy.headScale = parseFloat(e.target.value) / 100;
     headScaleVal.innerText = e.target.value + '%';
     updateMannequinProportions();
+    updateBottomScaleSliderConfig();
   });
 
   document.getElementById('btn-reset-proportions').addEventListener('click', () => {
@@ -1836,6 +1964,7 @@ function setupUIEventListeners() {
     headScaleVal.innerText = '100%';
 
     updateMannequinProportions();
+    updateBottomScaleSliderConfig();
     triggerAutoMatchPose();
   });
 
