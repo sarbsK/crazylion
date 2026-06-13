@@ -2565,7 +2565,6 @@ function searchPoseReference() {
   }
   
   // Open modal
-  const backdrop = document.getElementById('search-modal-backdrop');
   if (backdrop) {
     backdrop.classList.add('active');
   }
