@@ -429,6 +429,10 @@ function init() {
     // Disable orbit while dragging the gizmo
     state.transformControls.addEventListener('dragging-changed', (evt) => {
       state.orbitControls.enabled = !evt.value;
+      if (!evt.value) {
+        // Dragging ended! Trigger auto-match pose!
+        triggerAutoMatchPose();
+      }
     });
 
     // Sync sliders when manipulator moves the joint
@@ -1142,17 +1146,26 @@ function setupUIEventListeners() {
     document.getElementById('rotate-x-val').innerText = val + '°';
     applyRotationFromUI('x', val);
   });
+  document.getElementById('rotate-x').addEventListener('change', () => {
+    triggerAutoMatchPose();
+  });
 
   document.getElementById('rotate-y').addEventListener('input', (e) => {
     const val = parseInt(e.target.value);
     document.getElementById('rotate-y-val').innerText = val + '°';
     applyRotationFromUI('y', val);
   });
+  document.getElementById('rotate-y').addEventListener('change', () => {
+    triggerAutoMatchPose();
+  });
 
   document.getElementById('rotate-z').addEventListener('input', (e) => {
     const val = parseInt(e.target.value);
     document.getElementById('rotate-z-val').innerText = val + '°';
     applyRotationFromUI('z', val);
+  });
+  document.getElementById('rotate-z').addEventListener('change', () => {
+    triggerAutoMatchPose();
   });
 
   // Joint Resets
@@ -1164,6 +1177,7 @@ function setupUIEventListeners() {
       updateSliderState('rotate-y', 0);
       updateSliderState('rotate-z', 0);
       if (state.skeletonVisible) drawSkeletonLines();
+      triggerAutoMatchPose();
     }
   });
 
@@ -1178,6 +1192,7 @@ function setupUIEventListeners() {
 
     selectJoint(state.selectedJointName);
     if (state.skeletonVisible) drawSkeletonLines();
+    triggerAutoMatchPose();
   });
 
   // Material Selector
@@ -1323,20 +1338,12 @@ function setupUIEventListeners() {
       // Auto-update reference gallery if active in side-by-side mode!
       const appInterface = document.querySelector('.app-interface');
       if (appInterface && appInterface.classList.contains('has-reference-sidebar')) {
-        const poseTerms = {
-          neutral: 'standing',
-          running: 'running',
-          heroic: 'standing heroic',
-          sitting: 'sitting',
-          jumping: 'jumping',
-          torsotwist: 'contrapposto'
-        };
-        const query = poseTerms[poseName] || 'standing';
+        const description = describeActivePose();
         const searchInput = document.getElementById('reference-search-input');
         if (searchInput) {
-          searchInput.value = query;
+          searchInput.value = "Match Pose: " + description;
         }
-        fetchWikimediaReferences(query);
+        fetchWikimediaReferences(description);
       }
     });
   });
@@ -1688,6 +1695,22 @@ function setupUIEventListeners() {
     headScaleVal.innerText = '100%';
 
     updateMannequinProportions();
+    triggerAutoMatchPose();
+  });
+
+  // Trigger auto-match pose when any proportion slider is released
+  const propSliders = [
+    'prop-torso-height', 'prop-torso-width', 'prop-chest-width', 'prop-pelvis-width',
+    'prop-pelvis-tilt', 'prop-arm-length', 'prop-leg-length', 'prop-limb-thickness',
+    'prop-head-scale'
+  ];
+  propSliders.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('change', () => {
+        triggerAutoMatchPose();
+      });
+    }
   });
 }
 
@@ -2730,7 +2753,7 @@ function restoreDefaultMannequin() {
 
 
 function describeActivePose() {
-  if (!state.joints || !state.joints['pelvis']) return "standing pose";
+  if (!state.joints || !state.joints['pelvis']) return "standing";
   
   const pelvisY = state.joints['pelvis'].position.y;
   
@@ -2753,40 +2776,58 @@ function describeActivePose() {
   const spineDegY = THREE.MathUtils.radToDeg(state.joints['spine'].rotation.y);
   
   let basePose = 'standing';
-  if (pelvisY < 2.0) {
-    basePose = 'reclining lying down';
-  } else if (pelvisY < 3.4) {
-    if (leftThighDegX < -40 || rightThighDegX < -40) {
-      basePose = 'sitting seated';
-    } else {
-      basePose = 'kneeling';
-    }
-  } else if (leftThighDegX < -40 && rightThighDegX < -40) {
-    basePose = 'sitting seated';
+  const thighSplit = Math.abs(leftThighDegX - rightThighDegX);
+  
+  // 1. Reclining/Lying: Low pelvis
+  if (pelvisY < 2.2) {
+    basePose = 'reclining';
+  }
+  // 2. Sitting: Low pelvis and at least one thigh swung forward heavily, with knee bent
+  else if (pelvisY < 3.4 && (leftThighDegX < -40 || rightThighDegX < -40) && (leftCalfDegX > 30 || rightCalfDegX > 30)) {
+    basePose = 'sitting';
+  }
+  // 3. Crouching: Low/Medium pelvis, both thighs swung forward
+  else if (pelvisY < 3.6 && leftThighDegX < -30 && rightThighDegX < -30) {
+    basePose = 'crouching';
+  }
+  // 4. Kneeling: Low pelvis, knees bent heavily but thighs not swung forward as much
+  else if (pelvisY < 3.4 && (leftCalfDegX > 60 || rightCalfDegX > 60)) {
+    basePose = 'kneeling';
+  }
+  // 5. Jumping: High pelvis and knees bent or split stance
+  else if (pelvisY > 5.1 && (leftCalfDegX > 40 || rightCalfDegX > 40 || thighSplit > 50)) {
+    basePose = 'jumping';
+  }
+  // 6. Running/Stepping: Big thigh split
+  else if (thighSplit > 45) {
+    basePose = 'running';
+  }
+  // 7. Default Standing
+  else {
+    basePose = 'standing';
   }
   
   const descriptions = [];
-  
-  // Add base pose
   descriptions.push(basePose);
   
-  // Lean / Twist
+  // Torso bending - NOTE: negative rotation is leaning forward, positive is leaning back
   const totalBendX = chestDegX + spineDegX;
-  const totalTwistY = chestDegY + spineDegY;
-  
-  if (totalBendX > 15) {
-    descriptions.push('leaning forward forward bending');
-  } else if (totalBendX < -15) {
-    descriptions.push('leaning back backward bend');
+  if (totalBendX < -15) {
+    descriptions.push('leaning forward');
+  } else if (totalBendX > 15) {
+    descriptions.push('leaning back');
   }
   
+  // Torso twist
+  const totalTwistY = chestDegY + spineDegY;
   if (Math.abs(totalTwistY) > 15) {
     descriptions.push('torso twisted');
   }
   
-  // Arms
-  const leftArmUp = (leftArmDegZ < -50 || leftArmDegX < -50);
-  const rightArmUp = (rightArmDegZ > 50 || rightArmDegX < -50);
+  // Arms: raise checks (only classify as up if Z is highly elevated or X is heavily flexed forward)
+  // Sideways abduction Z > 70/<-70, forward raising X < -60
+  const leftArmUp = (leftArmDegZ < -70 || leftArmDegX < -65);
+  const rightArmUp = (rightArmDegZ > 70 || rightArmDegX < -65);
   
   if (leftArmUp && rightArmUp) {
     descriptions.push('both arms raised');
@@ -2794,31 +2835,6 @@ function describeActivePose() {
     descriptions.push('left arm raised');
   } else if (rightArmUp) {
     descriptions.push('right arm raised');
-  } else if (leftArmDegX < -30 && rightArmDegX < -30) {
-    descriptions.push('arms extended forward');
-  }
-  
-  // Legs
-  const leftKneeBent = (leftCalfDegX > 30);
-  const rightKneeBent = (rightCalfDegX > 30);
-  
-  if (leftKneeBent && rightKneeBent) {
-    descriptions.push('legs bent');
-  } else if (leftKneeBent || rightKneeBent) {
-    descriptions.push('one leg bent');
-  }
-  
-  // Stepping Split Stance
-  const thighSplit = Math.abs(leftThighDegX - rightThighDegX);
-  if (thighSplit > 45) {
-    descriptions.push('dynamic stepping split stance');
-  }
-  
-  if (descriptions.length === 1 && descriptions[0] === 'standing') {
-    return "full body standing pose figure drawing sketch reference";
-  }
-  if (descriptions.length === 1 && descriptions[0] === 'sitting seated') {
-    return "full body sitting seated pose figure drawing sketch reference";
   }
   
   return descriptions.join(' ');
@@ -2845,49 +2861,42 @@ function fetchWikimediaReferences(rawQuery) {
   
   // Build a high-quality curated search query for Wikimedia Commons
   const searchQuery = compileHighQualityQuery(cleanQuery, state.selectedStyle, false);
-  console.log("Reference search query:", searchQuery);
+  console.log("Reference search query (specific):", searchQuery);
   
-  // Primary: Wikimedia Commons API (CORS-friendly, no auth, no rate limits, millions of art images)
-  // Specifying iiurlwidth=400 natively requests a pre-rendered, optimized thumbnail URL from Wikimedia.
   const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(searchQuery)}&gsrnamespace=6&prop=imageinfo&iiprop=url|size|mime&iiurlwidth=400&gsrlimit=30&format=json&origin=*`;
   
   fetch(url)
     .then(res => res.json())
     .then(data => {
       grid.innerHTML = '';
+      const existingUrls = new Set();
       let count = 0;
       
       if (data.query && data.query.pages) {
         const pages = Object.values(data.query.pages);
-        
-        // Sort by page ID descending (newer uploads first)
         pages.sort((a, b) => (b.pageid || 0) - (a.pageid || 0));
         
         pages.forEach(page => {
-          if (count >= 10) return; // Limit to 10 most relevant results
-          
+          if (count >= 10) return;
           if (page.imageinfo && page.imageinfo[0] && page.imageinfo[0].url) {
             const info = page.imageinfo[0];
             const imgUrl = info.url;
             const mime = (info.mime || '').toLowerCase();
             
-            // Only accept actual image formats (skip SVG, PDF, TIFF, audio, video)
             if (!mime.startsWith('image/') || mime.includes('svg') || mime.includes('tiff') || mime.includes('pdf')) return;
-            
-            // Skip very small icons and logos (likely not useful references)
             if (info.width && info.height && (info.width < 150 || info.height < 150)) return;
             
-            count++;
-            
-            // Use native Wikimedia thumbnail URL
             const thumbUrl = info.thumburl || imgUrl;
+            if (existingUrls.has(thumbUrl)) return;
+            existingUrls.add(thumbUrl);
+            
+            count++;
             
             const item = document.createElement('div');
             item.className = 'reference-item';
             item.title = (page.title || '').replace('File:', '');
             item.innerHTML = `<img src="${thumbUrl}" alt="${item.title.replace(/"/g, '')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'">`;
             
-            // Click to pin the full-resolution image to the viewport
             item.addEventListener('click', () => {
               pinReferenceImage(imgUrl);
             });
@@ -2897,33 +2906,31 @@ function fetchWikimediaReferences(rawQuery) {
         });
       }
       
-      // If we got fewer than 4 results, fill up with a broader search of the base pose!
+      // If we got fewer than 8 results, let's load broader results to fill slots!
       const poseTerms = /\b(standing|sitting|seated|sit|running|run|jumping|jump|kneeling|kneel|crouching|crouch|lying|recline|reclining|contrapposto|twist|bending|bend|leaning|lean|forward|backward|walking|walk|dancing|dance|heroic|action|dynamic|arms?\s*raised|reaching)\b/i;
       const isMatchPose = cleanQuery.includes('pose') || cleanQuery.includes('match') || poseTerms.test(cleanQuery);
       
-      if (count < 4 && isMatchPose) {
-        fetchWikimediaBroadFallback(cleanQuery, grid, count);
+      if (count < 8 && isMatchPose) {
+        fetchWikimediaBroadFallback(cleanQuery, grid, count, existingUrls);
       } else if (count === 0) {
-        // Fallback: try Openverse API for broader Creative Commons results
-        fetchOpenverseFallback(cleanQuery, grid);
+        fetchOpenverseFallback(cleanQuery, grid, count, existingUrls);
       }
     })
     .catch(err => {
       console.error('Wikimedia Commons fetch failed, trying Openverse fallback:', err);
-      fetchOpenverseFallback(cleanQuery, grid);
+      fetchOpenverseFallback(cleanQuery, grid, 0, new Set());
     });
 }
 
-// Broad query fallback to fill remaining slots in the reference gallery
-function fetchWikimediaBroadFallback(cleanQuery, grid, currentCount) {
+function fetchWikimediaBroadFallback(cleanQuery, grid, currentCount, existingUrls) {
   const searchQuery = compileHighQualityQuery(cleanQuery, state.selectedStyle, true); // forceBroad = true
+  console.log("Reference search query (broad fallback):", searchQuery);
+  
   const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(searchQuery)}&gsrnamespace=6&prop=imageinfo&iiprop=url|size|mime&iiurlwidth=400&gsrlimit=20&format=json&origin=*`;
   
   fetch(url)
     .then(res => res.json())
     .then(data => {
-      // Collect already rendered thumbnail URLs to avoid duplicates
-      const existingUrls = Array.from(grid.querySelectorAll('img')).map(img => img.src);
       let count = currentCount;
       
       if (data.query && data.query.pages) {
@@ -2932,14 +2939,13 @@ function fetchWikimediaBroadFallback(cleanQuery, grid, currentCount) {
         
         pages.forEach(page => {
           if (count >= 10) return;
-          
           if (page.imageinfo && page.imageinfo[0] && page.imageinfo[0].url) {
             const info = page.imageinfo[0];
             const imgUrl = info.url;
             const thumbUrl = info.thumburl || imgUrl;
             
-            // Skip duplicates
-            if (existingUrls.includes(thumbUrl)) return;
+            if (existingUrls.has(thumbUrl)) return;
+            existingUrls.add(thumbUrl);
             
             const mime = (info.mime || '').toLowerCase();
             if (!mime.startsWith('image/') || mime.includes('svg') || mime.includes('tiff') || mime.includes('pdf')) return;
@@ -2961,21 +2967,17 @@ function fetchWikimediaBroadFallback(cleanQuery, grid, currentCount) {
         });
       }
       
-      if (count === 0) {
-        fetchOpenverseFallback(cleanQuery, grid);
+      if (count < 8) {
+        fetchOpenverseFallback(cleanQuery, grid, count, existingUrls);
       }
     })
     .catch(() => {
-      if (grid.querySelectorAll('.reference-item').length === 0) {
-        fetchOpenverseFallback(cleanQuery, grid);
+      if (count < 8) {
+        fetchOpenverseFallback(cleanQuery, grid, count, existingUrls);
       }
     });
 }
 
-// Compile a high-quality, curated Wikimedia Commons search query.
-// Uses `filetype:bitmap` (CirrusSearch keyword) to ensure the API only returns
-// raster images (JPEG/PNG/WebP), eliminating PDFs, TIFFs, SVGs, and DJVUs at the source.
-// Each query pattern has been manually tested via curl to confirm clean art image results.
 function compileHighQualityQuery(poseDescription, style, forceBroad = false) {
   const desc = (poseDescription || '').toLowerCase().trim();
   
@@ -2985,38 +2987,34 @@ function compileHighQualityQuery(poseDescription, style, forceBroad = false) {
   
   // Extract the core pose word
   let poseWord = 'standing';
-  if (desc.includes('sitting') || desc.includes('seated')) poseWord = 'sitting'; // Use sitting for photo/nude queries
-  else if (desc.includes('running') || desc.includes('sprint')) poseWord = 'running';
-  else if (desc.includes('jumping') || desc.includes('leap')) poseWord = 'jumping';
+  if (desc.includes('sitting') || desc.includes('seated') || desc.includes('sit')) poseWord = 'sitting';
+  else if (desc.includes('running') || desc.includes('sprint') || desc.includes('run')) poseWord = 'running';
+  else if (desc.includes('jumping') || desc.includes('leap') || desc.includes('jump')) poseWord = 'jumping';
   else if (desc.includes('kneeling') || desc.includes('kneel')) poseWord = 'kneeling';
-  else if (desc.includes('crouch') || desc.includes('squat')) poseWord = 'crouching';
-  else if (desc.includes('lying') || desc.includes('reclining')) poseWord = 'reclining';
-  else if (desc.includes('bending') || desc.includes('forward') || desc.includes('lean')) poseWord = 'bending';
-  else if (desc.includes('twist') || desc.includes('contrapposto')) poseWord = 'contrapposto';
+  else if (desc.includes('crouch') || desc.includes('crouching') || desc.includes('squat')) poseWord = 'crouching';
+  else if (desc.includes('lying') || desc.includes('reclining') || desc.includes('recline')) poseWord = 'reclining';
   else if (desc.includes('walking') || desc.includes('walk')) poseWord = 'walking';
   else if (desc.includes('dancing') || desc.includes('dance')) poseWord = 'dancing';
-  else if (desc.includes('heroic') || desc.includes('arms raised')) poseWord = 'heroic';
+  else if (desc.includes('bending') || desc.includes('bend')) poseWord = 'bending';
+  else if (desc.includes('twist') || desc.includes('contrapposto')) poseWord = 'contrapposto';
+  else if (desc.includes('heroic')) poseWord = 'heroic';
 
-  // Extract extra descriptive modifier keywords from the description
+  // Extract extra descriptive modifier keywords from the description (limit to 1 to keep queries focused)
   let modifierString = '';
   if (!forceBroad) {
     const modifiers = [];
     if (desc.includes('arms raised') || desc.includes('arm raised')) {
       modifiers.push('arms raised');
     }
-    if (desc.includes('leaning')) {
-      modifiers.push('leaning');
+    if (desc.includes('leaning forward')) {
+      modifiers.push('leaning forward');
+    } else if (desc.includes('leaning back')) {
+      modifiers.push('leaning back');
     }
-    if (desc.includes('twist') || desc.includes('contrapposto')) {
+    if (desc.includes('twist') || desc.includes('contrapposto') || desc.includes('twisted')) {
       modifiers.push('twist');
     }
-    if (desc.includes('bent')) {
-      modifiers.push('bent');
-    }
-    if (desc.includes('stance') || desc.includes('split')) {
-      modifiers.push('stance');
-    }
-    modifierString = modifiers.slice(0, 2).join(' ');
+    modifierString = modifiers.slice(0, 1).join(' ');
   }
   
   const querySuffix = modifierString ? ' ' + modifierString : '';
@@ -3025,24 +3023,41 @@ function compileHighQualityQuery(poseDescription, style, forceBroad = false) {
   if (isMatchPose) {
     if (state.includeArtisticNudes) {
       if (style === 'sculpture') {
+        if (poseWord === 'running') return `statue running filetype:bitmap -monument`;
+        if (poseWord === 'jumping') return `statue dynamic leap filetype:bitmap -monument`;
         return `greek marble statue ${poseWord}${querySuffix} filetype:bitmap -monument`;
       } else if (style === 'drawing') {
         return `academic nude drawing ${poseWord}${querySuffix} filetype:bitmap`;
       } else if (style === 'photo') {
+        if (poseWord === 'running' || poseWord === 'jumping' || poseWord === 'walking') {
+          return `Muybridge ${poseWord} filetype:bitmap`;
+        }
         return `nude model ${poseWord}${querySuffix} filetype:bitmap`;
       } else {
-        // "All Styles" — academic nude/figure photo or study
+        // "All Styles"
+        if (poseWord === 'running' || poseWord === 'jumping' || poseWord === 'walking') {
+          return `Muybridge ${poseWord} OR academic nude ${poseWord} filetype:bitmap`;
+        }
         return `nude academic ${poseWord}${querySuffix} filetype:bitmap`;
       }
     } else {
       // SFW / No nudes mode
       if (style === 'sculpture') {
+        if (poseWord === 'running') return `statue running filetype:bitmap -monument`;
+        if (poseWord === 'jumping') return `statue dynamic leap filetype:bitmap -monument`;
         return `greek marble statue ${poseWord}${querySuffix} filetype:bitmap -monument`;
       } else if (style === 'drawing') {
         return `anatomy figure ${poseWord}${querySuffix} filetype:bitmap`;
       } else if (style === 'photo') {
+        if (poseWord === 'running' || poseWord === 'jumping' || poseWord === 'walking') {
+          return `athlete photo ${poseWord} filetype:bitmap`;
+        }
         return `classical statue ${poseWord}${querySuffix} museum filetype:bitmap -monument`;
       } else {
+        // "All Styles"
+        if (poseWord === 'running' || poseWord === 'jumping' || poseWord === 'walking') {
+          return `statue ${poseWord} OR anatomy drawing ${poseWord} filetype:bitmap -monument`;
+        }
         return `classical statue ${poseWord}${querySuffix} filetype:bitmap -monument`;
       }
     }
@@ -3070,10 +3085,10 @@ function compileHighQualityQuery(poseDescription, style, forceBroad = false) {
   }
 }
 
-// Fallback: Openverse Creative Commons API (may hit rate limits without auth)
-function fetchOpenverseFallback(cleanQuery, grid) {
+function fetchOpenverseFallback(cleanQuery, grid, currentCount, existingUrls) {
   const simple = deriveSimplePoseTerm(cleanQuery);
   const searchQuery = `${simple} figure anatomy drawing sculpture`;
+  console.log("Openverse fallback search query:", searchQuery);
   const url = `https://api.openverse.org/v1/images/?q=${encodeURIComponent(searchQuery)}&license_type=commercial,modification&page_size=20&mature=false`;
   
   fetch(url, {
@@ -3084,15 +3099,19 @@ function fetchOpenverseFallback(cleanQuery, grid) {
       return res.json();
     })
     .then(data => {
-      grid.innerHTML = '';
+      if (currentCount === 0) grid.innerHTML = '';
       const results = data.results || [];
-      let count = 0;
+      let count = currentCount;
       
       results.forEach(img => {
-        if (count >= 10) return; // Limit to 10 most relevant results
+        if (count >= 10) return;
         if (img.url) {
           const imgUrl = img.thumbnail || img.url;
           const fullUrl = img.url;
+          
+          if (existingUrls.has(imgUrl)) return;
+          existingUrls.add(imgUrl);
+          
           count++;
           
           const item = document.createElement('div');
@@ -3114,7 +3133,9 @@ function fetchOpenverseFallback(cleanQuery, grid) {
     })
     .catch(err => {
       console.error('Openverse fallback also failed:', err);
-      grid.innerHTML = `<div class="reference-placeholder">Search temporarily unavailable. Use "Search on Google Images" button above to browse references!</div>`;
+      if (currentCount === 0) {
+        grid.innerHTML = `<div class="reference-placeholder">Search temporarily unavailable. Use "Search on Google Images" button above to browse references!</div>`;
+      }
     });
 }
 
@@ -3481,6 +3502,18 @@ function executeGoogleSearch() {
   // Open in new tab on Google Images
   const url = 'https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(googleQuery);
   window.open(url, '_blank');
+}
+
+function triggerAutoMatchPose() {
+  const appInterface = document.querySelector('.app-interface');
+  if (appInterface && appInterface.classList.contains('has-reference-sidebar')) {
+    const description = describeActivePose();
+    const refSearchInput = document.getElementById('reference-search-input');
+    if (refSearchInput) {
+      refSearchInput.value = "Match Pose: " + description;
+    }
+    fetchWikimediaReferences(description);
+  }
 }
 
 // Kick off initialization
