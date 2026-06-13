@@ -3315,6 +3315,25 @@ function searchReferences(query) {
   }
 }
 
+function compilePinterestQuery(cleanQuery) {
+  let styleTerm = 'pose';
+  const activeStyle = state.selectedStyle || 'all';
+  if (activeStyle === 'drawing') {
+    styleTerm = 'sketch drawing';
+  } else if (activeStyle === 'sculpture') {
+    styleTerm = 'sculpture';
+  } else if (activeStyle === 'photo') {
+    styleTerm = 'photo model';
+  }
+  
+  let q = cleanQuery;
+  if (state.includeArtisticNudes && !q.toLowerCase().includes('nude')) {
+    q = 'nude ' + q;
+  }
+  q = q + ' ' + styleTerm + ' reference';
+  return q.replace(/\s+/g, ' ').trim();
+}
+
 function fetchPinterestReferences(rawQuery) {
   const grid = document.getElementById('reference-gallery-grid');
   if (!grid) return;
@@ -3333,85 +3352,23 @@ function fetchPinterestReferences(rawQuery) {
     cleanQuery = cleanQuery.substring(11).trim();
   }
   
-  // 1. Detect primary pose
-  let primaryPose = 'standing';
-  let poseCheck = cleanQuery.toLowerCase();
-  if (poseCheck.includes('sitting') || poseCheck.includes('seated') || poseCheck.includes('sit')) {
-    primaryPose = 'sitting';
-  } else if (poseCheck.includes('running') || poseCheck.includes('run')) {
-    primaryPose = 'running';
-  } else if (poseCheck.includes('jumping') || poseCheck.includes('jump') || poseCheck.includes('leap')) {
-    primaryPose = 'jumping';
-  } else if (poseCheck.includes('lying') || poseCheck.includes('reclining') || poseCheck.includes('recline')) {
-    primaryPose = 'lying';
-  } else if (poseCheck.includes('kneeling') || poseCheck.includes('kneel')) {
-    primaryPose = 'kneeling';
-  } else if (poseCheck.includes('crouching') || poseCheck.includes('crouch') || poseCheck.includes('squatting')) {
-    primaryPose = 'crouching';
-  } else if (poseCheck.includes('standing') || poseCheck.includes('stand')) {
-    primaryPose = 'standing';
-  } else if (poseCheck.includes('contrapposto') || poseCheck.includes('twist')) {
-    primaryPose = 'contrapposto';
-  }
-  
-  // 2. Build search words list
-  const searchWords = [];
-  
-  // Gender
-  if (poseCheck.includes('female') || poseCheck.includes('woman') || poseCheck.includes('girl')) {
-    searchWords.push('female');
-  } else if (poseCheck.includes('male') || poseCheck.includes('man') || poseCheck.includes('boy')) {
-    searchWords.push('male');
-  }
-  
-  // Pose
-  searchWords.push(primaryPose);
-  
-  // Style mapping
-  const activeStyle = state.selectedStyle || 'all';
-  if (activeStyle === 'drawing') {
-    searchWords.push('life drawing sketch');
-  } else if (activeStyle === 'sculpture') {
-    searchWords.push('classical sculpture');
-  } else if (activeStyle === 'photo') {
-    searchWords.push('art model photography');
-  } else {
-    searchWords.push('pose reference');
-  }
-  
-  // Nudes check
-  if (state.includeArtisticNudes) {
-    searchWords.unshift('nude');
-  }
-  
-  // Add any custom extra terms user typed
-  let cleanWords = poseCheck
-    .replace(/[^a-zA-Z0-9\s]/g, ' ')
-    .replace(/\bmatch pose\b/g, '')
-    .replace(/\bstanding|sitting|seated|running|jumping|kneeling|crouching|lying|reclining|contrapposto|male|female|woman|man|nude|pose|reference|drawing|sculpture|statue|model\b/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-    
-  if (cleanWords) {
-    searchWords.push(cleanWords);
-  }
-  
-  const pinterestQuery = searchWords.join(' ');
+  const pinterestQuery = compilePinterestQuery(cleanQuery);
   console.log("In-app Pinterest search query compiled:", pinterestQuery);
   
-  const targetUrl = 'https://www.pinterest.com/search/pins/?q=' + encodeURIComponent(pinterestQuery);
-  const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(targetUrl);
+  // Query Bing Images restricted to site:pinterest.com to bypass Pinterest CORS/bot blocks
+  const targetUrl = 'https://www.bing.com/images/search?q=site%3apinterest.com+' + encodeURIComponent(pinterestQuery);
+  const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(targetUrl);
   
   fetch(proxyUrl)
     .then(res => {
       if (!res.ok) throw new Error('Proxy server error');
-      return res.json();
+      return res.text();
     })
-    .then(data => {
-      if (!data.contents) throw new Error('Proxy returned empty content');
+    .then(txt => {
+      if (!txt) throw new Error('Proxy returned empty content');
       
       const pinRegex = /https:\/\/i\.pinimg\.com\/(?:236x|564x|736x|originals)\/([a-f0-9\/]+\.(?:jpg|png|jpeg|webp))/gi;
-      const matches = data.contents.match(pinRegex);
+      const matches = txt.match(pinRegex);
       
       grid.innerHTML = '';
       const uniquePaths = new Set();
@@ -3419,7 +3376,6 @@ function fetchPinterestReferences(rawQuery) {
       
       if (matches) {
         matches.forEach(match => {
-          // Extract the path after size (236x, etc.)
           const pathPart = match.replace(/https:\/\/i\.pinimg\.com\/(?:236x|564x|736x|originals)\//i, '');
           if (!uniquePaths.has(pathPart)) {
             uniquePaths.add(pathPart);
@@ -3459,71 +3415,13 @@ function executePinterestSearch() {
   const refSearchInput = document.getElementById('reference-search-input');
   const clean = refSearchInput ? refSearchInput.value.trim() : 'standing';
   
-  // 1. Detect primary pose
-  let primaryPose = 'standing';
-  let poseCheck = clean.toLowerCase();
-  if (poseCheck.includes('sitting') || poseCheck.includes('seated') || poseCheck.includes('sit')) {
-    primaryPose = 'sitting';
-  } else if (poseCheck.includes('running') || poseCheck.includes('run')) {
-    primaryPose = 'running';
-  } else if (poseCheck.includes('jumping') || poseCheck.includes('jump') || poseCheck.includes('leap')) {
-    primaryPose = 'jumping';
-  } else if (poseCheck.includes('lying') || poseCheck.includes('reclining') || poseCheck.includes('recline')) {
-    primaryPose = 'lying';
-  } else if (poseCheck.includes('kneeling') || poseCheck.includes('kneel')) {
-    primaryPose = 'kneeling';
-  } else if (poseCheck.includes('crouching') || poseCheck.includes('crouch') || poseCheck.includes('squatting')) {
-    primaryPose = 'crouching';
-  } else if (poseCheck.includes('standing') || poseCheck.includes('stand')) {
-    primaryPose = 'standing';
-  } else if (poseCheck.includes('contrapposto') || poseCheck.includes('twist')) {
-    primaryPose = 'contrapposto';
+  let cleanQuery = clean;
+  if (cleanQuery.toLowerCase().startsWith('match pose:')) {
+    cleanQuery = cleanQuery.substring(11).trim();
   }
   
-  // 2. Build search words list
-  const searchWords = [];
-  
-  // Gender
-  if (poseCheck.includes('female') || poseCheck.includes('woman') || poseCheck.includes('girl')) {
-    searchWords.push('female');
-  } else if (poseCheck.includes('male') || poseCheck.includes('man') || poseCheck.includes('boy')) {
-    searchWords.push('male');
-  }
-  
-  // Pose
-  searchWords.push(primaryPose);
-  
-  // Style mapping
-  const activeStyle = state.selectedStyle || 'all';
-  if (activeStyle === 'drawing') {
-    searchWords.push('life drawing sketch');
-  } else if (activeStyle === 'sculpture') {
-    searchWords.push('classical sculpture');
-  } else if (activeStyle === 'photo') {
-    searchWords.push('art model photography');
-  } else {
-    searchWords.push('pose reference');
-  }
-  
-  // Nudes check
-  if (state.includeArtisticNudes) {
-    searchWords.unshift('nude');
-  }
-  
-  // Add any custom extra terms user typed
-  let cleanWords = poseCheck
-    .replace(/[^a-zA-Z0-9\s]/g, ' ')
-    .replace(/\bmatch pose\b/g, '')
-    .replace(/\bstanding|sitting|seated|running|jumping|kneeling|crouching|lying|reclining|contrapposto|male|female|woman|man|nude|pose|reference|drawing|sculpture|statue|model\b/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-    
-  if (cleanWords) {
-    searchWords.push(cleanWords);
-  }
-  
-  const pinterestQuery = searchWords.join(' ');
-  console.log("Pinterest query compiled:", pinterestQuery);
+  const pinterestQuery = compilePinterestQuery(cleanQuery);
+  console.log("Pinterest query compiled for external search:", pinterestQuery);
   
   // Open in new tab on Pinterest
   const url = 'https://www.pinterest.com/search/pins/?q=' + encodeURIComponent(pinterestQuery);
