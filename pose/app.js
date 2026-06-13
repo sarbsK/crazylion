@@ -9,6 +9,7 @@ const state = {
   // Reference Gallery selected style filter
   selectedStyle: 'all',
   includeArtisticNudes: true,
+  referenceSource: 'wikimedia',
   
   // Scene objects
   scene: null,
@@ -1733,7 +1734,7 @@ function setupUIEventListeners() {
         if (searchInput) {
           searchInput.value = "Match Pose: " + description;
         }
-        fetchWikimediaReferences(description);
+        searchReferences(description);
       }
     });
   });
@@ -1817,7 +1818,7 @@ function setupUIEventListeners() {
         }
         
         // 4. Fetch references
-        fetchWikimediaReferences(query);
+        searchReferences(query);
       }
     });
   }
@@ -1837,15 +1838,35 @@ function setupUIEventListeners() {
     document.getElementById('btn-reference-search-submit').addEventListener('click', () => {
       if (refSearchInput) {
         const query = refSearchInput.value.trim();
-        if (query) fetchWikimediaReferences(query);
+        if (query) searchReferences(query);
       }
     });
 
     refSearchInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         const query = refSearchInput.value.trim();
-        if (query) fetchWikimediaReferences(query);
+        if (query) searchReferences(query);
       }
+    });
+
+    // Reference Source Tabs click listeners
+    const sourceTabs = document.querySelectorAll('.ref-source-tab');
+    sourceTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        sourceTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        state.referenceSource = tab.dataset.source || 'wikimedia';
+        
+        // Re-execute current search with new source
+        if (refSearchInput) {
+          const query = refSearchInput.value.trim();
+          if (query) {
+            searchReferences(query);
+          } else {
+            searchReferences('standing');
+          }
+        }
+      });
     });
 
     // Match Pose button click listener
@@ -1861,7 +1882,7 @@ function setupUIEventListeners() {
         }
         
         // Execute fetch reference
-        fetchWikimediaReferences(description);
+        searchReferences(description);
       });
     }
 
@@ -1878,9 +1899,9 @@ function setupUIEventListeners() {
         if (refSearchInput) {
           const query = refSearchInput.value.trim();
           if (query) {
-            fetchWikimediaReferences(query);
+            searchReferences(query);
           } else {
-            fetchWikimediaReferences('standing');
+            searchReferences('standing');
           }
         }
       });
@@ -1899,6 +1920,14 @@ function setupUIEventListeners() {
     if (btnGoogleSearch) {
       btnGoogleSearch.addEventListener('click', () => {
         executeGoogleSearch();
+      });
+    }
+
+    // Pinterest Search button listener
+    const btnPinterestSearch = document.getElementById('btn-pinterest-search');
+    if (btnPinterestSearch) {
+      btnPinterestSearch.addEventListener('click', () => {
+        executePinterestSearch();
       });
     }
 
@@ -1939,10 +1968,10 @@ function setupUIEventListeners() {
         if (refSearchInput) {
           const query = refSearchInput.value.trim();
           if (query) {
-            fetchWikimediaReferences(query);
+            searchReferences(query);
           } else {
             // Default search if empty
-            fetchWikimediaReferences('standing');
+            searchReferences('standing');
           }
         }
       });
@@ -3278,6 +3307,229 @@ function describeActivePose() {
 }
 
 
+function searchReferences(query) {
+  if (state.referenceSource === 'pinterest') {
+    fetchPinterestReferences(query);
+  } else {
+    fetchWikimediaReferences(query);
+  }
+}
+
+function fetchPinterestReferences(rawQuery) {
+  const grid = document.getElementById('reference-gallery-grid');
+  if (!grid) return;
+  
+  // Show loading spinner
+  grid.innerHTML = `
+    <div class="reference-loading">
+      <div class="reference-spinner"></div>
+      <span>Searching Pinterest references...</span>
+    </div>
+  `;
+  
+  // Clean up "Match Pose:" prefix if present
+  let cleanQuery = rawQuery;
+  if (cleanQuery.toLowerCase().startsWith('match pose:')) {
+    cleanQuery = cleanQuery.substring(11).trim();
+  }
+  
+  // 1. Detect primary pose
+  let primaryPose = 'standing';
+  let poseCheck = cleanQuery.toLowerCase();
+  if (poseCheck.includes('sitting') || poseCheck.includes('seated') || poseCheck.includes('sit')) {
+    primaryPose = 'sitting';
+  } else if (poseCheck.includes('running') || poseCheck.includes('run')) {
+    primaryPose = 'running';
+  } else if (poseCheck.includes('jumping') || poseCheck.includes('jump') || poseCheck.includes('leap')) {
+    primaryPose = 'jumping';
+  } else if (poseCheck.includes('lying') || poseCheck.includes('reclining') || poseCheck.includes('recline')) {
+    primaryPose = 'lying';
+  } else if (poseCheck.includes('kneeling') || poseCheck.includes('kneel')) {
+    primaryPose = 'kneeling';
+  } else if (poseCheck.includes('crouching') || poseCheck.includes('crouch') || poseCheck.includes('squatting')) {
+    primaryPose = 'crouching';
+  } else if (poseCheck.includes('standing') || poseCheck.includes('stand')) {
+    primaryPose = 'standing';
+  } else if (poseCheck.includes('contrapposto') || poseCheck.includes('twist')) {
+    primaryPose = 'contrapposto';
+  }
+  
+  // 2. Build search words list
+  const searchWords = [];
+  
+  // Gender
+  if (poseCheck.includes('female') || poseCheck.includes('woman') || poseCheck.includes('girl')) {
+    searchWords.push('female');
+  } else if (poseCheck.includes('male') || poseCheck.includes('man') || poseCheck.includes('boy')) {
+    searchWords.push('male');
+  }
+  
+  // Pose
+  searchWords.push(primaryPose);
+  
+  // Style mapping
+  const activeStyle = state.selectedStyle || 'all';
+  if (activeStyle === 'drawing') {
+    searchWords.push('life drawing sketch');
+  } else if (activeStyle === 'sculpture') {
+    searchWords.push('classical sculpture');
+  } else if (activeStyle === 'photo') {
+    searchWords.push('art model photography');
+  } else {
+    searchWords.push('pose reference');
+  }
+  
+  // Nudes check
+  if (state.includeArtisticNudes) {
+    searchWords.unshift('nude');
+  }
+  
+  // Add any custom extra terms user typed
+  let cleanWords = poseCheck
+    .replace(/[^a-zA-Z0-9\s]/g, ' ')
+    .replace(/\bmatch pose\b/g, '')
+    .replace(/\bstanding|sitting|seated|running|jumping|kneeling|crouching|lying|reclining|contrapposto|male|female|woman|man|nude|pose|reference|drawing|sculpture|statue|model\b/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+    
+  if (cleanWords) {
+    searchWords.push(cleanWords);
+  }
+  
+  const pinterestQuery = searchWords.join(' ');
+  console.log("In-app Pinterest search query compiled:", pinterestQuery);
+  
+  const targetUrl = 'https://www.pinterest.com/search/pins/?q=' + encodeURIComponent(pinterestQuery);
+  const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(targetUrl);
+  
+  fetch(proxyUrl)
+    .then(res => {
+      if (!res.ok) throw new Error('Proxy server error');
+      return res.json();
+    })
+    .then(data => {
+      if (!data.contents) throw new Error('Proxy returned empty content');
+      
+      const pinRegex = /https:\/\/i\.pinimg\.com\/(?:236x|564x|736x|originals)\/([a-f0-9\/]+\.(?:jpg|png|jpeg|webp))/gi;
+      const matches = data.contents.match(pinRegex);
+      
+      grid.innerHTML = '';
+      const uniquePaths = new Set();
+      const pinItems = [];
+      
+      if (matches) {
+        matches.forEach(match => {
+          // Extract the path after size (236x, etc.)
+          const pathPart = match.replace(/https:\/\/i\.pinimg\.com\/(?:236x|564x|736x|originals)\//i, '');
+          if (!uniquePaths.has(pathPart)) {
+            uniquePaths.add(pathPart);
+            const thumbUrl = `https://i.pinimg.com/236x/${pathPart}`;
+            const fullUrl = `https://i.pinimg.com/736x/${pathPart}`;
+            pinItems.push({ thumbUrl, fullUrl });
+          }
+        });
+      }
+      
+      if (pinItems.length === 0) {
+        console.warn("No Pinterest pins extracted, falling back to Wikimedia Commons.");
+        fetchWikimediaReferences(rawQuery);
+        return;
+      }
+      
+      pinItems.slice(0, 24).forEach(pin => {
+        const item = document.createElement('div');
+        item.className = 'reference-item';
+        item.title = 'Pinterest Reference';
+        item.innerHTML = `<img src="${pin.thumbUrl}" alt="Pinterest Reference" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'">`;
+        
+        item.addEventListener('click', () => {
+          pinReferenceImage(pin.fullUrl);
+        });
+        
+        grid.appendChild(item);
+      });
+    })
+    .catch(err => {
+      console.error('In-app Pinterest fetch failed, falling back to Wikimedia Commons:', err);
+      fetchWikimediaReferences(rawQuery);
+    });
+}
+
+function executePinterestSearch() {
+  const refSearchInput = document.getElementById('reference-search-input');
+  const clean = refSearchInput ? refSearchInput.value.trim() : 'standing';
+  
+  // 1. Detect primary pose
+  let primaryPose = 'standing';
+  let poseCheck = clean.toLowerCase();
+  if (poseCheck.includes('sitting') || poseCheck.includes('seated') || poseCheck.includes('sit')) {
+    primaryPose = 'sitting';
+  } else if (poseCheck.includes('running') || poseCheck.includes('run')) {
+    primaryPose = 'running';
+  } else if (poseCheck.includes('jumping') || poseCheck.includes('jump') || poseCheck.includes('leap')) {
+    primaryPose = 'jumping';
+  } else if (poseCheck.includes('lying') || poseCheck.includes('reclining') || poseCheck.includes('recline')) {
+    primaryPose = 'lying';
+  } else if (poseCheck.includes('kneeling') || poseCheck.includes('kneel')) {
+    primaryPose = 'kneeling';
+  } else if (poseCheck.includes('crouching') || poseCheck.includes('crouch') || poseCheck.includes('squatting')) {
+    primaryPose = 'crouching';
+  } else if (poseCheck.includes('standing') || poseCheck.includes('stand')) {
+    primaryPose = 'standing';
+  } else if (poseCheck.includes('contrapposto') || poseCheck.includes('twist')) {
+    primaryPose = 'contrapposto';
+  }
+  
+  // 2. Build search words list
+  const searchWords = [];
+  
+  // Gender
+  if (poseCheck.includes('female') || poseCheck.includes('woman') || poseCheck.includes('girl')) {
+    searchWords.push('female');
+  } else if (poseCheck.includes('male') || poseCheck.includes('man') || poseCheck.includes('boy')) {
+    searchWords.push('male');
+  }
+  
+  // Pose
+  searchWords.push(primaryPose);
+  
+  // Style mapping
+  const activeStyle = state.selectedStyle || 'all';
+  if (activeStyle === 'drawing') {
+    searchWords.push('life drawing sketch');
+  } else if (activeStyle === 'sculpture') {
+    searchWords.push('classical sculpture');
+  } else if (activeStyle === 'photo') {
+    searchWords.push('art model photography');
+  } else {
+    searchWords.push('pose reference');
+  }
+  
+  // Nudes check
+  if (state.includeArtisticNudes) {
+    searchWords.unshift('nude');
+  }
+  
+  // Add any custom extra terms user typed
+  let cleanWords = poseCheck
+    .replace(/[^a-zA-Z0-9\s]/g, ' ')
+    .replace(/\bmatch pose\b/g, '')
+    .replace(/\bstanding|sitting|seated|running|jumping|kneeling|crouching|lying|reclining|contrapposto|male|female|woman|man|nude|pose|reference|drawing|sculpture|statue|model\b/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+    
+  if (cleanWords) {
+    searchWords.push(cleanWords);
+  }
+  
+  const pinterestQuery = searchWords.join(' ');
+  console.log("Pinterest query compiled:", pinterestQuery);
+  
+  // Open in new tab on Pinterest
+  const url = 'https://www.pinterest.com/search/pins/?q=' + encodeURIComponent(pinterestQuery);
+  window.open(url, '_blank');
+}
+
 function fetchWikimediaReferences(rawQuery) {
   const grid = document.getElementById('reference-gallery-grid');
   if (!grid) return;
@@ -3949,7 +4201,7 @@ function triggerAutoMatchPose() {
     if (refSearchInput) {
       refSearchInput.value = "Match Pose: " + description;
     }
-    fetchWikimediaReferences(description);
+    searchReferences(description);
   }
 }
 

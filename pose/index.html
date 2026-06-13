@@ -455,6 +455,11 @@
         <button id="btn-reference-search-submit" style="position: absolute; right: 4px; padding: 6px 12px; font-weight: 600; background: var(--rim-color); border: none; color: #000; border-radius: 6px; cursor: pointer; font-size: 11px; font-family: inherit;">Find</button>
       </div>
 
+      <div class="reference-source-tabs" style="display: flex; gap: 4px; margin-top: 8px;">
+        <button class="ref-source-tab active" data-source="wikimedia">Wikimedia</button>
+        <button class="ref-source-tab" data-source="pinterest">Pinterest</button>
+      </div>
+
       <button id="btn-match-pose" class="btn btn-secondary" style="width: 100%; margin-top: 8px; font-size: 11px; height: 32px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); color: var(--accent-color); font-weight: 600; cursor: pointer; border-radius: 6px;">
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
           <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
@@ -463,12 +468,20 @@
         Analyze & Match Pose
       </button>
 
-      <button id="btn-google-search" class="btn btn-secondary" style="width: 100%; margin-top: 6px; font-size: 11px; height: 32px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #3b82f6; font-weight: 600; cursor: pointer; border-radius: 6px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h-.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0c2.193 0 4.598.777l-1.815 1.834C10.22 3.03 9.24 2.5 8 2.5c-2.9 0-5.25 2.44-5.25 5.5s2.35 5.5 5.25 5.5c3.22 0 4.28-2.27 4.48-3.56H8V6.558h7.545z"/>
-        </svg>
-        Search on Google Images
-      </button>
+      <div class="external-search-buttons" style="display: flex; gap: 6px; margin-top: 6px;">
+        <button id="btn-google-search" class="btn btn-secondary" style="flex: 1; font-size: 11px; height: 32px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #3b82f6; font-weight: 600; cursor: pointer; border-radius: 6px;" title="Search on Google Images (opens in a new tab)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h-.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0c2.193 0 4.598.777l-1.815 1.834C10.22 3.03 9.24 2.5 8 2.5c-2.9 0-5.25 2.44-5.25 5.5s2.35 5.5 5.25 5.5c3.22 0 4.28-2.27 4.48-3.56H8V6.558h7.545z"/>
+          </svg>
+          Google Images
+        </button>
+        <button id="btn-pinterest-search" class="btn btn-secondary" style="flex: 1; font-size: 11px; height: 32px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(230, 0, 35, 0.1); border-color: rgba(230, 0, 35, 0.3); color: #e60023; font-weight: 600; cursor: pointer; border-radius: 6px;" title="Search on Pinterest (opens in a new tab)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 0a8 8 0 0 0-2.915 15.452c-.07-.633-.134-1.606.027-2.298.146-.625.938-3.977.938-3.977s-.239-.479-.239-1.187c0-1.113.645-1.943 1.448-1.943.682 0 1.012.512 1.012 1.127 0 .686-.437 1.712-.663 2.663-.188.796.4 1.446 1.185 1.446 1.422 0 2.515-1.5 2.515-3.664 0-1.915-1.377-3.254-3.342-3.254-2.276 0-3.612 1.707-3.612 3.471 0 .688.265 1.425.595 1.826a.24.24 0 0 1 .056.23c-.061.252-.196.796-.222.907-.035.146-.116.177-.268.107-1-.465-1.624-1.926-1.624-3.1 0-2.523 1.834-4.84 5.286-4.84 2.775 0 4.932 1.977 4.932 4.62 0 2.757-1.739 4.976-4.151 4.976-.811 0-1.573-.421-1.834-.919l-.498 1.902c-.181.695-.669 1.566-.999 2.1a8 8 0 1 0 8.002-8.002z"/>
+          </svg>
+          Pinterest
+        </button>
+      </div>
 
       <div class="reference-style-tabs" style="display: flex; gap: 4px; margin-top: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px;">
         <button class="ref-tab active" data-style="all">All Styles</button>
