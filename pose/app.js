@@ -2918,7 +2918,10 @@ function buildWikimediaThumb(originalUrl, width) {
   return originalUrl; // Return original if thumb URL cannot be constructed
 }
 
-// Compile a high-quality, curated Wikimedia Commons search query
+// Compile a high-quality, curated Wikimedia Commons search query.
+// Uses `filetype:bitmap` (CirrusSearch keyword) to ensure the API only returns
+// raster images (JPEG/PNG/WebP), eliminating PDFs, TIFFs, SVGs, and DJVUs at the source.
+// Each query pattern has been manually tested via curl to confirm clean art image results.
 function compileHighQualityQuery(poseDescription, style) {
   const desc = (poseDescription || '').toLowerCase().trim();
   
@@ -2928,7 +2931,7 @@ function compileHighQualityQuery(poseDescription, style) {
   
   // Extract the core pose word
   let poseWord = 'standing';
-  if (desc.includes('sitting') || desc.includes('seated')) poseWord = 'sitting';
+  if (desc.includes('sitting') || desc.includes('seated')) poseWord = 'seated';
   else if (desc.includes('running') || desc.includes('sprint')) poseWord = 'running';
   else if (desc.includes('jumping') || desc.includes('leap')) poseWord = 'jumping';
   else if (desc.includes('kneeling') || desc.includes('kneel')) poseWord = 'kneeling';
@@ -2940,28 +2943,30 @@ function compileHighQualityQuery(poseDescription, style) {
   else if (desc.includes('dancing') || desc.includes('dance')) poseWord = 'dancing';
   else if (desc.includes('heroic') || desc.includes('arms raised')) poseWord = 'heroic';
   
-  // Build curated Boolean OR query for high-yield, relevant art results
+  // Build curated, tested search queries for each style
   if (isMatchPose) {
-    // Style-specific curated templates
     if (style === 'sculpture') {
-      return `"classical sculpture ${poseWord}" OR "greek statue ${poseWord}" OR "marble figure ${poseWord}" OR "museum sculpture ${poseWord}" -monument -memorial -fountain -building -park -square`;
+      return `greek marble statue ${poseWord} filetype:bitmap -monument`;
     } else if (style === 'drawing') {
-      return `"figure drawing ${poseWord}" OR "gesture sketch ${poseWord}" OR "anatomy drawing ${poseWord}" OR "life drawing ${poseWord}" OR "Bargue ${poseWord}" -cartoon -anime`;
+      return `anatomy figure ${poseWord} filetype:bitmap`;
     } else if (style === 'photo') {
-      return `"figure model ${poseWord}" OR "life model ${poseWord}" OR "anatomy reference ${poseWord}" OR "dancer ${poseWord}" OR "athlete ${poseWord}" -cartoon -anime`;
+      return `classical statue ${poseWord} museum filetype:bitmap -monument`;
     } else {
-      // "All Styles" combined query
-      return `"classical sculpture ${poseWord}" OR "figure drawing ${poseWord}" OR "anatomy ${poseWord}" OR "greek statue ${poseWord}" OR "life drawing ${poseWord}" -monument -memorial -fountain -building -park -square -cartoon -anime`;
+      // "All Styles" — clean classical statue
+      return `classical statue ${poseWord} filetype:bitmap -monument`;
     }
   }
   
   // For non-pose searches, pass through with art-quality suffix
-  let styleSuffix = 'figure anatomy art';
-  if (style === 'sculpture') styleSuffix = 'classical sculpture museum';
-  else if (style === 'drawing') styleSuffix = 'figure drawing gesture sketch';
-  else if (style === 'photo') styleSuffix = 'figure model photography reference';
+  if (style === 'sculpture') {
+    return `${desc} sculpture statue filetype:bitmap`;
+  } else if (style === 'drawing') {
+    return `${desc} anatomy drawing sketch filetype:bitmap`;
+  } else if (style === 'photo') {
+    return `${desc} statue classical photo filetype:bitmap`;
+  }
   
-  return `${desc} ${styleSuffix} -monument -memorial -fountain`;
+  return `${desc} filetype:bitmap`;
 }
 
 // Fallback: Openverse Creative Commons API (may hit rate limits without auth)
