@@ -1336,7 +1336,7 @@ function setupUIEventListeners() {
         if (searchInput) {
           searchInput.value = query;
         }
-        fetchWikimediaReferences(query);
+        triggerReferenceSearch(query);
       }
     });
   });
@@ -1416,7 +1416,7 @@ function setupUIEventListeners() {
         }
         
         // 4. Fetch references
-        fetchWikimediaReferences(query);
+        triggerReferenceSearch(query);
       }
     });
   }
@@ -1432,18 +1432,78 @@ function setupUIEventListeners() {
         appInterface.classList.remove('has-reference-sidebar');
       }
     });
+
+    // Reference Settings Modal Toggling
+    const btnRefSettings = document.getElementById('btn-reference-settings');
+    const refSettingsOverlay = document.getElementById('reference-settings-overlay');
+    const btnCloseRefSettings = document.getElementById('btn-close-reference-settings');
+    const btnSaveRefSettings = document.getElementById('btn-save-reference-settings');
+    
+    if (btnRefSettings && refSettingsOverlay) {
+      btnRefSettings.addEventListener('click', () => {
+        // Load existing saved keys
+        document.getElementById('input-key-google').value = localStorage.getItem('pose_api_key_google') || '';
+        document.getElementById('input-cx-google').value = localStorage.getItem('pose_api_cx_google') || '';
+        document.getElementById('input-key-pixabay').value = localStorage.getItem('pose_api_key_pixabay') || '';
+        document.getElementById('input-key-unsplash').value = localStorage.getItem('pose_api_key_unsplash') || '';
+        refSettingsOverlay.style.display = 'flex';
+      });
+    }
+    
+    if (btnCloseRefSettings && refSettingsOverlay) {
+      btnCloseRefSettings.addEventListener('click', () => {
+        refSettingsOverlay.style.display = 'none';
+      });
+    }
+    
+    if (btnSaveRefSettings && refSettingsOverlay) {
+      btnSaveRefSettings.addEventListener('click', () => {
+        const keyGoogle = document.getElementById('input-key-google').value.trim();
+        const cxGoogle = document.getElementById('input-cx-google').value.trim();
+        const keyPixabay = document.getElementById('input-key-pixabay').value.trim();
+        const keyUnsplash = document.getElementById('input-key-unsplash').value.trim();
+        
+        localStorage.setItem('pose_api_key_google', keyGoogle);
+        localStorage.setItem('pose_api_cx_google', cxGoogle);
+        localStorage.setItem('pose_api_key_pixabay', keyPixabay);
+        localStorage.setItem('pose_api_key_unsplash', keyUnsplash);
+        
+        refSettingsOverlay.style.display = 'none';
+        
+        // Re-execute current search with new keys
+        if (refSearchInput) {
+          const query = refSearchInput.value.trim();
+          if (query) triggerReferenceSearch(query);
+        }
+      });
+    }
+
+    // Dropdown engine selection listener (saves selected engine choice)
+    const engineSelect = document.getElementById('reference-engine-select');
+    if (engineSelect) {
+      const savedEngine = localStorage.getItem('pose_active_engine') || 'wikimedia';
+      engineSelect.value = savedEngine;
+      engineSelect.addEventListener('change', (e) => {
+        localStorage.setItem('pose_active_engine', e.target.value);
+        // Re-execute current search when engine is switched
+        if (refSearchInput) {
+          const query = refSearchInput.value.trim();
+          if (query) triggerReferenceSearch(query);
+        }
+      });
+    }
     
     document.getElementById('btn-reference-search-submit').addEventListener('click', () => {
       if (refSearchInput) {
         const query = refSearchInput.value.trim();
-        if (query) fetchWikimediaReferences(query);
+        if (query) triggerReferenceSearch(query);
       }
     });
 
     refSearchInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         const query = refSearchInput.value.trim();
-        if (query) fetchWikimediaReferences(query);
+        if (query) triggerReferenceSearch(query);
       }
     });
 
@@ -1451,39 +1511,31 @@ function setupUIEventListeners() {
     const btnMatchPose = document.getElementById('btn-match-pose');
     if (btnMatchPose) {
       btnMatchPose.addEventListener('click', () => {
-        // Describe active pose
         const description = describeActivePose();
-        
-        // Pre-fill search input
         if (refSearchInput) {
           refSearchInput.value = "Match Pose: " + description;
         }
-        
-        // Execute fetch reference
-        fetchWikimediaReferences(description);
+        triggerReferenceSearch(description);
       });
     }
 
     // Include Artistic Nudes toggle listener
     const toggleArtisticNudes = document.getElementById('toggle-artistic-nudes');
     if (toggleArtisticNudes) {
-      // Initialize state value
       state.includeArtisticNudes = toggleArtisticNudes.checked;
-      
       toggleArtisticNudes.addEventListener('change', (e) => {
         state.includeArtisticNudes = e.target.checked;
-        
-        // Re-execute current search with new filter
         if (refSearchInput) {
           const query = refSearchInput.value.trim();
           if (query) {
-            fetchWikimediaReferences(query);
+            triggerReferenceSearch(query);
           } else {
-            fetchWikimediaReferences('standing');
+            triggerReferenceSearch('standing');
           }
         }
       });
     }
+  }
 
     // Google Lens Canvas Pose visual search listener
     const btnLensCanvas = document.getElementById('btn-lens-canvas');
@@ -1538,10 +1590,10 @@ function setupUIEventListeners() {
         if (refSearchInput) {
           const query = refSearchInput.value.trim();
           if (query) {
-            fetchWikimediaReferences(query);
+            triggerReferenceSearch(query);
           } else {
             // Default search if empty
-            fetchWikimediaReferences('standing');
+            triggerReferenceSearch('standing');
           }
         }
       });
@@ -3367,6 +3419,272 @@ function executeGoogleSearch() {
   // Open in new tab on Google Images
   const url = 'https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(googleQuery);
   window.open(url, '_blank');
+}
+
+// Multi-engine search dispatcher
+function triggerReferenceSearch(query) {
+  const engineSelect = document.getElementById('reference-engine-select');
+  const engine = engineSelect ? engineSelect.value : 'wikimedia';
+  
+  if (engine === 'google') {
+    fetchGoogleReferences(query);
+  } else if (engine === 'pixabay') {
+    fetchPixabayReferences(query);
+  } else if (engine === 'unsplash') {
+    fetchUnsplashReferences(query);
+  } else {
+    fetchWikimediaReferences(query);
+  }
+}
+
+// Google Custom Search API integration
+function fetchGoogleReferences(rawQuery) {
+  const grid = document.getElementById('reference-gallery-grid');
+  if (!grid) return;
+  
+  grid.innerHTML = `
+    <div class="reference-loading">
+      <div class="reference-spinner"></div>
+      <span>Searching Google Images...</span>
+    </div>
+  `;
+  
+  const key = localStorage.getItem('pose_api_key_google') || '';
+  const cx = localStorage.getItem('pose_api_cx_google') || '';
+  
+  if (!key || !cx) {
+    grid.innerHTML = `
+      <div class="reference-placeholder" style="padding: 15px; text-align: center; color: var(--text-secondary);">
+        <p style="margin-bottom: 8px; font-weight: 700; color: var(--accent-color); font-size: 11px;">Google Search Key Required</p>
+        <p style="margin-bottom: 8px; font-size: 10px; line-height: 1.3;">To search Google Images directly inside the app, please add your Google API Key and Engine ID (CX).</p>
+        <button id="btn-configure-google-now" style="background: var(--rim-color); color: #000; border: none; padding: 5px 10px; font-weight: 700; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 10px; margin-top: 5px;">Configure Now</button>
+      </div>
+    `;
+    document.getElementById('btn-configure-google-now').addEventListener('click', () => {
+      document.getElementById('reference-settings-overlay').style.display = 'flex';
+    });
+    return;
+  }
+  
+  let cleanQuery = rawQuery;
+  if (cleanQuery.toLowerCase().startsWith('match pose:')) {
+    cleanQuery = cleanQuery.substring(11).trim();
+  }
+  
+  // Format query beautifully
+  const activeStyle = state.selectedStyle || 'all';
+  let googleQuery = cleanQuery;
+  if (activeStyle === 'sculpture') googleQuery += ' classical sculpture museum';
+  else if (activeStyle === 'drawing') googleQuery += ' figure drawing anatomy sketch';
+  else if (activeStyle === 'photo') googleQuery += ' pose model photography reference';
+  
+  // Exclude bad content
+  googleQuery += ' -anime -cartoon -illustration -clipart';
+  
+  const url = `https://www.googleapis.com/customsearch/v1?key=${encodeURIComponent(key)}&cx=${encodeURIComponent(cx)}&searchType=image&q=${encodeURIComponent(googleQuery)}&num=20`;
+  
+  fetch(url)
+    .then(res => {
+      if (!res.ok) throw new Error('Google returned status ' + res.status);
+      return res.json();
+    })
+    .then(data => {
+      grid.innerHTML = '';
+      const items = data.items || [];
+      let count = 0;
+      
+      items.forEach(item => {
+        if (item.link) {
+          count++;
+          const imgUrl = item.link;
+          const thumbUrl = item.image?.thumbnailLink || imgUrl;
+          
+          const div = document.createElement('div');
+          div.className = 'reference-item';
+          div.title = item.title || '';
+          div.innerHTML = `<img src="${thumbUrl}" alt="${(item.title || '').replace(/"/g, '')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'">`;
+          
+          div.addEventListener('click', () => {
+            pinReferenceImage(imgUrl);
+          });
+          
+          grid.appendChild(div);
+        }
+      });
+      
+      if (count === 0) {
+        grid.innerHTML = `<div class="reference-placeholder">No images found for "${rawQuery}" on Google. Try adjusting your search query!</div>`;
+      }
+    })
+    .catch(err => {
+      console.error('Google custom search failed:', err);
+      grid.innerHTML = `
+        <div class="reference-placeholder" style="color: #ef4444; padding: 15px;">
+          <p style="font-weight: 700; margin-bottom: 5px;">Search Error</p>
+          <p style="font-size: 10px; line-height: 1.3;">Please double-check your API key and Search Engine ID (CX) in the settings (⚙).</p>
+        </div>
+      `;
+    });
+}
+
+// Pixabay Search API integration
+function fetchPixabayReferences(rawQuery) {
+  const grid = document.getElementById('reference-gallery-grid');
+  if (!grid) return;
+  
+  grid.innerHTML = `
+    <div class="reference-loading">
+      <div class="reference-spinner"></div>
+      <span>Searching Pixabay...</span>
+    </div>
+  `;
+  
+  const key = localStorage.getItem('pose_api_key_pixabay') || '';
+  
+  if (!key) {
+    grid.innerHTML = `
+      <div class="reference-placeholder" style="padding: 15px; text-align: center; color: var(--text-secondary);">
+        <p style="margin-bottom: 8px; font-weight: 700; color: var(--accent-color); font-size: 11px;">Pixabay Key Required</p>
+        <p style="margin-bottom: 8px; font-size: 10px; line-height: 1.3;">To search Pixabay directly inside the app, please add your free API Key.</p>
+        <button id="btn-configure-pixabay-now" style="background: var(--rim-color); color: #000; border: none; padding: 5px 10px; font-weight: 700; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 10px; margin-top: 5px;">Configure Now</button>
+      </div>
+    `;
+    document.getElementById('btn-configure-pixabay-now').addEventListener('click', () => {
+      document.getElementById('reference-settings-overlay').style.display = 'flex';
+    });
+    return;
+  }
+  
+  let cleanQuery = rawQuery;
+  if (cleanQuery.toLowerCase().startsWith('match pose:')) {
+    cleanQuery = cleanQuery.substring(11).trim();
+  }
+  
+  const activeStyle = state.selectedStyle || 'all';
+  let query = cleanQuery;
+  if (activeStyle === 'sculpture') query += ' sculpture statue';
+  else if (activeStyle === 'drawing') query += ' sketch drawing anatomy';
+  else if (activeStyle === 'photo') query += ' model pose photography';
+  
+  const url = `https://pixabay.com/api/?key=${encodeURIComponent(key)}&q=${encodeURIComponent(query)}&image_type=photo&per_page=30`;
+  
+  fetch(url)
+    .then(res => {
+      if (!res.ok) throw new Error('Pixabay returned ' + res.status);
+      return res.json();
+    })
+    .then(data => {
+      grid.innerHTML = '';
+      const hits = data.hits || [];
+      let count = 0;
+      
+      hits.forEach(hit => {
+        if (hit.webformatURL) {
+          count++;
+          const imgUrl = hit.largeImageURL || hit.webformatURL;
+          const thumbUrl = hit.previewURL || hit.webformatURL;
+          
+          const div = document.createElement('div');
+          div.className = 'reference-item';
+          div.title = hit.tags || '';
+          div.innerHTML = `<img src="${thumbUrl}" alt="${(hit.tags || '').replace(/"/g, '')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'">`;
+          
+          div.addEventListener('click', () => {
+            pinReferenceImage(imgUrl);
+          });
+          
+          grid.appendChild(div);
+        }
+      });
+      
+      if (count === 0) {
+        grid.innerHTML = `<div class="reference-placeholder">No images found for "${rawQuery}" on Pixabay.</div>`;
+      }
+    })
+    .catch(err => {
+      console.error('Pixabay search failed:', err);
+      grid.innerHTML = `<div class="reference-placeholder" style="color: #ef4444; padding: 15px;">Pixabay search error. Please check your Pixabay key in settings.</div>`;
+    });
+}
+
+// Unsplash Search API integration
+function fetchUnsplashReferences(rawQuery) {
+  const grid = document.getElementById('reference-gallery-grid');
+  if (!grid) return;
+  
+  grid.innerHTML = `
+    <div class="reference-loading">
+      <div class="reference-spinner"></div>
+      <span>Searching Unsplash...</span>
+    </div>
+  `;
+  
+  const key = localStorage.getItem('pose_api_key_unsplash') || '';
+  
+  if (!key) {
+    grid.innerHTML = `
+      <div class="reference-placeholder" style="padding: 15px; text-align: center; color: var(--text-secondary);">
+        <p style="margin-bottom: 8px; font-weight: 700; color: var(--accent-color); font-size: 11px;">Unsplash Key Required</p>
+        <p style="margin-bottom: 8px; font-size: 10px; line-height: 1.3;">To search Unsplash directly inside the app, please add your Access Key.</p>
+        <button id="btn-configure-unsplash-now" style="background: var(--rim-color); color: #000; border: none; padding: 5px 10px; font-weight: 700; border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 10px; margin-top: 5px;">Configure Now</button>
+      </div>
+    `;
+    document.getElementById('btn-configure-unsplash-now').addEventListener('click', () => {
+      document.getElementById('reference-settings-overlay').style.display = 'flex';
+    });
+    return;
+  }
+  
+  let cleanQuery = rawQuery;
+  if (cleanQuery.toLowerCase().startsWith('match pose:')) {
+    cleanQuery = cleanQuery.substring(11).trim();
+  }
+  
+  const activeStyle = state.selectedStyle || 'all';
+  let query = cleanQuery;
+  if (activeStyle === 'sculpture') query += ' classical sculpture statue';
+  else if (activeStyle === 'drawing') query += ' figure drawing sketch';
+  else if (activeStyle === 'photo') query += ' pose portrait model';
+  
+  const url = `https://api.unsplash.com/search/photos?client_id=${encodeURIComponent(key)}&query=${encodeURIComponent(query)}&per_page=30`;
+  
+  fetch(url)
+    .then(res => {
+      if (!res.ok) throw new Error('Unsplash returned ' + res.status);
+      return res.json();
+    })
+    .then(data => {
+      grid.innerHTML = '';
+      const results = data.results || [];
+      let count = 0;
+      
+      results.forEach(img => {
+        if (img.urls && img.urls.regular) {
+          count++;
+          const imgUrl = img.urls.regular;
+          const thumbUrl = img.urls.thumb || imgUrl;
+          
+          const div = document.createElement('div');
+          div.className = 'reference-item';
+          div.title = img.alt_description || '';
+          div.innerHTML = `<img src="${thumbUrl}" alt="${(img.alt_description || '').replace(/"/g, '')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'">`;
+          
+          div.addEventListener('click', () => {
+            pinReferenceImage(imgUrl);
+          });
+          
+          grid.appendChild(div);
+        }
+      });
+      
+      if (count === 0) {
+        grid.innerHTML = `<div class="reference-placeholder">No images found for "${rawQuery}" on Unsplash.</div>`;
+      }
+    })
+    .catch(err => {
+      console.error('Unsplash search failed:', err);
+      grid.innerHTML = `<div class="reference-placeholder" style="color: #ef4444; padding: 15px;">Unsplash search error. Please check your access key in settings.</div>`;
+    });
 }
 
 // Kick off initialization
