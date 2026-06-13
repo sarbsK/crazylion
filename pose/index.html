@@ -53,10 +53,10 @@
   </button>
 
   <!-- Main Application GUI Overlay -->
-  <main class="app-interface">
+  <main class="app-interface sidebar-collapsed">
     
     <!-- Floating Logo Header (shown when sidebar is collapsed) -->
-    <div id="floating-logo-header" class="floating-logo-header" style="display: none;">
+    <div id="floating-logo-header" class="floating-logo-header" style="display: flex;">
       <div style="margin-bottom: 8px;">
         <a href="../" style="display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; color: #f59e0b; text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; stroke: #f59e0b;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
@@ -522,7 +522,7 @@
       </div>
 
       <!-- Viewport Floating Rotation Panel (Shown only when a joint is selected) -->
-      <div id="top-rotation-panel" style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 120; display: none; flex-direction: column; align-items: center; gap: 8px; pointer-events: all;">
+      <div id="top-rotation-panel" style="position: absolute; top: 150px; left: 50%; transform: translateX(-50%); z-index: 120; display: none; flex-direction: column; align-items: center; gap: 8px; pointer-events: all;">
         <!-- Header (Joint Name) -->
         <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px; width: 100%;">
           <span style="font-weight: 700; color: var(--rim-color); text-transform: uppercase; letter-spacing: 0.8px; font-size: 11px; white-space: nowrap; text-shadow: 0 1px 3px rgba(0,0,0,0.8);" id="top-joint-name">No Joint</span>

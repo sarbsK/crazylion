@@ -2430,6 +2430,12 @@ function captureReferencePNG() {
 }
 
 function searchPoseReference() {
+  const appInterface = document.querySelector('.app-interface');
+  if (appInterface && appInterface.classList.contains('has-reference-sidebar')) {
+    appInterface.classList.remove('has-reference-sidebar');
+    return;
+  }
+
   const activePoseBtn = document.querySelector('.btn-grid button.active');
   const activePoseName = activePoseBtn ? activePoseBtn.id.replace('preset-', '') : 'neutral';
   
