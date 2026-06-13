@@ -2848,7 +2848,8 @@ function fetchWikimediaReferences(rawQuery) {
   console.log("Reference search query:", searchQuery);
   
   // Primary: Wikimedia Commons API (CORS-friendly, no auth, no rate limits, millions of art images)
-  const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(searchQuery)}&gsrnamespace=6&prop=imageinfo&iiprop=url|size|mime&gsrlimit=30&format=json&origin=*`;
+  // Specifying iiurlwidth=400 natively requests a pre-rendered, optimized thumbnail URL from Wikimedia.
+  const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(searchQuery)}&gsrnamespace=6&prop=imageinfo&iiprop=url|size|mime&iiurlwidth=400&gsrlimit=30&format=json&origin=*`;
   
   fetch(url)
     .then(res => res.json())
@@ -2876,8 +2877,8 @@ function fetchWikimediaReferences(rawQuery) {
             
             count++;
             
-            // Build optimized thumbnail URL using Wikimedia's thumb service
-            const thumbUrl = buildWikimediaThumb(imgUrl, 400);
+            // Use native Wikimedia thumbnail URL
+            const thumbUrl = info.thumburl || imgUrl;
             
             const item = document.createElement('div');
             item.className = 'reference-item';
@@ -2903,19 +2904,6 @@ function fetchWikimediaReferences(rawQuery) {
       console.error('Wikimedia Commons fetch failed, trying Openverse fallback:', err);
       fetchOpenverseFallback(cleanQuery, grid);
     });
-}
-
-// Build optimized Wikimedia thumbnail URL (avoids loading massive originals in gallery grid)
-function buildWikimediaThumb(originalUrl, width) {
-  try {
-    // Wikimedia Commons thumb URL pattern: insert /thumb/ and append /{width}px-filename
-    if (originalUrl.includes('/commons/') && !originalUrl.includes('/thumb/')) {
-      const parts = originalUrl.split('/commons/');
-      const filename = originalUrl.split('/').pop();
-      return parts[0] + '/commons/thumb/' + parts[1] + '/' + width + 'px-' + filename;
-    }
-  } catch(e) {}
-  return originalUrl; // Return original if thumb URL cannot be constructed
 }
 
 // Compile a high-quality, curated Wikimedia Commons search query.
