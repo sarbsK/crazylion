@@ -2534,9 +2534,19 @@ function searchPoseReference() {
   }
 
   const appInterface = document.querySelector('.app-interface');
-  if (appInterface && appInterface.classList.contains('has-reference-sidebar')) {
-    appInterface.classList.remove('has-reference-sidebar');
-    return;
+  if (appInterface) {
+    if (appInterface.classList.contains('has-reference-sidebar')) {
+      appInterface.classList.remove('has-reference-sidebar');
+      return;
+    }
+    
+    // Toggle the sidebar open if results already exist in the gallery
+    const grid = document.getElementById('reference-gallery-grid');
+    const hasResults = grid && grid.querySelector('.reference-item') !== null;
+    if (hasResults) {
+      appInterface.classList.add('has-reference-sidebar');
+      return;
+    }
   }
 
   const activePoseBtn = document.querySelector('.btn-grid button.active');
