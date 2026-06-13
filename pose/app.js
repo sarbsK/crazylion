@@ -2810,11 +2810,11 @@ function describeActivePose() {
   const descriptions = [];
   descriptions.push(basePose);
   
-  // Torso bending - NOTE: negative rotation is leaning forward, positive is leaning back
+  // Torso bending - NOTE: positive rotation is leaning forward, negative is leaning back
   const totalBendX = chestDegX + spineDegX;
-  if (totalBendX < -15) {
+  if (totalBendX > 15) {
     descriptions.push('leaning forward');
-  } else if (totalBendX > 15) {
+  } else if (totalBendX < -15) {
     descriptions.push('leaning back');
   }
   
