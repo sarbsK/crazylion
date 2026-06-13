@@ -993,9 +993,27 @@ function setup3DRaycasting() {
             selectJoint(clickedJointName);
           } else {
             deselectJoint();
+            if (window.innerWidth > 768) {
+              const appInterface = document.querySelector('.app-interface');
+              if (appInterface) {
+                appInterface.classList.add('sidebar-collapsed');
+                appInterface.classList.remove('has-reference-sidebar');
+              }
+              const floatingLogoHeader = document.getElementById('floating-logo-header');
+              if (floatingLogoHeader) floatingLogoHeader.style.display = 'flex';
+            }
           }
         } else {
           deselectJoint();
+          if (window.innerWidth > 768) {
+            const appInterface = document.querySelector('.app-interface');
+            if (appInterface) {
+              appInterface.classList.add('sidebar-collapsed');
+              appInterface.classList.remove('has-reference-sidebar');
+            }
+            const floatingLogoHeader = document.getElementById('floating-logo-header');
+            if (floatingLogoHeader) floatingLogoHeader.style.display = 'flex';
+          }
         }
       }
       window.removeEventListener('pointerup', onPointerUp);
