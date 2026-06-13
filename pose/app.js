@@ -2864,6 +2864,8 @@ function fetchWikimediaReferences(rawQuery) {
         pages.sort((a, b) => (b.pageid || 0) - (a.pageid || 0));
         
         pages.forEach(page => {
+          if (count >= 10) return; // Limit to 10 most relevant results
+          
           if (page.imageinfo && page.imageinfo[0] && page.imageinfo[0].url) {
             const info = page.imageinfo[0];
             const imgUrl = info.url;
@@ -2976,6 +2978,7 @@ function fetchOpenverseFallback(cleanQuery, grid) {
       let count = 0;
       
       results.forEach(img => {
+        if (count >= 10) return; // Limit to 10 most relevant results
         if (img.url) {
           const imgUrl = img.thumbnail || img.url;
           const fullUrl = img.url;
