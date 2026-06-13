@@ -2843,26 +2843,147 @@ function fetchWikimediaReferences(rawQuery) {
     cleanQuery = cleanQuery.substring(11).trim();
   }
   
-  // Build a smart search query from the pose description
-  const searchQuery = buildOpenverseQuery(cleanQuery, state.selectedStyle);
+  // Build a high-quality curated search query for Wikimedia Commons
+  const searchQuery = compileHighQualityQuery(cleanQuery, state.selectedStyle);
   console.log("Reference search query:", searchQuery);
   
-  // Openverse API (Creative Commons) - CORS friendly, great art/anatomy image database
+  // Primary: Wikimedia Commons API (CORS-friendly, no auth, no rate limits, millions of art images)
+  const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(searchQuery)}&gsrnamespace=6&prop=imageinfo&iiprop=url|size|mime&gsrlimit=30&format=json&origin=*`;
+  
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      grid.innerHTML = '';
+      let count = 0;
+      
+      if (data.query && data.query.pages) {
+        const pages = Object.values(data.query.pages);
+        
+        // Sort by page ID descending (newer uploads first)
+        pages.sort((a, b) => (b.pageid || 0) - (a.pageid || 0));
+        
+        pages.forEach(page => {
+          if (page.imageinfo && page.imageinfo[0] && page.imageinfo[0].url) {
+            const info = page.imageinfo[0];
+            const imgUrl = info.url;
+            const mime = (info.mime || '').toLowerCase();
+            
+            // Only accept actual image formats (skip SVG, PDF, TIFF, audio, video)
+            if (!mime.startsWith('image/') || mime.includes('svg') || mime.includes('tiff') || mime.includes('pdf')) return;
+            
+            // Skip very small icons and logos (likely not useful references)
+            if (info.width && info.height && (info.width < 150 || info.height < 150)) return;
+            
+            count++;
+            
+            // Build optimized thumbnail URL using Wikimedia's thumb service
+            const thumbUrl = buildWikimediaThumb(imgUrl, 400);
+            
+            const item = document.createElement('div');
+            item.className = 'reference-item';
+            item.title = (page.title || '').replace('File:', '');
+            item.innerHTML = `<img src="${thumbUrl}" alt="${item.title.replace(/"/g, '')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'">`;
+            
+            // Click to pin the full-resolution image to the viewport
+            item.addEventListener('click', () => {
+              pinReferenceImage(imgUrl);
+            });
+            
+            grid.appendChild(item);
+          }
+        });
+      }
+      
+      if (count === 0) {
+        // Fallback: try Openverse API for broader Creative Commons results
+        fetchOpenverseFallback(cleanQuery, grid);
+      }
+    })
+    .catch(err => {
+      console.error('Wikimedia Commons fetch failed, trying Openverse fallback:', err);
+      fetchOpenverseFallback(cleanQuery, grid);
+    });
+}
+
+// Build optimized Wikimedia thumbnail URL (avoids loading massive originals in gallery grid)
+function buildWikimediaThumb(originalUrl, width) {
+  try {
+    // Wikimedia Commons thumb URL pattern: insert /thumb/ and append /{width}px-filename
+    if (originalUrl.includes('/commons/') && !originalUrl.includes('/thumb/')) {
+      const parts = originalUrl.split('/commons/');
+      const filename = originalUrl.split('/').pop();
+      return parts[0] + '/commons/thumb/' + parts[1] + '/' + width + 'px-' + filename;
+    }
+  } catch(e) {}
+  return originalUrl; // Return original if thumb URL cannot be constructed
+}
+
+// Compile a high-quality, curated Wikimedia Commons search query
+function compileHighQualityQuery(poseDescription, style) {
+  const desc = (poseDescription || '').toLowerCase().trim();
+  
+  // Detect if this is a pose-related search
+  const poseTerms = /\b(standing|sitting|seated|sit|running|run|jumping|jump|kneeling|kneel|crouching|crouch|lying|recline|reclining|contrapposto|twist|bending|bend|leaning|lean|forward|backward|walking|walk|dancing|dance|heroic|action|dynamic|arms?\s*raised|reaching)\b/i;
+  const isMatchPose = desc.includes('pose') || desc.includes('match') || poseTerms.test(desc);
+  
+  // Extract the core pose word
+  let poseWord = 'standing';
+  if (desc.includes('sitting') || desc.includes('seated')) poseWord = 'sitting';
+  else if (desc.includes('running') || desc.includes('sprint')) poseWord = 'running';
+  else if (desc.includes('jumping') || desc.includes('leap')) poseWord = 'jumping';
+  else if (desc.includes('kneeling') || desc.includes('kneel')) poseWord = 'kneeling';
+  else if (desc.includes('crouch') || desc.includes('squat')) poseWord = 'crouching';
+  else if (desc.includes('lying') || desc.includes('reclining')) poseWord = 'reclining';
+  else if (desc.includes('bending') || desc.includes('forward') || desc.includes('lean')) poseWord = 'bending';
+  else if (desc.includes('twist') || desc.includes('contrapposto')) poseWord = 'contrapposto';
+  else if (desc.includes('walking') || desc.includes('walk')) poseWord = 'walking';
+  else if (desc.includes('dancing') || desc.includes('dance')) poseWord = 'dancing';
+  else if (desc.includes('heroic') || desc.includes('arms raised')) poseWord = 'heroic';
+  
+  // Build curated Boolean OR query for high-yield, relevant art results
+  if (isMatchPose) {
+    // Style-specific curated templates
+    if (style === 'sculpture') {
+      return `"classical sculpture ${poseWord}" OR "greek statue ${poseWord}" OR "marble figure ${poseWord}" OR "museum sculpture ${poseWord}" -monument -memorial -fountain -building -park -square`;
+    } else if (style === 'drawing') {
+      return `"figure drawing ${poseWord}" OR "gesture sketch ${poseWord}" OR "anatomy drawing ${poseWord}" OR "life drawing ${poseWord}" OR "Bargue ${poseWord}" -cartoon -anime`;
+    } else if (style === 'photo') {
+      return `"figure model ${poseWord}" OR "life model ${poseWord}" OR "anatomy reference ${poseWord}" OR "dancer ${poseWord}" OR "athlete ${poseWord}" -cartoon -anime`;
+    } else {
+      // "All Styles" combined query
+      return `"classical sculpture ${poseWord}" OR "figure drawing ${poseWord}" OR "anatomy ${poseWord}" OR "greek statue ${poseWord}" OR "life drawing ${poseWord}" -monument -memorial -fountain -building -park -square -cartoon -anime`;
+    }
+  }
+  
+  // For non-pose searches, pass through with art-quality suffix
+  let styleSuffix = 'figure anatomy art';
+  if (style === 'sculpture') styleSuffix = 'classical sculpture museum';
+  else if (style === 'drawing') styleSuffix = 'figure drawing gesture sketch';
+  else if (style === 'photo') styleSuffix = 'figure model photography reference';
+  
+  return `${desc} ${styleSuffix} -monument -memorial -fountain`;
+}
+
+// Fallback: Openverse Creative Commons API (may hit rate limits without auth)
+function fetchOpenverseFallback(cleanQuery, grid) {
+  const simple = deriveSimplePoseTerm(cleanQuery);
+  const searchQuery = `${simple} figure anatomy drawing sculpture`;
   const url = `https://api.openverse.org/v1/images/?q=${encodeURIComponent(searchQuery)}&license_type=commercial,modification&page_size=20&mature=false`;
   
   fetch(url, {
     headers: { 'Accept': 'application/json' }
   })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error('Openverse returned ' + res.status);
+      return res.json();
+    })
     .then(data => {
       grid.innerHTML = '';
-      
       const results = data.results || [];
       let count = 0;
       
       results.forEach(img => {
         if (img.url) {
-          // Use thumbnail if available, otherwise full image
           const imgUrl = img.thumbnail || img.url;
           const fullUrl = img.url;
           count++;
@@ -2872,7 +2993,6 @@ function fetchWikimediaReferences(rawQuery) {
           item.title = img.title || '';
           item.innerHTML = `<img src="${imgUrl}" alt="${(img.title || '').replace(/"/g, '')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'">`;
           
-          // Clicking an item pins it to the viewport!
           item.addEventListener('click', () => {
             pinReferenceImage(fullUrl);
           });
@@ -2882,82 +3002,13 @@ function fetchWikimediaReferences(rawQuery) {
       });
       
       if (count === 0) {
-        // Fallback: try Wikimedia Commons with simpler query
-        fetchWikimediaFallback(cleanQuery, grid);
+        grid.innerHTML = `<div class="reference-placeholder">No references found. Try: "standing", "running", "sitting" or click "Search on Google Images" above!</div>`;
       }
     })
     .catch(err => {
-      console.error('Openverse fetch failed, trying Wikimedia fallback:', err);
-      fetchWikimediaFallback(cleanQuery, grid);
+      console.error('Openverse fallback also failed:', err);
+      grid.innerHTML = `<div class="reference-placeholder">Search temporarily unavailable. Use "Search on Google Images" button above to browse references!</div>`;
     });
-}
-
-function fetchWikimediaFallback(cleanQuery, grid) {
-  // Derive a clean simple term for Wikimedia
-  const simple = deriveSimplePoseTerm(cleanQuery);
-  const wmQuery = simple + ' anatomy figure drawing';
-  const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(wmQuery)}&gsrnamespace=6&prop=imageinfo&iiprop=url|size&gsrlimit=20&format=json&origin=*`;
-  
-  fetch(url)
-    .then(res => res.json())
-    .then(data => {
-      grid.innerHTML = '';
-      if (data.query && data.query.pages) {
-        const pages = Object.values(data.query.pages);
-        let count = 0;
-        pages.forEach(page => {
-          if (page.imageinfo && page.imageinfo[0] && page.imageinfo[0].url) {
-            const imgUrl = page.imageinfo[0].url;
-            const ext = imgUrl.split('.').pop().toLowerCase().split('?')[0];
-            if (['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
-              count++;
-              const item = document.createElement('div');
-              item.className = 'reference-item';
-              item.innerHTML = `<img src="${imgUrl}" alt="${page.title}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'">`;
-              item.addEventListener('click', () => pinReferenceImage(imgUrl));
-              grid.appendChild(item);
-            }
-          }
-        });
-        if (count === 0) {
-          grid.innerHTML = `<div class="reference-placeholder">No references found. Try: "standing", "running", "sitting" or click "Search on Google Images" above!</div>`;
-        }
-      } else {
-        grid.innerHTML = `<div class="reference-placeholder">No references found. Use "Search on Google Images" to browse directly!</div>`;
-      }
-    })
-    .catch(() => {
-      grid.innerHTML = `<div class="reference-placeholder" style="color: #ef4444;">Search unavailable. Use "Search on Google Images" button above to browse references!</div>`;
-    });
-}
-
-function buildOpenverseQuery(poseDescription, style) {
-  const desc = (poseDescription || '').toLowerCase();
-  
-  // Derive pose type
-  let poseWord = 'standing figure';
-  if (desc.includes('sitting') || desc.includes('seated')) poseWord = 'seated figure';
-  else if (desc.includes('running') || desc.includes('sprint')) poseWord = 'running figure';
-  else if (desc.includes('jumping') || desc.includes('leap')) poseWord = 'jumping figure';
-  else if (desc.includes('kneeling') || desc.includes('kneel')) poseWord = 'kneeling figure';
-  else if (desc.includes('crouch') || desc.includes('squat')) poseWord = 'crouching figure';
-  else if (desc.includes('lying') || desc.includes('reclining')) poseWord = 'reclining figure';
-  else if (desc.includes('bending') || desc.includes('forward bend') || desc.includes('lean forward')) poseWord = 'bending forward figure';
-  else if (desc.includes('twist') || desc.includes('contrapposto')) poseWord = 'twisting figure contrapposto';
-  
-  // Style suffix
-  let styleSuffix = 'life drawing anatomy reference';
-  if (style === 'sculpture') styleSuffix = 'classical sculpture museum';
-  else if (style === 'drawing') styleSuffix = 'gesture drawing figure sketch';
-  else if (style === 'photo') styleSuffix = 'figure model photography';
-  
-  // Gender
-  let gender = '';
-  if (desc.includes('female') || desc.includes('woman')) gender = 'female';
-  else if (desc.includes('male') || desc.includes('man')) gender = 'male';
-  
-  const parts = [gender, poseWord, styleSuffix].filter(Boolean);
-  return parts.join(' ');
 }
 
 function deriveSimplePoseTerm(desc) {
@@ -2972,6 +3023,7 @@ function deriveSimplePoseTerm(desc) {
   if (d.includes('twist') || d.includes('contrapposto')) return 'contrapposto';
   return 'standing';
 }
+
 function analyzeMannequinPose() {
   const tags = [];
   
