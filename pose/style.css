@@ -286,16 +286,20 @@ input[type="range"]:focus::-webkit-slider-thumb {
   border-color: var(--accent-color);
 }
 
-/* Large Viewport Scale Slider */
+/* Large Viewport Sliders */
 .large-viewport-slider {
   -webkit-appearance: none !important;
-  width: 350px !important;
+  width: 200px !important; /* Default for top rotation sliders */
   height: 8px !important;
   border-radius: 4px !important;
   background: rgba(255, 255, 255, 0.2) !important;
   outline: none !important;
   margin: 0 !important;
   transition: background 0.2s !important;
+}
+
+.large-viewport-slider.scale-slider {
+  width: 350px !important; /* Larger for bottom scale slider */
 }
 
 .large-viewport-slider::-webkit-slider-thumb {
@@ -314,6 +318,20 @@ input[type="range"]:focus::-webkit-slider-thumb {
 .large-viewport-slider::-webkit-slider-thumb:hover {
   transform: scale(1.2) !important;
   background: #fff !important;
+}
+
+/* Custom Thumb Colors for X, Y, Z Rotation Sliders */
+.large-viewport-slider-x::-webkit-slider-thumb {
+  background: #ef4444 !important;
+  box-shadow: 0 0 12px #ef4444, 0 2px 6px rgba(0,0,0,0.6) !important;
+}
+.large-viewport-slider-y::-webkit-slider-thumb {
+  background: #10b981 !important;
+  box-shadow: 0 0 12px #10b981, 0 2px 6px rgba(0,0,0,0.6) !important;
+}
+.large-viewport-slider-z::-webkit-slider-thumb {
+  background: #3b82f6 !important;
+  box-shadow: 0 0 12px #3b82f6, 0 2px 6px rgba(0,0,0,0.6) !important;
 }
 
 /* Select Elements */
