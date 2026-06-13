@@ -439,6 +439,10 @@ input:checked + .slider:before {
 
 /* Camera preset ring */
 .camera-quick-presets {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 120;
   pointer-events: auto;
   display: flex;
   background: var(--panel-bg);

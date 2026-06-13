@@ -522,34 +522,38 @@
       </div>
 
       <!-- Viewport Floating Rotation Panel (Shown only when a joint is selected) -->
-      <div id="top-rotation-panel" style="position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 120; display: none; align-items: center; gap: 16px; pointer-events: all;">
-        <div style="display: flex; flex-direction: column; min-width: 90px; border-right: 1px solid rgba(255,255,255,0.15); padding-right: 12px; margin-right: 4px;">
-          <span style="font-weight: 700; color: var(--rim-color); text-transform: uppercase; letter-spacing: 0.8px; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);" id="top-joint-name">No Joint</span>
+      <div id="top-rotation-panel" style="position: absolute; top: 15px; left: 50%; transform: translateX(-50%); z-index: 120; display: none; flex-direction: column; align-items: center; gap: 8px; pointer-events: all;">
+        <!-- Header (Joint Name) -->
+        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px; width: 100%;">
+          <span style="font-weight: 700; color: var(--rim-color); text-transform: uppercase; letter-spacing: 0.8px; font-size: 11px; white-space: nowrap; text-shadow: 0 1px 3px rgba(0,0,0,0.8);" id="top-joint-name">No Joint</span>
           <span style="font-size: 8px; color: var(--text-secondary); margin-top: 1px; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">Selected Joint</span>
         </div>
-        <!-- X Axis Slider -->
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-weight: 800; color: #ef4444; width: 10px; font-size: 11px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">X</span>
-          <input type="range" id="top-rotate-x" min="-180" max="180" value="0" class="large-viewport-slider large-viewport-slider-x">
-          <span id="top-rotate-x-val" style="width: 32px; text-align: right; color: #fff; font-size: 12px; font-weight: 600; font-family: monospace; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">0°</span>
-        </div>
-        <!-- Y Axis Slider -->
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-weight: 800; color: #10b981; width: 10px; font-size: 11px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">Y</span>
-          <input type="range" id="top-rotate-y" min="-180" max="180" value="0" class="large-viewport-slider large-viewport-slider-y">
-          <span id="top-rotate-y-val" style="width: 32px; text-align: right; color: #fff; font-size: 12px; font-weight: 600; font-family: monospace; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">0°</span>
-        </div>
-        <!-- Z Axis Slider -->
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-weight: 800; color: #3b82f6; width: 10px; font-size: 11px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">Z</span>
-          <input type="range" id="top-rotate-z" min="-180" max="180" value="0" class="large-viewport-slider large-viewport-slider-z">
-          <span id="top-rotate-z-val" style="width: 32px; text-align: right; color: #fff; font-size: 12px; font-weight: 600; font-family: monospace; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">0°</span>
+        <!-- Sliders Container -->
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+          <!-- X Axis Slider -->
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-weight: 800; color: #ef4444; width: 10px; font-size: 11px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">X</span>
+            <input type="range" id="top-rotate-x" min="-180" max="180" value="0" class="large-viewport-slider large-viewport-slider-x">
+            <span id="top-rotate-x-val" style="width: 32px; text-align: right; color: #fff; font-size: 12px; font-weight: 600; font-family: monospace; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">0°</span>
+          </div>
+          <!-- Y Axis Slider -->
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-weight: 800; color: #10b981; width: 10px; font-size: 11px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">Y</span>
+            <input type="range" id="top-rotate-y" min="-180" max="180" value="0" class="large-viewport-slider large-viewport-slider-y">
+            <span id="top-rotate-y-val" style="width: 32px; text-align: right; color: #fff; font-size: 12px; font-weight: 600; font-family: monospace; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">0°</span>
+          </div>
+          <!-- Z Axis Slider -->
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-weight: 800; color: #3b82f6; width: 10px; font-size: 11px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">Z</span>
+            <input type="range" id="top-rotate-z" min="-180" max="180" value="0" class="large-viewport-slider large-viewport-slider-z">
+            <span id="top-rotate-z-val" style="width: 32px; text-align: right; color: #fff; font-size: 12px; font-weight: 600; font-family: monospace; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">0°</span>
+          </div>
         </div>
       </div>
 
       <!-- Viewport Floating Scale Panel (Middle Bottom) -->
       <div id="bottom-scale-panel" style="position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); z-index: 120; display: flex; align-items: center; gap: 14px; pointer-events: all;">
-        <select id="scale-mode-selector" style="background: rgba(18, 18, 24, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer; outline: none; transition: border-color 0.2s, background-color 0.2s; text-shadow: 0 1px 2px rgba(0,0,0,0.5); pointer-events: auto;">
+        <select id="scale-mode-selector" style="width: 145px; background: rgba(18, 18, 24, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer; outline: none; transition: border-color 0.2s, background-color 0.2s; text-shadow: 0 1px 2px rgba(0,0,0,0.5); pointer-events: auto;">
           <option value="joint">Selected Joint</option>
           <option value="torsoHeight">Torso Height</option>
           <option value="torsoWidth">Torso Width</option>
