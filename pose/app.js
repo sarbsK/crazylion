@@ -44,6 +44,7 @@ const state = {
   // Selection
   selectedJointName: 'pelvis',
   hoveredJointSphere: null,
+  selectionOutlines: [],
   
   // Display toggles
   shadowsEnabled: true,
@@ -980,6 +981,37 @@ function setup3DRaycasting() {
 
     window.addEventListener('pointerup', onPointerUp);
   });
+
+  // Mouse double-click to show transform controls gizmo
+  container.addEventListener('dblclick', (e) => {
+    const rect = state.renderer.domElement.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, state.camera);
+    const targets = [...state.jointSpheres, ...state.limbs];
+    const intersects = raycaster.intersectObjects(targets);
+
+    if (intersects.length > 0) {
+      let clickedJointName = null;
+      for (let i = 0; i < intersects.length; i++) {
+        const obj = intersects[i].object;
+        if (obj.userData && obj.userData.jointName) {
+          clickedJointName = obj.userData.jointName;
+          break;
+        }
+      }
+      if (clickedJointName) {
+        selectJoint(clickedJointName, true); // Select and show gizmo
+        return;
+      }
+    }
+    
+    // If double-clicking elsewhere but a joint is selected, show the gizmo
+    if (state.selectedJointName && state.transformControls && state.manipulatorMode !== 'off') {
+      state.transformControls.visible = true;
+    }
+  });
 }
 
 const bottomScalePanelConfig = {
@@ -1029,7 +1061,59 @@ function updateBottomScaleSliderConfig() {
   }
 }
 
+function clearSelectionOutlines() {
+  if (state.selectionOutlines) {
+    state.selectionOutlines.forEach(outline => {
+      if (outline.parent) {
+        outline.parent.remove(outline);
+      }
+      outline.geometry.dispose();
+      if (outline.material) {
+        outline.material.dispose();
+      }
+    });
+  }
+  state.selectionOutlines = [];
+}
+
+function createSelectionOutlines(jointName) {
+  clearSelectionOutlines();
+  if (!state.selectionOutlines) {
+    state.selectionOutlines = [];
+  }
+
+  // Find all meshes in state.limbs that belong to this joint
+  const jointLimbs = state.limbs.filter(limb => limb.userData && limb.userData.jointName === jointName);
+
+  jointLimbs.forEach(limb => {
+    if (limb.isMesh) {
+      const geom = limb.geometry.clone();
+      const outlineMat = new THREE.MeshBasicMaterial({
+        color: 0xf59e0b, // glowing warm amber gold
+        side: THREE.BackSide,
+        transparent: true,
+        opacity: 0.8
+      });
+      const outlineMesh = new THREE.Mesh(geom, outlineMat);
+
+      // Copy local position and rotation
+      outlineMesh.position.copy(limb.position);
+      outlineMesh.rotation.copy(limb.rotation);
+
+      // Scale up slightly to form the outline shell
+      outlineMesh.scale.copy(limb.scale).multiplyScalar(1.08);
+
+      outlineMesh.userData = { isOutline: true, targetLimb: limb };
+
+      limb.parent.add(outlineMesh);
+      state.selectionOutlines.push(outlineMesh);
+    }
+  });
+}
+
 function deselectJoint() {
+  clearSelectionOutlines();
+
   // 1. Reset color of previously selected joint sphere
   const oldSphere = state.jointSpheres.find(s => s.userData.jointName === state.selectedJointName);
   if (oldSphere) {
@@ -1067,8 +1151,12 @@ function deselectJoint() {
   updateBottomScaleSliderConfig();
 }
 
-function selectJoint(jointName) {
+function selectJoint(jointName, showGizmo = false) {
   if (!state.joints[jointName]) return;
+
+  // Clear previous outlines and create new ones
+  clearSelectionOutlines();
+  createSelectionOutlines(jointName);
 
   // 1. Reset color of previously selected joint sphere
   const oldSphere = state.jointSpheres.find(s => s.userData.jointName === state.selectedJointName);
@@ -1128,7 +1216,7 @@ function selectJoint(jointName) {
   // 4. Attach TransformControls gizmo to this joint if manipulator is active
   if (state.transformControls && state.manipulatorMode !== 'off') {
     state.transformControls.attach(jointGroup);
-    state.transformControls.visible = true;
+    state.transformControls.visible = showGizmo;
   }
 }
 
@@ -2386,7 +2474,16 @@ function updateMannequinProportions() {
   
   state.joints['pelvis'].position.y = basePelvisHeight * groundingFactor;
 
-  // 6. Refresh skeleton wireframe
+  // 6. Sync selection outlines scale
+  if (state.selectionOutlines) {
+    state.selectionOutlines.forEach(outline => {
+      if (outline.userData && outline.userData.targetLimb) {
+        outline.scale.copy(outline.userData.targetLimb.scale).multiplyScalar(1.08);
+      }
+    });
+  }
+
+  // 7. Refresh skeleton wireframe
   if (state.skeletonVisible) {
     drawSkeletonLines();
   }
@@ -2430,6 +2527,12 @@ function captureReferencePNG() {
 }
 
 function searchPoseReference() {
+  const backdrop = document.getElementById('search-modal-backdrop');
+  if (backdrop && backdrop.classList.contains('active')) {
+    backdrop.classList.remove('active');
+    return;
+  }
+
   const appInterface = document.querySelector('.app-interface');
   if (appInterface && appInterface.classList.contains('has-reference-sidebar')) {
     appInterface.classList.remove('has-reference-sidebar');

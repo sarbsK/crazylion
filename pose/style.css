@@ -289,7 +289,7 @@ input[type="range"]:focus::-webkit-slider-thumb {
 /* Large Viewport Sliders */
 .large-viewport-slider {
   -webkit-appearance: none !important;
-  width: 150px !important; /* Default for top rotation sliders */
+  width: 300px !important; /* Double the size (was 150px) */
   height: 8px !important;
   border-radius: 4px !important;
   background: rgba(255, 255, 255, 0.2) !important;
