@@ -1452,6 +1452,40 @@ body.clean-screen-mode .floating-logo-header {
 
 /* Mobile responsive overrides for viewport sliders & panels */
 @media (max-width: 768px) {
+  /* Show floating logo header on mobile with adjusted proportions */
+  .floating-logo-header {
+    display: flex !important;
+    top: 20px !important;
+    left: 20px !important;
+  }
+  
+  .floating-logo-header h1 {
+    font-size: 18px !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8) !important;
+  }
+  
+  .floating-logo-header p {
+    font-size: 9px !important;
+    margin: 2px 0 8px 0 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8) !important;
+  }
+  
+  .btn-expand-sidebar {
+    padding: 6px 12px !important;
+    font-size: 10px !important;
+    border-radius: 6px !important;
+  }
+
+  /* Show floating Pose Search button on mobile */
+  #btn-floating-search {
+    display: inline-flex !important;
+    bottom: 75px !important;
+    right: 15px !important;
+    padding: 6px 12px !important;
+    font-size: 11px !important;
+    border-radius: 6px !important;
+  }
+  
   /* Compact Rotation Panel on the Right for Mobile (matching desktop look and feel) */
   .top-rotation-panel {
     top: 90px !important;
@@ -1473,8 +1507,11 @@ body.clean-screen-mode .floating-logo-header {
     align-items: flex-end !important;
   }
   
+  /* Make rotation sliders longer according to screen size */
   .large-viewport-slider {
-    width: 140px !important; /* Narrower width to fit mobile portrait screen */
+    width: calc(100vw - 120px) !important;
+    max-width: 280px !important;
+    min-width: 160px !important;
   }
   
   /* Horizontal Scale Panel for Mobile (matching desktop layout) */
@@ -1493,7 +1530,7 @@ body.clean-screen-mode .floating-logo-header {
   }
   
   .scale-mode-selector {
-    width: 110px !important; /* Scaled down dropdown width */
+    width: 100px !important; /* Compact dropdown width */
     font-size: 11px !important;
     padding: 4px 8px !important;
   }
@@ -1502,8 +1539,11 @@ body.clean-screen-mode .floating-logo-header {
     gap: 6px !important;
   }
   
+  /* Make scale slider longer according to screen size */
   .large-viewport-slider.scale-slider {
-    width: 130px !important; /* Scaled down slider width to fit horizontally on mobile */
+    width: calc(100vw - 170px) !important;
+    max-width: 240px !important;
+    min-width: 130px !important;
   }
   
   .scale-value-display {
