@@ -2921,7 +2921,7 @@ function compileHighQualityQuery(poseDescription, style) {
   
   // Extract the core pose word
   let poseWord = 'standing';
-  if (desc.includes('sitting') || desc.includes('seated')) poseWord = 'seated';
+  if (desc.includes('sitting') || desc.includes('seated')) poseWord = 'sitting'; // Use sitting for photo/nude queries
   else if (desc.includes('running') || desc.includes('sprint')) poseWord = 'running';
   else if (desc.includes('jumping') || desc.includes('leap')) poseWord = 'jumping';
   else if (desc.includes('kneeling') || desc.includes('kneel')) poseWord = 'kneeling';
@@ -2935,28 +2935,51 @@ function compileHighQualityQuery(poseDescription, style) {
   
   // Build curated, tested search queries for each style
   if (isMatchPose) {
-    if (style === 'sculpture') {
-      return `greek marble statue ${poseWord} filetype:bitmap -monument`;
-    } else if (style === 'drawing') {
-      return `anatomy figure ${poseWord} filetype:bitmap`;
-    } else if (style === 'photo') {
-      return `classical statue ${poseWord} museum filetype:bitmap -monument`;
+    if (state.includeArtisticNudes) {
+      if (style === 'sculpture') {
+        return `greek marble statue ${poseWord} filetype:bitmap -monument`;
+      } else if (style === 'drawing') {
+        return `academic nude drawing ${poseWord} filetype:bitmap`;
+      } else if (style === 'photo') {
+        return `nude model ${poseWord} filetype:bitmap`;
+      } else {
+        // "All Styles" — academic nude/figure photo or study
+        return `nude academic ${poseWord} filetype:bitmap`;
+      }
     } else {
-      // "All Styles" — clean classical statue
-      return `classical statue ${poseWord} filetype:bitmap -monument`;
+      // SFW / No nudes mode
+      if (style === 'sculpture') {
+        return `greek marble statue ${poseWord} filetype:bitmap -monument`;
+      } else if (style === 'drawing') {
+        return `anatomy figure ${poseWord} filetype:bitmap`;
+      } else if (style === 'photo') {
+        return `classical statue ${poseWord} museum filetype:bitmap -monument`;
+      } else {
+        return `classical statue ${poseWord} filetype:bitmap -monument`;
+      }
     }
   }
   
   // For non-pose searches, pass through with art-quality suffix
-  if (style === 'sculpture') {
-    return `${desc} sculpture statue filetype:bitmap`;
-  } else if (style === 'drawing') {
-    return `${desc} anatomy drawing sketch filetype:bitmap`;
-  } else if (style === 'photo') {
-    return `${desc} statue classical photo filetype:bitmap`;
+  if (state.includeArtisticNudes) {
+    if (style === 'sculpture') {
+      return `${desc} sculpture statue filetype:bitmap`;
+    } else if (style === 'drawing') {
+      return `${desc} nude academic drawing sketch filetype:bitmap`;
+    } else if (style === 'photo') {
+      return `${desc} nude model photography filetype:bitmap`;
+    }
+    return `${desc} nude academic filetype:bitmap`;
+  } else {
+    if (style === 'sculpture') {
+      return `${desc} sculpture statue filetype:bitmap`;
+    } else if (style === 'drawing') {
+      return `${desc} anatomy drawing sketch filetype:bitmap`;
+    } else if (style === 'photo') {
+      return `${desc} statue classical photo filetype:bitmap`;
+    }
+    return `${desc} filetype:bitmap`;
   }
-  
-  return `${desc} filetype:bitmap`;
 }
 
 // Fallback: Openverse Creative Commons API (may hit rate limits without auth)
