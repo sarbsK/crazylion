@@ -16,7 +16,8 @@ const state = {
   renderer: null,
   orbitControls: null,
   transformControls: null,   // 3D manipulator gizmo
-  manipulatorMode: 'off',    // 'off' | 'rotate' | 'translate'
+  manipulatorMode: 'rotate',    // 'off' | 'rotate' | 'translate'
+  jointScales: {},
   
   // Lights
   ambientLight: null,
@@ -990,6 +991,12 @@ function deselectJoint() {
   // 4. Sync UI selector
   const selector = document.getElementById('joint-selector');
   if (selector) selector.value = '';
+
+  // 5. Hide top rotation panel
+  const topPanel = document.getElementById('top-rotation-panel');
+  if (topPanel) {
+    topPanel.style.display = 'none';
+  }
 }
 
 function selectJoint(jointName) {
@@ -1023,6 +1030,25 @@ function selectJoint(jointName) {
   updateSliderState('rotate-y', rotY);
   updateSliderState('rotate-z', rotZ);
 
+  // Sync scale slider
+  const scaleSlider = document.getElementById('joint-scale');
+  const scaleValText = document.getElementById('joint-scale-val');
+  if (scaleSlider) {
+    const currentScale = Math.round(jointGroup.scale.x * 100);
+    scaleSlider.value = currentScale;
+    if (scaleValText) scaleValText.innerText = currentScale + '%';
+  }
+
+  // Show and update top rotation panel
+  const topPanel = document.getElementById('top-rotation-panel');
+  if (topPanel) {
+    topPanel.style.display = 'flex';
+  }
+  const topJointNameSpan = document.getElementById('top-joint-name');
+  if (topJointNameSpan) {
+    topJointNameSpan.innerText = jointName;
+  }
+
   // 4. Attach TransformControls gizmo to this joint if manipulator is active
   if (state.transformControls && state.manipulatorMode !== 'off') {
     state.transformControls.attach(jointGroup);
@@ -1033,8 +1059,17 @@ function selectJoint(jointName) {
 function updateSliderState(id, val) {
   const slider = document.getElementById(id);
   const valText = document.getElementById(id + '-val');
-  slider.value = val;
-  valText.innerText = val + '°';
+  if (slider) slider.value = val;
+  if (valText) valText.innerText = val + '°';
+
+  // Also sync top slider if it is rotate-x, rotate-y, or rotate-z
+  if (id.startsWith('rotate-')) {
+    const topId = 'top-' + id;
+    const topSlider = document.getElementById(topId);
+    const topValText = document.getElementById(topId + '-val');
+    if (topSlider) topSlider.value = val;
+    if (topValText) topValText.innerText = val + '°';
+  }
 }
 
 // -------------------------------------------------------------
@@ -1042,7 +1077,7 @@ function updateSliderState(id, val) {
 // -------------------------------------------------------------
 
 function setupUIEventListeners() {
-  // ---- 3D Manipulator Mode Buttons (Top Toolbar & Sidebar synced) ----
+  // ---- 3D Manipulator Mode Buttons (Top Toolbar, Sidebar, and Viewport Floating synced) ----
   const manipBtns = document.querySelectorAll('.manip-btn');
   const sidebarManipBtns = document.querySelectorAll('.sidebar-manip-btn');
   
@@ -1053,6 +1088,14 @@ function setupUIEventListeners() {
     manipBtns.forEach(b => {
       const isActive = b.id === 'btn-manip-' + mode;
       b.style.background = isActive ? 'rgba(6,182,212,0.25)' : 'rgba(255,255,255,0.05)';
+      b.style.color = isActive ? 'var(--rim-color)' : 'var(--text-secondary)';
+    });
+
+    // Update new top panel buttons style
+    const topManipBtns = document.querySelectorAll('.top-manip-btn');
+    topManipBtns.forEach(b => {
+      const isActive = b.id === 'top-manip-' + mode;
+      b.style.background = isActive ? 'rgba(6,182,212,0.25)' : 'none';
       b.style.color = isActive ? 'var(--rim-color)' : 'var(--text-secondary)';
     });
 
@@ -1086,6 +1129,14 @@ function setupUIEventListeners() {
   if (btnManipOff) btnManipOff.addEventListener('click', () => setManipMode('off'));
   if (btnManipRotate) btnManipRotate.addEventListener('click', () => setManipMode('rotate'));
   if (btnManipTranslate) btnManipTranslate.addEventListener('click', () => setManipMode('translate'));
+
+  // Hook up top rotation panel manipulator mode select click events
+  const topManipOff = document.getElementById('top-manip-off');
+  const topManipRotate = document.getElementById('top-manip-rotate');
+  const topManipTranslate = document.getElementById('top-manip-translate');
+  if (topManipOff) topManipOff.addEventListener('click', () => setManipMode('off'));
+  if (topManipRotate) topManipRotate.addEventListener('click', () => setManipMode('rotate'));
+  if (topManipTranslate) topManipTranslate.addEventListener('click', () => setManipMode('translate'));
 
   // Hook up sidebar Joint Editor click events
   const sideManipOff = document.getElementById('sidebar-manip-off');
@@ -1168,14 +1219,91 @@ function setupUIEventListeners() {
     triggerAutoMatchPose();
   });
 
+  // Viewport Top Floating Rotation Sliders Changes
+  const topRotateX = document.getElementById('top-rotate-x');
+  const topRotateY = document.getElementById('top-rotate-y');
+  const topRotateZ = document.getElementById('top-rotate-z');
+
+  if (topRotateX) {
+    topRotateX.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      document.getElementById('top-rotate-x-val').innerText = val + '°';
+      const sidebarSlider = document.getElementById('rotate-x');
+      if (sidebarSlider) sidebarSlider.value = val;
+      const sidebarValText = document.getElementById('rotate-x-val');
+      if (sidebarValText) sidebarValText.innerText = val + '°';
+      applyRotationFromUI('x', val);
+    });
+    topRotateX.addEventListener('change', () => {
+      triggerAutoMatchPose();
+    });
+  }
+
+  if (topRotateY) {
+    topRotateY.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      document.getElementById('top-rotate-y-val').innerText = val + '°';
+      const sidebarSlider = document.getElementById('rotate-y');
+      if (sidebarSlider) sidebarSlider.value = val;
+      const sidebarValText = document.getElementById('rotate-y-val');
+      if (sidebarValText) sidebarValText.innerText = val + '°';
+      applyRotationFromUI('y', val);
+    });
+    topRotateY.addEventListener('change', () => {
+      triggerAutoMatchPose();
+    });
+  }
+
+  if (topRotateZ) {
+    topRotateZ.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      document.getElementById('top-rotate-z-val').innerText = val + '°';
+      const sidebarSlider = document.getElementById('rotate-z');
+      if (sidebarSlider) sidebarSlider.value = val;
+      const sidebarValText = document.getElementById('rotate-z-val');
+      if (sidebarValText) sidebarValText.innerText = val + '°';
+      applyRotationFromUI('z', val);
+    });
+    topRotateZ.addEventListener('change', () => {
+      triggerAutoMatchPose();
+    });
+  }
+
+  // Parametric Scale Change
+  const jointScaleSlider = document.getElementById('joint-scale');
+  if (jointScaleSlider) {
+    jointScaleSlider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value);
+      const valText = document.getElementById('joint-scale-val');
+      if (valText) valText.innerText = val + '%';
+      
+      const jointGroup = state.joints[state.selectedJointName];
+      if (jointGroup) {
+        const scaleScalar = val / 100;
+        jointGroup.scale.setScalar(scaleScalar);
+        if (state.skeletonVisible) drawSkeletonLines();
+      }
+    });
+    jointScaleSlider.addEventListener('change', () => {
+      triggerAutoMatchPose();
+    });
+  }
+
   // Joint Resets
   document.getElementById('btn-reset-joint').addEventListener('click', () => {
     const joint = state.joints[state.selectedJointName];
     if (joint) {
       joint.rotation.set(0, 0, 0);
+      joint.scale.setScalar(1.0);
       updateSliderState('rotate-x', 0);
       updateSliderState('rotate-y', 0);
       updateSliderState('rotate-z', 0);
+
+      const scaleSlider = document.getElementById('joint-scale');
+      const scaleValText = document.getElementById('joint-scale-val');
+      if (scaleSlider) scaleSlider.value = 100;
+      if (scaleValText) scaleValText.innerText = '100%';
+
       if (state.skeletonVisible) drawSkeletonLines();
       triggerAutoMatchPose();
     }
@@ -1184,6 +1312,7 @@ function setupUIEventListeners() {
   document.getElementById('btn-reset-all').addEventListener('click', () => {
     Object.values(state.joints).forEach(joint => {
       joint.rotation.set(0, 0, 0);
+      joint.scale.setScalar(1.0);
     });
     // Set root Pelvis position height back to default
     state.joints['pelvis'].position.y = 4.9;
@@ -1712,6 +1841,9 @@ function setupUIEventListeners() {
       });
     }
   });
+
+  // Initialize manipulator mode styles on startup
+  setManipMode(state.manipulatorMode);
 }
 
 function resetActiveCameraBtn(id) {
