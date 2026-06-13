@@ -337,21 +337,27 @@ input[type="range"]:focus::-webkit-slider-thumb {
 /* Viewport Panel Styling */
 .top-rotation-panel {
   position: absolute;
-  top: 15px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 100px;
+  right: 40px;
   z-index: 120;
   display: none;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   gap: 8px;
   pointer-events: none;
+  transition: right 0.3s ease;
+}
+
+/* Slide left to avoid being covered by reference sidebar if active */
+.app-interface.has-reference-sidebar .top-rotation-panel {
+  right: 380px; /* 340px reference sidebar width + 40px margin */
 }
 
 .top-rotation-header {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
+  text-align: right;
   margin-bottom: 2px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
   padding-bottom: 6px;
@@ -363,7 +369,7 @@ input[type="range"]:focus::-webkit-slider-thumb {
   display: flex;
   flex-direction: column;
   gap: 150px;
-  align-items: flex-start;
+  align-items: flex-end;
   pointer-events: none;
 }
 
@@ -1446,44 +1452,63 @@ body.clean-screen-mode .floating-logo-header {
 
 /* Mobile responsive overrides for viewport sliders & panels */
 @media (max-width: 768px) {
-  /* Compact Rotation Panel for Mobile */
+  /* Compact Rotation Panel on the Right for Mobile (matching desktop look and feel) */
   .top-rotation-panel {
-    top: 10px !important;
+    top: 90px !important;
+    right: 15px !important;
+    left: auto !important;
+    transform: none !important;
+    align-items: flex-end !important;
     gap: 4px !important;
   }
   
+  .top-rotation-header {
+    align-items: flex-end !important;
+    text-align: right !important;
+    margin-bottom: 2px !important;
+  }
+  
   .top-rotation-sliders {
-    gap: 12px !important; /* Compact vertical gap on mobile instead of 150px */
-    align-items: center !important;
+    gap: 70px !important; /* Spaced out next to the model, similar to desktop gap */
+    align-items: flex-end !important;
   }
   
   .large-viewport-slider {
-    width: 160px !important; /* Compact slider width on mobile instead of 300px */
+    width: 140px !important; /* Narrower width to fit mobile portrait screen */
   }
   
-  /* Compact Scale Panel for Mobile */
+  /* Horizontal Scale Panel for Mobile (matching desktop layout) */
   .bottom-scale-panel {
     bottom: 80px !important;
-    flex-direction: column !important; /* Stack selector and slider vertically */
-    gap: 8px !important;
-    width: 90% !important;
-    max-width: 260px !important;
-    background: rgba(18, 18, 24, 0.75) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 12px !important;
-    padding: 10px 14px !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+    flex-direction: row !important; /* Keep horizontal layout like desktop */
+    gap: 6px !important;
+    width: auto !important;
+    max-width: 95% !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
   }
   
   .scale-mode-selector {
-    width: 100% !important;
-    text-align: center !important;
+    width: 110px !important; /* Scaled down dropdown width */
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+  }
+  
+  .scale-slider-row {
+    gap: 6px !important;
   }
   
   .large-viewport-slider.scale-slider {
-    width: 160px !important; /* Match mobile slider width */
+    width: 130px !important; /* Scaled down slider width to fit horizontally on mobile */
+  }
+  
+  .scale-value-display {
+    width: 35px !important;
+    font-size: 11px !important;
   }
 }
 
