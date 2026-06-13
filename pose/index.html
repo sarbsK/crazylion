@@ -159,13 +159,7 @@
           <input type="range" id="rotate-z" min="-180" max="180" value="0">
         </div>
 
-        <div class="control-group">
-          <div class="control-label">
-            <label for="joint-scale">Parametric Scale</label>
-            <span id="joint-scale-val" class="control-val">100%</span>
-          </div>
-          <input type="range" id="joint-scale" min="50" max="200" value="100">
-        </div>
+
 
         <div class="btn-grid" style="margin-top: 14px;">
           <button id="btn-reset-joint">Reset Joint</button>
@@ -534,6 +528,13 @@
           <button id="top-manip-translate" class="top-manip-btn" style="padding: 4px 8px; font-size: 9px; font-weight: 600; font-family: inherit; background: none; color: var(--text-secondary); border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s;">Move</button>
           <button id="top-manip-off" class="top-manip-btn" style="padding: 4px 8px; font-size: 9px; font-weight: 600; font-family: inherit; background: none; color: var(--text-secondary); border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s;">Off</button>
         </div>
+      </div>
+
+      <!-- Viewport Floating Scale Panel (Middle Bottom) -->
+      <div id="bottom-scale-panel" style="position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 120; display: none; align-items: center; gap: 14px; pointer-events: all;">
+        <span style="font-weight: 700; color: var(--rim-color); font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; white-space: nowrap; text-shadow: 0 2px 4px rgba(0,0,0,0.95);">Scale</span>
+        <input type="range" id="joint-scale" min="50" max="200" value="100" class="large-viewport-slider">
+        <span id="joint-scale-val" style="width: 48px; text-align: right; color: #fff; font-size: 14px; font-weight: 700; font-family: monospace; text-shadow: 0 2px 4px rgba(0,0,0,0.95);">100%</span>
       </div>
 
       <!-- Camera Quick Presets -->

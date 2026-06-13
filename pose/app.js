@@ -997,6 +997,12 @@ function deselectJoint() {
   if (topPanel) {
     topPanel.style.display = 'none';
   }
+
+  // 6. Hide bottom scale panel
+  const scalePanel = document.getElementById('bottom-scale-panel');
+  if (scalePanel) {
+    scalePanel.style.display = 'none';
+  }
 }
 
 function selectJoint(jointName) {
@@ -1047,6 +1053,12 @@ function selectJoint(jointName) {
   const topJointNameSpan = document.getElementById('top-joint-name');
   if (topJointNameSpan) {
     topJointNameSpan.innerText = jointName;
+  }
+
+  // Show and update bottom scale panel
+  const scalePanel = document.getElementById('bottom-scale-panel');
+  if (scalePanel) {
+    scalePanel.style.display = 'flex';
   }
 
   // 4. Attach TransformControls gizmo to this joint if manipulator is active
