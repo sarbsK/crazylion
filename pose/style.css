@@ -1229,6 +1229,11 @@ body.clean-screen-mode .camera-quick-presets {
   grid-template-columns: 0px 1fr 0px;
 }
 
+.app-interface.sidebar-collapsed.has-reference-sidebar {
+  grid-template-columns: 0px 1fr 340px;
+  gap: 20px;
+}
+
 .app-interface.sidebar-collapsed .sidebar {
   transform: translateX(-390px);
   pointer-events: none;
