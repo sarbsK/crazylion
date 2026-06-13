@@ -2844,7 +2844,7 @@ function fetchWikimediaReferences(rawQuery) {
   }
   
   // Build a high-quality curated search query for Wikimedia Commons
-  const searchQuery = compileHighQualityQuery(cleanQuery, state.selectedStyle);
+  const searchQuery = compileHighQualityQuery(cleanQuery, state.selectedStyle, false);
   console.log("Reference search query:", searchQuery);
   
   // Primary: Wikimedia Commons API (CORS-friendly, no auth, no rate limits, millions of art images)
@@ -2897,7 +2897,13 @@ function fetchWikimediaReferences(rawQuery) {
         });
       }
       
-      if (count === 0) {
+      // If we got fewer than 4 results, fill up with a broader search of the base pose!
+      const poseTerms = /\b(standing|sitting|seated|sit|running|run|jumping|jump|kneeling|kneel|crouching|crouch|lying|recline|reclining|contrapposto|twist|bending|bend|leaning|lean|forward|backward|walking|walk|dancing|dance|heroic|action|dynamic|arms?\s*raised|reaching)\b/i;
+      const isMatchPose = cleanQuery.includes('pose') || cleanQuery.includes('match') || poseTerms.test(cleanQuery);
+      
+      if (count < 4 && isMatchPose) {
+        fetchWikimediaBroadFallback(cleanQuery, grid, count);
+      } else if (count === 0) {
         // Fallback: try Openverse API for broader Creative Commons results
         fetchOpenverseFallback(cleanQuery, grid);
       }
@@ -2908,11 +2914,69 @@ function fetchWikimediaReferences(rawQuery) {
     });
 }
 
+// Broad query fallback to fill remaining slots in the reference gallery
+function fetchWikimediaBroadFallback(cleanQuery, grid, currentCount) {
+  const searchQuery = compileHighQualityQuery(cleanQuery, state.selectedStyle, true); // forceBroad = true
+  const url = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(searchQuery)}&gsrnamespace=6&prop=imageinfo&iiprop=url|size|mime&iiurlwidth=400&gsrlimit=20&format=json&origin=*`;
+  
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      // Collect already rendered thumbnail URLs to avoid duplicates
+      const existingUrls = Array.from(grid.querySelectorAll('img')).map(img => img.src);
+      let count = currentCount;
+      
+      if (data.query && data.query.pages) {
+        const pages = Object.values(data.query.pages);
+        pages.sort((a, b) => (b.pageid || 0) - (a.pageid || 0));
+        
+        pages.forEach(page => {
+          if (count >= 10) return;
+          
+          if (page.imageinfo && page.imageinfo[0] && page.imageinfo[0].url) {
+            const info = page.imageinfo[0];
+            const imgUrl = info.url;
+            const thumbUrl = info.thumburl || imgUrl;
+            
+            // Skip duplicates
+            if (existingUrls.includes(thumbUrl)) return;
+            
+            const mime = (info.mime || '').toLowerCase();
+            if (!mime.startsWith('image/') || mime.includes('svg') || mime.includes('tiff') || mime.includes('pdf')) return;
+            if (info.width && info.height && (info.width < 150 || info.height < 150)) return;
+            
+            count++;
+            
+            const item = document.createElement('div');
+            item.className = 'reference-item';
+            item.title = (page.title || '').replace('File:', '');
+            item.innerHTML = `<img src="${thumbUrl}" alt="${item.title.replace(/"/g, '')}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'">`;
+            
+            item.addEventListener('click', () => {
+              pinReferenceImage(imgUrl);
+            });
+            
+            grid.appendChild(item);
+          }
+        });
+      }
+      
+      if (count === 0) {
+        fetchOpenverseFallback(cleanQuery, grid);
+      }
+    })
+    .catch(() => {
+      if (grid.querySelectorAll('.reference-item').length === 0) {
+        fetchOpenverseFallback(cleanQuery, grid);
+      }
+    });
+}
+
 // Compile a high-quality, curated Wikimedia Commons search query.
 // Uses `filetype:bitmap` (CirrusSearch keyword) to ensure the API only returns
 // raster images (JPEG/PNG/WebP), eliminating PDFs, TIFFs, SVGs, and DJVUs at the source.
 // Each query pattern has been manually tested via curl to confirm clean art image results.
-function compileHighQualityQuery(poseDescription, style) {
+function compileHighQualityQuery(poseDescription, style, forceBroad = false) {
   const desc = (poseDescription || '').toLowerCase().trim();
   
   // Detect if this is a pose-related search
@@ -2932,30 +2996,54 @@ function compileHighQualityQuery(poseDescription, style) {
   else if (desc.includes('walking') || desc.includes('walk')) poseWord = 'walking';
   else if (desc.includes('dancing') || desc.includes('dance')) poseWord = 'dancing';
   else if (desc.includes('heroic') || desc.includes('arms raised')) poseWord = 'heroic';
+
+  // Extract extra descriptive modifier keywords from the description
+  let modifierString = '';
+  if (!forceBroad) {
+    const modifiers = [];
+    if (desc.includes('arms raised') || desc.includes('arm raised')) {
+      modifiers.push('arms raised');
+    }
+    if (desc.includes('leaning')) {
+      modifiers.push('leaning');
+    }
+    if (desc.includes('twist') || desc.includes('contrapposto')) {
+      modifiers.push('twist');
+    }
+    if (desc.includes('bent')) {
+      modifiers.push('bent');
+    }
+    if (desc.includes('stance') || desc.includes('split')) {
+      modifiers.push('stance');
+    }
+    modifierString = modifiers.slice(0, 2).join(' ');
+  }
+  
+  const querySuffix = modifierString ? ' ' + modifierString : '';
   
   // Build curated, tested search queries for each style
   if (isMatchPose) {
     if (state.includeArtisticNudes) {
       if (style === 'sculpture') {
-        return `greek marble statue ${poseWord} filetype:bitmap -monument`;
+        return `greek marble statue ${poseWord}${querySuffix} filetype:bitmap -monument`;
       } else if (style === 'drawing') {
-        return `academic nude drawing ${poseWord} filetype:bitmap`;
+        return `academic nude drawing ${poseWord}${querySuffix} filetype:bitmap`;
       } else if (style === 'photo') {
-        return `nude model ${poseWord} filetype:bitmap`;
+        return `nude model ${poseWord}${querySuffix} filetype:bitmap`;
       } else {
         // "All Styles" — academic nude/figure photo or study
-        return `nude academic ${poseWord} filetype:bitmap`;
+        return `nude academic ${poseWord}${querySuffix} filetype:bitmap`;
       }
     } else {
       // SFW / No nudes mode
       if (style === 'sculpture') {
-        return `greek marble statue ${poseWord} filetype:bitmap -monument`;
+        return `greek marble statue ${poseWord}${querySuffix} filetype:bitmap -monument`;
       } else if (style === 'drawing') {
-        return `anatomy figure ${poseWord} filetype:bitmap`;
+        return `anatomy figure ${poseWord}${querySuffix} filetype:bitmap`;
       } else if (style === 'photo') {
-        return `classical statue ${poseWord} museum filetype:bitmap -monument`;
+        return `classical statue ${poseWord}${querySuffix} museum filetype:bitmap -monument`;
       } else {
-        return `classical statue ${poseWord} filetype:bitmap -monument`;
+        return `classical statue ${poseWord}${querySuffix} filetype:bitmap -monument`;
       }
     }
   }
