@@ -36,6 +36,7 @@ const state = {
   limbs: [],            // Array of visual limb meshes (can be toggled)
   shadowOverlays: [],   // Array of transparent shadow-receiving overlays for Matcaps
   skeletonLines: null,  // Group containing skeletal wireframe helper lines
+  gestureLine: null,    // 3D spline line showing gesture flow (Line of Action)
   
   // Custom Model elements
   customModel: null,
@@ -51,6 +52,7 @@ const state = {
   shadowsEnabled: true,
   meshVisible: true,
   skeletonVisible: false,
+  gestureVisible: false,
   gridVisible: true,
   
   // Lighting studio parameters
@@ -449,6 +451,7 @@ function init() {
       updateSliderState('rotate-y', rotY);
       updateSliderState('rotate-z', rotZ);
       if (state.skeletonVisible) drawSkeletonLines();
+      if (state.gestureVisible) drawGestureLine();
     });
   }
 
@@ -916,6 +919,82 @@ function drawSkeletonLines() {
   
   state.skeletonLines.visible = state.skeletonVisible;
   state.scene.add(state.skeletonLines);
+}
+
+// Draw smooth Catmull-Rom gesture line (Line of Action)
+function drawGestureLine() {
+  if (state.gestureLine) {
+    state.scene.remove(state.gestureLine);
+    state.gestureLine = null;
+  }
+
+  if (!state.gestureVisible) return;
+
+  // Verify that all required joints are present to prevent any runtime errors
+  const requiredJoints = [
+    'head', 'neck', 'chest', 'spine', 'pelvis',
+    'leftFoot', 'rightFoot',
+    'leftThigh', 'rightThigh',
+    'leftCalf', 'rightCalf'
+  ];
+  for (const name of requiredJoints) {
+    if (!state.joints[name]) return;
+  }
+
+  // Force world matrix update so getWorldPosition returns accurate up-to-date coordinates
+  if (state.mannequinGroup) {
+    state.mannequinGroup.updateMatrixWorld(true);
+  }
+
+  const points = [];
+  const addJointPosition = (name) => {
+    const pos = new THREE.Vector3();
+    state.joints[name].getWorldPosition(pos);
+    points.push(pos);
+  };
+
+  // 1. Torso flow: Head -> Neck -> Chest -> Spine -> Pelvis
+  addJointPosition('head');
+  addJointPosition('neck');
+  addJointPosition('chest');
+  addJointPosition('spine');
+  addJointPosition('pelvis');
+
+  // 2. Active standing leg: compare left and right ankle (foot) world Y coordinates
+  const leftAnklePos = new THREE.Vector3();
+  state.joints['leftFoot'].getWorldPosition(leftAnklePos);
+
+  const rightAnklePos = new THREE.Vector3();
+  state.joints['rightFoot'].getWorldPosition(rightAnklePos);
+
+  // Standing leg is the one with lower world Y-coordinate (closer to ground)
+  const isLeftStanding = leftAnklePos.y <= rightAnklePos.y;
+  
+  if (isLeftStanding) {
+    addJointPosition('leftThigh');
+    addJointPosition('leftCalf');
+    addJointPosition('leftFoot');
+  } else {
+    addJointPosition('rightThigh');
+    addJointPosition('rightCalf');
+    addJointPosition('rightFoot');
+  }
+
+  // 3. Build Catmull-Rom curve and construct the THREE.Line
+  const curve = new THREE.CatmullRomCurve3(points);
+  const curvePoints = curve.getPoints(50);
+  const geo = new THREE.BufferGeometry().setFromPoints(curvePoints);
+  
+  // Neon Pink/Rose material, rendering on top of the mesh
+  const mat = new THREE.LineBasicMaterial({
+    color: 0xff007f,
+    linewidth: 3,
+    depthTest: false
+  });
+
+  state.gestureLine = new THREE.Line(geo, mat);
+  state.gestureLine.renderOrder = 1000; // Draw on top of skeletal helper lines
+  state.scene.add(state.gestureLine);
 }
 
 // -------------------------------------------------------------
@@ -1419,6 +1498,9 @@ function setupUIEventListeners() {
     if (state.skeletonVisible) {
       drawSkeletonLines();
     }
+    if (state.gestureVisible) {
+      drawGestureLine();
+    }
   };
 
   document.getElementById('rotate-x').addEventListener('input', (e) => {
@@ -1528,6 +1610,7 @@ function setupUIEventListeners() {
           const scaleScalar = val / 100;
           jointGroup.scale.setScalar(scaleScalar);
           if (state.skeletonVisible) drawSkeletonLines();
+          if (state.gestureVisible) drawGestureLine();
         }
       } else {
         // Anatomy proportions
@@ -1566,6 +1649,7 @@ function setupUIEventListeners() {
       updateBottomScaleSliderConfig();
 
       if (state.skeletonVisible) drawSkeletonLines();
+      if (state.gestureVisible) drawGestureLine();
       triggerAutoMatchPose();
     }
   });
@@ -1583,6 +1667,7 @@ function setupUIEventListeners() {
     selectJoint(state.selectedJointName);
     updateBottomScaleSliderConfig();
     if (state.skeletonVisible) drawSkeletonLines();
+    if (state.gestureVisible) drawGestureLine();
     triggerAutoMatchPose();
   });
 
@@ -1656,6 +1741,15 @@ function setupUIEventListeners() {
       drawSkeletonLines();
     } else if (state.skeletonLines) {
       state.skeletonLines.visible = false;
+    }
+  });
+
+  document.getElementById('toggle-gesture').addEventListener('change', (e) => {
+    state.gestureVisible = e.target.checked;
+    if (state.gestureVisible) {
+      drawGestureLine();
+    } else if (state.gestureLine) {
+      state.gestureLine.visible = false;
     }
   });
 
@@ -2343,6 +2437,9 @@ function applyPresetPose(poseName) {
   if (state.skeletonVisible) {
     drawSkeletonLines();
   }
+  if (state.gestureVisible) {
+    drawGestureLine();
+  }
 
   // Resync values in sliders for currently selected joint
   selectJoint(state.selectedJointName);
@@ -2558,6 +2655,9 @@ function updateMannequinProportions() {
   if (state.skeletonVisible) {
     drawSkeletonLines();
   }
+  if (state.gestureVisible) {
+    drawGestureLine();
+  }
 }
 
 // -------------------------------------------------------------
@@ -2571,9 +2671,12 @@ function captureReferencePNG() {
   const oldSpheresVisible = state.jointSpheres.map(s => s.visible);
   state.jointSpheres.forEach(s => s.visible = false);
   
-  // 2. Hide wireframe skeleton indicators unless specifically toggled on
+  // 2. Hide wireframe skeleton and gesture indicators unless specifically toggled on
   if (state.skeletonLines && !state.skeletonVisible) {
     state.skeletonLines.visible = false;
+  }
+  if (state.gestureLine && !state.gestureVisible) {
+    state.gestureLine.visible = false;
   }
 
   // 3. Force render target refresh
@@ -2594,6 +2697,9 @@ function captureReferencePNG() {
   state.jointSpheres.forEach((s, idx) => s.visible = oldSpheresVisible[idx]);
   if (state.skeletonLines && state.skeletonVisible) {
     state.skeletonLines.visible = true;
+  }
+  if (state.gestureLine && state.gestureVisible) {
+    state.gestureLine.visible = true;
   }
 }
 
@@ -2734,6 +2840,8 @@ function exportMannequinGLTF() {
   
   const oldSkeletonVisible = state.skeletonLines ? state.skeletonLines.visible : false;
   if (state.skeletonLines) state.skeletonLines.visible = false;
+  const oldGestureLineVisible = state.gestureLine ? state.gestureLine.visible : false;
+  if (state.gestureLine) state.gestureLine.visible = false;
   
   // Hide Matcap shadow overlays so we only export the clean meshes
   const oldShadowsVisible = state.shadowOverlays.map(s => s.visible);
@@ -2745,6 +2853,7 @@ function exportMannequinGLTF() {
     // Restore joint and helper visibility
     state.jointSpheres.forEach((s, idx) => s.visible = oldSpheresVisible[idx]);
     if (state.skeletonLines) state.skeletonLines.visible = oldSkeletonVisible;
+    if (state.gestureLine) state.gestureLine.visible = oldGestureLineVisible;
     state.shadowOverlays.forEach((s, idx) => s.visible = oldShadowsVisible[idx]);
 
     // Download the generated gltf JSON string as a file
@@ -2758,6 +2867,7 @@ function exportMannequinGLTF() {
     // Restore joint visibility in case of error
     state.jointSpheres.forEach((s, idx) => s.visible = oldSpheresVisible[idx]);
     if (state.skeletonLines) state.skeletonLines.visible = oldSkeletonVisible;
+    if (state.gestureLine) state.gestureLine.visible = oldGestureLineVisible;
     state.shadowOverlays.forEach((s, idx) => s.visible = oldShadowsVisible[idx]);
   }, {
     binary: false,
@@ -2800,6 +2910,7 @@ function importPoseJSON(e) {
       });
 
       if (state.skeletonVisible) drawSkeletonLines();
+      if (state.gestureVisible) drawGestureLine();
       selectJoint(state.selectedJointName);
       
       alert('Custom Pose imported successfully!');
@@ -3045,6 +3156,14 @@ function setupLoadedCustomModel(modelGroup, filename) {
       state.skeletonLines.visible = skeletonCheck;
     }
     
+    const gestureCheck = document.getElementById('toggle-gesture').checked;
+    state.gestureVisible = gestureCheck;
+    if (state.gestureVisible) {
+      drawGestureLine();
+    } else if (state.gestureLine) {
+      state.gestureLine.visible = false;
+    }
+    
     state.mannequinVisible = true;
 
     // 4. Update UI
@@ -3078,6 +3197,7 @@ function setupLoadedCustomModel(modelGroup, filename) {
   state.shadowOverlays.forEach(overlay => overlay.visible = false);
   state.jointSpheres.forEach(sphere => sphere.visible = false);
   if (state.skeletonLines) state.skeletonLines.visible = false;
+  if (state.gestureLine) state.gestureLine.visible = false;
   state.mannequinVisible = false;
 
   // 3. Configure the wrapper group to center and scale the model automatically
@@ -3199,6 +3319,14 @@ function restoreDefaultMannequin() {
   state.skeletonVisible = skeletonCheck;
   if (state.skeletonLines) {
     state.skeletonLines.visible = skeletonCheck;
+  }
+  
+  const gestureCheck = document.getElementById('toggle-gesture').checked;
+  state.gestureVisible = gestureCheck;
+  if (state.gestureVisible) {
+    drawGestureLine();
+  } else if (state.gestureLine) {
+    state.gestureLine.visible = false;
   }
   
   state.mannequinVisible = true;
